@@ -1,0 +1,32 @@
+<div class="login-container">
+  <h2>Iniciar Sesión<br></h2>
+  <form (ngSubmit)="enviar()">
+    <div class="form-group">
+      <label for="usuario">Usuario:<br></label>
+      <input
+        type="text"
+        id="usuario"
+        name="usuario"
+        [(ngModel)]="usuarioIngresado"
+        class="form-control"
+        placeholder="Ingrese su usuario"
+      />
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="clave">Contraseña:<br></label>
+      <input
+        type="password"
+        id="clave"
+        name="clave"
+        [(ngModel)]="claveIngresada"
+        class="form-control"
+        placeholder="Ingrese su contraseña"
+      />
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary btn-block">
+      Ingresar
+    </button>
+  </form>
+</div>
