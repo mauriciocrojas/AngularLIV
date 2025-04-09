@@ -5,6 +5,7 @@ import { ErrorComponent } from './componentes/error/error.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
+  // { path: '', redirectTo: '/logim', pathMatch: "full" },
   { path: 'bienvenido', component: BienvenidoComponent },
   { path: 'error', component: ErrorComponent }
 ];
