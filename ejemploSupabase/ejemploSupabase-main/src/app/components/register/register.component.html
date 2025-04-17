@@ -1,0 +1,13 @@
+<div class="register-container">
+    <h3>Registro</h3>
+    <input type="text" placeholder="Username" [(ngModel)]="username" class="register-input" />
+    <input type="password" placeholder="Password" [(ngModel)]="password" class="register-input" />
+    <input type="text" placeholder="Nombre" [(ngModel)]="name" class="register-input" />
+    <input type="number" placeholder="Edad" [(ngModel)]="age" class="register-input" />
+    <input type="file" (change)="onFileSelected($event)" class="register-input" />
+    <button (click)="register()" class="register-button">
+        Registro
+    </button>
+    <div class="login-link-container">
+        <a routerLink="../login" class="login-link">Login</a>
+</div>

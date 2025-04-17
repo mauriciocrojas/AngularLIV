@@ -1,0 +1,43 @@
+.register-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.register-input {
+    width: 300px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.register-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.register-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.register-button:hover {
+    background-color: #218838;
+}
+
+.login-link-container {
+    margin-top: 20px;
+}
+.login-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
