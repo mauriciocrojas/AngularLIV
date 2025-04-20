@@ -1,3 +1,5 @@
+<a routerLink="/quien-soy">Quién Soy</a>
+
 <!-- Si el usuario no está logueado, muestra el botón de login -->
 <div *ngIf="!isLoggedIn">
   <p>No hay sesión activa. <button (click)="goToLogin()">Iniciar sesión</button></p>
@@ -12,7 +14,7 @@
 
 
 
-<h2>Usuarios</h2>
+<h2>Home: Usuarios registrados</h2>
 
 <!-- Mostrar la lista de usuarios independientemente de si hay sesión activa o no -->
 <table class="table">

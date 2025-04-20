@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { UserData } from '../../models/user-data';
 import { environment } from '../../../environments/environment';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
@@ -10,7 +10,7 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
