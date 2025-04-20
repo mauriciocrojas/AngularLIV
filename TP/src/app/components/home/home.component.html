@@ -1,0 +1,38 @@
+<!-- Si el usuario no está logueado, muestra el botón de login -->
+<div *ngIf="!isLoggedIn">
+  <p>No hay sesión activa. <button (click)="goToLogin()">Iniciar sesión</button></p>
+</div>
+
+
+<!-- Si el usuario está logueado, muestra la información y botón de cerrar sesión -->
+<div *ngIf="isLoggedIn">
+  <p>Sesión iniciada como: <strong>{{ userEmail }}</strong></p>
+  <button (click)="logout()">Cerrar sesión</button>
+</div>
+
+
+
+<h2>Usuarios</h2>
+
+<!-- Mostrar la lista de usuarios independientemente de si hay sesión activa o no -->
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Edad</th>
+      <th>authId</th>
+      <th>Foto</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of usersdata">
+      <td>{{ user.name }}</td>
+      <td>{{ user.age }}</td>
+      <td>{{ user.authId }}</td>
+      <td>
+        <img class="avatar" [src]="getAvatarUrl(user.avatarUrl)" alt="Foto de usuario">
+      </td>
+    </tr>
+  </tbody>
+</table>
+
