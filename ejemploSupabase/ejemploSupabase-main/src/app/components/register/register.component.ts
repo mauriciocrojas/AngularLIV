@@ -65,6 +65,7 @@ saveUserData(user: User) {
 
 }
 
+// upload the file
 async saveFile() {
   const filename = `${Date.now()}-${this.avatarFile!.name}`;
 
