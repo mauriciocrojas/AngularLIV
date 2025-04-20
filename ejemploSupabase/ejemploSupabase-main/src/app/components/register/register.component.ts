@@ -67,19 +67,14 @@ saveUserData(user: User) {
 
 // upload the file
 async saveFile() {
-  const filename = `${Date.now()}-${this.avatarFile!.name}`;
 
   const { data, error } = await supabase
     .storage
     .from('images')
-    .upload(`users/${filename}`, this.avatarFile!, {
+    .upload(`users/${this.avatarFile?.name}`, this.avatarFile!, {
       cacheControl: '3600',
       upsert: false
     });
-
-  if (error) {
-    console.error('Upload error:', error.message, error);
-  }
 
   return data;
 }

@@ -27,6 +27,11 @@ export class HomeComponent implements OnInit {
       } else {
         console.log('Data:', data);
         this.usersdata = data;
+
+         // 🔍 Log de URLs generadas para cada avatar
+      this.usersdata.forEach(user => {
+        console.log('Avatar URL:', this.getAvatarUrl(user.avatarUrl));
+      });
       }
     }
     );
