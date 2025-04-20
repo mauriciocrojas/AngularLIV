@@ -34,12 +34,12 @@ register() {
   }).then(({ data, error }) => {
     if (error) {
       console.error('Error:', error.message);
-      
+
     } else {
 
       console.log('User registered:', data.user);
       this.saveUserData(data.user!);
-      
+
     }
   }
   );
@@ -49,7 +49,7 @@ register() {
 saveUserData(user: User) {
 
   const avatarUrl = this.saveFile().then((data) => {
-    if (data) { 
+    if (data) {
 
   supabase.from('users-data').insert([
     { authId: user.id, name: this.name, age: this.age, avatarUrl: data.path  }
@@ -66,16 +66,23 @@ saveUserData(user: User) {
 }
 
 async saveFile() {
-const { data, error } = await supabase
-  .storage
-  .from('images')
-  .upload(`users/${this.avatarFile?.name}`, this.avatarFile!, {
-    cacheControl: '3600',
-    upsert: false
-  });
+  const filename = `${Date.now()}-${this.avatarFile!.name}`;
+
+  const { data, error } = await supabase
+    .storage
+    .from('images')
+    .upload(`users/${filename}`, this.avatarFile!, {
+      cacheControl: '3600',
+      upsert: false
+    });
+
+  if (error) {
+    console.error('Upload error:', error.message, error);
+  }
 
   return data;
 }
+
 
 onFileSelected(event: any) {
   this.avatarFile = event.target.files[0];
