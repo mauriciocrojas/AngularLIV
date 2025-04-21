@@ -1,0 +1,44 @@
+/* Estilos generales para el login */
+.login-container {
+  background-color: #f5f5f5; /* Gris claro */
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px; /* Tamaño adecuado */
+  margin: 20px auto;
+  box-sizing: border-box;
+}
+
+h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño del input */
+}
+
+/* Estilo común para todos los botones */
+.btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño del botón */
+}
+
+.btn:hover {
+  background-color: #444;
+}

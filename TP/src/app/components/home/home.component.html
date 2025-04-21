@@ -1,40 +1,53 @@
-<a routerLink="/quien-soy">Quién Soy</a>
+<div class="home-container">
+  <!-- Enlace "Quién Soy" ubicado arriba -->
+  <div class="who-am-i">
+    <button class="game-button" routerLink="/quien-soy">Quién Soy</button>
+  </div>
 
-<!-- Si el usuario no está logueado, muestra el botón de login -->
-<div *ngIf="!isLoggedIn">
-  <p>No hay sesión activa. <button (click)="goToLogin()">Iniciar sesión</button></p>
+  <h1 class="title">Bienvenido a la Sala de Juegos</h1>
+
+  <!-- Lista de juegos -->
+  <div class="game-list">
+    <button class="game-button" routerLink="/ahorcado">Ahorcado</button>
+    <button class="game-button" routerLink="/mayor-o-menor">Mayor o Menor</button>
+    <button class="game-button" routerLink="/preguntados">Preguntados</button>
+  </div>
+
+<!-- Si no está logueado -->
+<div *ngIf="!isLoggedIn" class="login-section">
+  <p>No hay sesión activa.</p>
+  <div class="auth-buttons">
+    <button (click)="goToLogin()" class="login-button">Iniciar sesión</button><br><br>
+    <button routerLink="/register" class="login-button">Registro</button>
+  </div>
 </div>
 
+  <!-- Si está logueado -->
+  <div *ngIf="isLoggedIn" class="user-info">
+    <p>Sesión iniciada como: <strong>{{ userEmail }}</strong></p>
+    <button (click)="logout()" class="logout-button">Cerrar sesión</button>
+  </div>
 
-<!-- Si el usuario está logueado, muestra la información y botón de cerrar sesión -->
-<div *ngIf="isLoggedIn">
-  <p>Sesión iniciada como: <strong>{{ userEmail }}</strong></p>
-  <button (click)="logout()">Cerrar sesión</button>
+  <!-- Tabla de usuarios -->
+  <h2>Usuarios registrados:</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Edad</th>
+        <th>authId</th>
+        <th>Foto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of usersdata">
+        <td>{{ user.name }}</td>
+        <td>{{ user.age }}</td>
+        <td>{{ user.authId }}</td>
+        <td>
+          <img class="avatar" [src]="getAvatarUrl(user.avatarUrl)" alt="Foto de usuario">
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-
-
-
-<h2>Home: Usuarios registrados</h2>
-
-<!-- Mostrar la lista de usuarios independientemente de si hay sesión activa o no -->
-<table class="table">
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Edad</th>
-      <th>authId</th>
-      <th>Foto</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let user of usersdata">
-      <td>{{ user.name }}</td>
-      <td>{{ user.age }}</td>
-      <td>{{ user.authId }}</td>
-      <td>
-        <img class="avatar" [src]="getAvatarUrl(user.avatarUrl)" alt="Foto de usuario">
-      </td>
-    </tr>
-  </tbody>
-</table>
-

@@ -1,0 +1,48 @@
+/* Contenedor de la sección "Quién Soy" */
+.quien-soy-container {
+  background-color: #f5f5f5; /* Gris claro */
+  color: #333; /* Gris oscuro para el texto */
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-top: 20px;
+}
+
+strong {
+  color: #333;
+}
+
+.profile-img {
+  width: 200px;
+  border-radius: 10px;
+  display: block;
+  margin: 20px auto;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 30px;
+  text-decoration: none;
+  background-color: #333; /* Gris oscuro */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+}
+
+.back-link:hover {
+  background-color: #444; /* Gris más oscuro al pasar el ratón */
+}

@@ -15,17 +15,17 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey)
 })
 export class LoginComponent {
 
-  username: string = "";
+  email: string = "";
   password: string = "";
 
   constructor(private router: Router) {
-  
+
   }
 
 
   login() {
     supabase.auth.signInWithPassword({
-      email: this.username,
+      email: this.email,
       password: this.password,
     }).then(({ data, error }) => {
       if (error) {
@@ -36,5 +36,11 @@ export class LoginComponent {
     });
 
   }
+
+    // Función para precargar los datos
+    preloadData() {
+      this.email = 'mauriciocc.rojas@gmail.com';
+      this.password = '123456';
+    }
 
 }

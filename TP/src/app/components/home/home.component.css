@@ -1,0 +1,100 @@
+/* Fondo gris para toda la pantalla */
+body {
+  background-color: #e0e0e0; /* Gris claro para el fondo */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Altura completa de la pantalla */
+  display: flex;
+  justify-content: center; /* Centrado del contenido horizontal */
+  align-items: flex-start; /* Alineación al principio de la pantalla */
+}
+
+/* Contenedor principal */
+.home-container {
+  background-color: #f5f5f5; /* Gris claro */
+  color: #333; /* Gris oscuro para el texto */
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%; /* Ocupa todo el ancho de la pantalla */
+  height: 100%; /* Ocupa toda la altura de la pantalla */
+  box-sizing: border-box; /* Incluye el padding dentro del tamaño total */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrado de los elementos dentro */
+  justify-content: flex-start; /* Alineación de los elementos al principio del contenedor */
+}
+
+/* Quién Soy en la parte superior */
+.who-am-i {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.game-button {
+  background-color: #333; /* Gris oscuro */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.game-button:hover {
+  background-color: #444;
+}
+
+.title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.game-list {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.login-section, .user-info {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login-button, .logout-button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-button:hover, .logout-button:hover {
+  background-color: #444;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+
+.table th, .table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #333;
+  color: white;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}

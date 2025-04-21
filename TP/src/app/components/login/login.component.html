@@ -1,14 +1,19 @@
 <div class="login-container">
-    <h3>Login</h3>
-    <input type="text" placeholder="Username" [(ngModel)]="username" class="login-input" />
+  <h3>Login</h3>
+  <input type="email" placeholder="Email" [(ngModel)]="email" class="login-input" />
 
-    <input type="password" placeholder="Password" [(ngModel)]="password" class="login-input" />
+  <input type="password" placeholder="Password" [(ngModel)]="password" class="login-input" />
 
-    <button (click)="login()" class="login-button">
-        login
-    </button>
+  <button (click)="login()" class="btn">
+    Ingresar
+  </button>
 
-    <div class="register-link-container">
-        <a routerLink="../register" class="register-link">Register</a>
-        </div>
+  <!-- Botón para precargar los datos -->
+  <button (click)="preloadData()" class="btn">
+    Precargar Datos
+  </button>
+
+  <button routerLink="/register" class="btn">
+    Registrarse
+  </button>
 </div>

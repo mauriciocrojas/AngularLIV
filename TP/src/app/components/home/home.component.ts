@@ -56,7 +56,9 @@ export class HomeComponent implements OnInit {
 
   logout() {
     supabase.auth.signOut().then(() => {
-      this.router.navigate(['/login']);
+      // No redirigir al login, solo cambiar el estado de la sesión
+      this.isLoggedIn = false;
+      this.userEmail = null;
     }).catch((error) => {
       console.error('Error al cerrar sesión:', error.message);
     });

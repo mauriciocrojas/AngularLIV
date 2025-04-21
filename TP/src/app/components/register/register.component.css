@@ -1,0 +1,74 @@
+/* Estilos generales para el formulario de registro */
+.register-container {
+  background-color: #f5f5f5; /* Gris claro */
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px; /* Tamaño adecuado */
+  margin: 20px auto;
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
+}
+
+/* Estilos para el encabezado */
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center; /* Centra el título */
+}
+
+/* Estilos para los campos de entrada */
+.register-input {
+  width: 100%;
+  padding: 12px 15px; /* Añadido padding para más espacio interno */
+  margin-bottom: 15px; /* Más margen entre los campos */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff; /* Fondo blanco */
+  box-sizing: border-box; /* Para asegurarse de que el padding no afecte el tamaño del input */
+}
+
+/* Estilo común para todos los botones */
+.btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño del botón */
+}
+
+.btn:hover {
+  background-color: #444;
+}
+
+/* Estilo para el enlace de "Ir al Login" */
+.btn-link {
+  display: block; /* Asegura que el enlace ocupe todo el ancho */
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-align: center;
+  text-decoration: none;
+  margin-top: 10px;
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
+}
+
+.btn-link:hover {
+  background-color: #444;
+}
+
+/* Estilo para el enlace de login */
+.login-link-container {
+  text-align: center;
+  margin-top: 20px;
+}
