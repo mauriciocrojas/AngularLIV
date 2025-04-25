@@ -3,12 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { createClient, User } from '@supabase/supabase-js'
 import { environment } from '../../../environments/environment';
+import { CommonModule } from '@angular/common';
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey)
 
 @Component({
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, CommonModule],
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -19,6 +20,8 @@ password: string;
 name: string = '';
 age: number = 0;
 avatarFile: File | null = null;
+errorMessage: string | null = null;
+
 
 constructor(private router: Router) {
   this.username = '';
@@ -26,24 +29,21 @@ constructor(private router: Router) {
 }
 
 
-
 register() {
+  this.errorMessage = null; // Limpiar mensaje anterior
   supabase.auth.signUp({
     email: this.username,
     password: this.password,
   }).then(({ data, error }) => {
     if (error) {
       console.error('Error:', error.message);
-
+      this.errorMessage = error.message; // Mostrar mensaje
     } else {
-
+      this.router.navigate(['/home']);
       console.log('User registered:', data.user);
       this.saveUserData(data.user!);
-
     }
-  }
-  );
-
+  });
 }
 
 saveUserData(user: User) {

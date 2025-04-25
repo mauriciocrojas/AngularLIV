@@ -1,6 +1,6 @@
 <div class="register-container">
   <h3>Registro</h3>
-  <input type="text" placeholder="Username" [(ngModel)]="username" class="register-input" />
+  <input type="text" placeholder="Email" [(ngModel)]="username" class="register-input" />
   <input type="password" placeholder="Password" [(ngModel)]="password" class="register-input" />
   <input type="text" placeholder="Nombre" [(ngModel)]="name" class="register-input" />
   <input type="number" placeholder="Edad" [(ngModel)]="age" class="register-input" />
@@ -8,6 +8,11 @@
   <button (click)="register()" class="btn">
       Registrar
   </button>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
   <div class="login-link-container">
       <a routerLink="../login" class="btn-link">Ir al Login</a>
   </div>
