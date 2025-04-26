@@ -1,0 +1,37 @@
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+}
+
+.table th, .table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #333;
+  color: white;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 30px;
+  text-decoration: none;
+  background-color: #333; /* Gris oscuro */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+}
+
+.back-link:hover {
+  background-color: #444; /* Gris más oscuro al pasar el ratón */
+}

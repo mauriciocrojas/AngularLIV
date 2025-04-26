@@ -42,3 +42,10 @@ h3 {
 .btn:hover {
   background-color: #444;
 }
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  text-align: center;
+}

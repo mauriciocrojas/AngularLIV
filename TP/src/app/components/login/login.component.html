@@ -1,5 +1,11 @@
 <div class="login-container">
   <h3>Login</h3>
+
+  <!-- Mostrar mensaje de error si hay -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
   <input type="email" placeholder="Email" [(ngModel)]="email" class="login-input" />
 
   <input type="password" placeholder="Password" [(ngModel)]="password" class="login-input" />
@@ -8,7 +14,6 @@
     Ingresar
   </button>
 
-  <!-- Botón para precargar los datos -->
   <button (click)="preloadData()" class="btn">
     Precargar Datos
   </button>

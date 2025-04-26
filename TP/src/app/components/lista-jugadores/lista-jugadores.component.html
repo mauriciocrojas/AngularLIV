@@ -1,0 +1,24 @@
+
+  <!-- Lista de jugadores -->
+  <h2><br>Lista de jugadores:</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Edad</th>
+        <!-- <th>authId</th> -->
+        <th>Foto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of usersdata">
+        <td>{{ user.name }}</td>
+        <td>{{ user.age }}</td>
+        <!-- <td>{{ user.authId }}</td> -->
+        <td>
+          <img class="avatar" [src]="getAvatarUrl(user.avatarUrl)" alt="Foto de usuario">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <a routerLink="/home" class="back-link">Volver</a>

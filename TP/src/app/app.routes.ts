@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
 
 export const routes: Routes = [
   {
@@ -23,5 +22,7 @@ export const routes: Routes = [
   {
     path: 'quien-soy',
     loadComponent: () => import('./components/quien-soy/quien-soy.component').then(m => m.QuienSoyComponent),
-  }
+  },
+  { path: 'lista-jugadores',
+    loadComponent: () => import('./components/lista-jugadores/lista-jugadores.component').then(m => m.ListaJugadoresComponent) }
 ];

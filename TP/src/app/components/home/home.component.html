@@ -1,8 +1,10 @@
 <div class="home-container">
-  <!-- Enlace "Quién Soy" ubicado arriba -->
-  <div class="who-am-i">
+  <!-- Nav -->
+  <div class="top-buttons">
     <button class="game-button" routerLink="/quien-soy">Quién Soy</button>
+    <button class="game-button" routerLink="/lista-jugadores">Lista de Jugadores</button>
   </div>
+
 
   <h1 class="title">Bienvenido a la Sala de Juegos</h1>
 
@@ -28,26 +30,4 @@
     <button (click)="logout()" class="logout-button">Cerrar sesión</button>
   </div>
 
-  <!-- Tabla de usuarios -->
-  <h2><br>Usuarios registrados:</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Edad</th>
-        <th>authId</th>
-        <th>Foto</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of usersdata">
-        <td>{{ user.name }}</td>
-        <td>{{ user.age }}</td>
-        <td>{{ user.authId }}</td>
-        <td>
-          <img class="avatar" [src]="getAvatarUrl(user.avatarUrl)" alt="Foto de usuario">
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>
