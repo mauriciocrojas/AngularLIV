@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
 
   logout() {
     supabase.auth.signOut().then(() => {
-      // No redirigir al login, solo cambiar el estado de la sesión
+      // No redirige al login, solo cambia el estado de la sesión
       this.isLoggedIn = false;
       this.userEmail = null;
     }).catch((error) => {
