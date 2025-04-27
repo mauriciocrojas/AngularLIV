@@ -6,7 +6,7 @@
   <input type="number" placeholder="Edad" [(ngModel)]="age" class="register-input" />
   <input type="file" (change)="onFileSelected($event)" class="register-input" />
   <button (click)="register()" class="btn">
-      Registrar
+    Registrar
   </button>
 
   <div *ngIf="errorMessage" class="error-message">
@@ -14,6 +14,7 @@
   </div>
 
   <div class="login-link-container">
-      <a routerLink="../login" class="btn-link">Ir al Login</a>
+    <button routerLink="/login" class="btn"> Ir al Login
+    </button>
   </div>
 </div>
