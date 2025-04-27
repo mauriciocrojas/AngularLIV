@@ -44,8 +44,19 @@ export class LoginComponent {
       this.errorMessage = "Email o contraseña incorrectos.";
       console.error('Error:', error.message);
     } else {
-      this.router.navigate(['/home']);
-    }
+            // Registrar el log de ingreso exitoso
+            const { error: logError } = await supabase.from('login_logs').insert({
+              email: this.email,
+              login_date: new Date().toISOString()
+            });
+
+            if (logError) {
+              console.error('Error registrando el log de login:', logError.message);
+              // Muestro error, pero no frenaría el login
+            }
+
+            this.router.navigate(['/home']);
+          }
   }
 
   preloadData() {
