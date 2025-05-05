@@ -30,78 +30,80 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css"
+            ]
+          ],
+          "scripts": []
+        },
+        "configurations": {
+          "production": {
+            "budgets": [
+              {
+                "type": "initial",
+                "maximumWarning": "500kb",
+                "maximumError": "1mb"
+              },
+              {
+                "type": "anyComponentStyle",
+                "maximumWarning": "2kb",
+                "maximumError": "4kb"
+              }
             ],
-            "scripts": []
+            "outputHashing": "all",
+            "fileReplacements": [
+              {
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }
+            ]
           },
-          "configurations": {
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "outputHashing": "all",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
-            },
-            "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "ejemploSupabase:build:production"
-            },
-            "development": {
-              "buildTarget": "ejemploSupabase:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "ejemploSupabase:build"
+          "development": {
+            "optimization": false,
+            "extractLicenses": false,
+            "sourceMap": true
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/assets/myfavicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": []
+        "defaultConfiguration": "production"
+      },
+      "serve": {
+        "builder": "@angular-devkit/build-angular:dev-server",
+        "configurations": {
+          "production": {
+            "buildTarget": "ejemploSupabase:build:production"
+          },
+          "development": {
+            "buildTarget": "ejemploSupabase:build:development"
           }
+        },
+        "defaultConfiguration": "development"
+      },
+      "extract-i18n": {
+        "builder": "@angular-devkit/build-angular:extract-i18n",
+        "options": {
+          "buildTarget": "ejemploSupabase:build"
+        }
+      },
+      "test": {
+        "builder": "@angular-devkit/build-angular:karma",
+        "options": {
+          "polyfills": [
+            "zone.js",
+            "zone.js/testing"
+          ],
+          "tsConfig": "tsconfig.spec.json",
+          "inlineStyleLanguage": "scss",
+          "assets": [
+            "src/assets/myfavicon.ico",
+            "src/assets"
+          ],
+          "styles": [
+            "src/styles.scss"
+          ],
+          "scripts": []
         }
       }
     }
   }
+}
 }

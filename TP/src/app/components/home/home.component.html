@@ -1,12 +1,15 @@
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
 <div class="home-container">
   <!-- Nav -->
   <div class="top-buttons">
     <button class="game-button" routerLink="/quien-soy">Quién Soy</button>
     <button class="game-button" routerLink="/lista-jugadores">Lista de Jugadores</button>
   </div>
+  <hr style="border: 2px solid #fdd835; width: 60%; box-shadow: 0 0 10px #fdd835;">
 
 
-  <h1 class="title">Bienvenido a la Sala de Juegos</h1>
+  <h1 class="title">🎮 Central de juegos </h1>
 
   <!-- Lista de juegos -->
   <div class="game-list">
@@ -14,6 +17,9 @@
     <button class="game-button" routerLink="/mayor-o-menor">Mayor o Menor</button>
     <button class="game-button" routerLink="/preguntados">Preguntados</button>
   </div>
+
+  <hr style="border: 2px solid #fdd835; width: 60%; box-shadow: 0 0 10px #fdd835;">
+
 
 <!-- Si no está logueado -->
 <div *ngIf="!isLoggedIn" class="login-section">
