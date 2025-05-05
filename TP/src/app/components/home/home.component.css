@@ -111,6 +111,7 @@ body {
 .login-section, .user-info {
   text-align: center;
   margin-top: 20px;
+  color: #fffae4;
 }
 
 .login-button, .logout-button {
