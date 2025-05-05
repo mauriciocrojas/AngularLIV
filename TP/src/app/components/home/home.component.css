@@ -99,6 +99,7 @@ body {
   border-radius: 18px;
   box-shadow: 0 0 8px #f3de21;
   transition: all 0.3s ease;
+  font-weight: bold;
 }
 
 .game-button:hover {
