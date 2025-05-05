@@ -1,49 +1,72 @@
 /* Estilos generales para el formulario de registro */
 .register-container {
-  background-color: #f5f5f5; /* Gris claro */
-  color: #333;
+  background-color: #000; /* Fondo negro */
+  color: #fff; /* Texto blanco */
   padding: 20px;
   border-radius: 8px;
   width: 100%;
   max-width: 400px; /* Tamaño adecuado */
   margin: 20px auto;
-  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
+  box-sizing: border-box;
+  box-shadow: 0 0 15px #ff4081; /* Sombra rosa para el efecto retro */
 }
 
 /* Estilos para el encabezado */
 h3 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   margin-bottom: 20px;
   text-align: center; /* Centra el título */
+  color: #000000; /* Rojo vibrante */
+  text-shadow: 
+    0 0 5px #f44336,    /* brillo rojo */
+    0 0 10px #f44336,   /* brillo rojo */
+    0 0 15px #f44336,   /* brillo rojo */
+    0 0 20px #ff4081,   /* mezcla de rosa */
+    0 0 30px #ff4081,   /* mezcla de rosa */
+    0 0 40px #ff4081,   /* mezcla de rosa */
+    0 0 50px #ff4081,   /* mezcla de rosa */
+    0 0 60px #ff4081;   /* mezcla de rosa */
 }
 
 /* Estilos para los campos de entrada */
 .register-input {
   width: 100%;
-  padding: 12px 15px; /* Añadido padding para más espacio interno */
+  padding: 10px 15px; /* Añadido padding para más espacio interno */
   margin-bottom: 15px; /* Más margen entre los campos */
   border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #fff; /* Fondo blanco */
-  box-sizing: border-box; /* Para asegurarse de que el padding no afecte el tamaño del input */
+  border: 1px solid #ff9b9b; /* Borde amarillo */
+  background-color: #333; /* Fondo oscuro para los inputs */
+  color: #fff; /* Texto blanco */
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.register-input:focus {
+  border-color: #f44336; /* Borde rojo al hacer focus */
+  box-shadow: 0 0 8px #f44336; /* Sombra roja para el efecto retro */
 }
 
 /* Estilo común para todos los botones */
 .btn {
   width: 100%;
   padding: 10px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  background-color: #dc0000; /* Fondo rojo */
+  color: #440000; /* Texto rojo oscuro */
+  border: 1px solid #fff;
+  border-radius: 17px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-top: 10px;
-  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño del botón */
+  box-sizing: border-box;
+  box-shadow: 0 0 10px #f3de21; /* Efecto de sombra retro */
+  transition: all 0.3s ease;
 }
 
 .btn:hover {
-  background-color: #444;
+  background-color: #f3c221; /* Fondo amarillo */
+  color: #000;
+  transform: scale(1.05);
 }
 
 /* Estilo para el enlace de "Ir al Login" */
@@ -51,7 +74,7 @@ h3 {
   display: block; /* Asegura que el enlace ocupe todo el ancho */
   width: 100%;
   padding: 10px;
-  background-color: #333;
+  background-color: #333; /* Gris oscuro */
   color: white;
   border: none;
   border-radius: 5px;
@@ -64,7 +87,7 @@ h3 {
 }
 
 .btn-link:hover {
-  background-color: #444;
+  background-color: #444; /* Gris más oscuro al pasar el cursor */
 }
 
 /* Estilo para el enlace de login */
@@ -73,8 +96,12 @@ h3 {
   margin-top: 0px; /* Opcional, podés bajarlo a 0 si querés que estén totalmente juntos */
 }
 
-
+/* Estilo del mensaje de error */
 .error-message {
-  color: red;
+  color: #ff4081; /* Rosa vibrante */
+  font-size: 1rem;
   margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 0 8px #ff4081; /* Sombra rosa para el texto de error */
 }

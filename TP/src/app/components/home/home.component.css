@@ -54,9 +54,9 @@ body {
   text-align: center;
   color: #000000; /* rojo vibrante */
   text-shadow: 
-    0 0 5px #f44336,    /* brillo rojo */
+    0 0 5px  #ffffff,    /* brillo rojo */
     0 0 10px #f44336,   /* brillo rojo */
-    0 0 15px #f44336,   /* brillo rojo */
+    0 0 15px #3800bb,   /* brillo rojo */
     0 0 20px #ff4081,   /* mezcla de rosa */
     0 0 30px #ff4081,   /* mezcla de rosa */
     0 0 40px #ff4081,   /* mezcla de rosa */
@@ -66,10 +66,10 @@ body {
 }
 
 .title:hover {
-  font-size: 3.4rem; /* Aumentamos el tamaño para mayor impacto */
+  font-size: 3.3rem; /* Aumentamos el tamaño para mayor impacto */
   color: #000000; /* rojo vibrante */
   text-shadow: 
-    0 0 5px  #3800bb,    /* brillo rojo */
+    0 0 5px  #ffffff,    /* brillo rojo */
     0 0 10px #3800bb,   /* brillo rojo */
     0 0 15px #3800bb,   /* brillo rojo */
     0 0 20px #3800bb,   /* mezcla de rosa */

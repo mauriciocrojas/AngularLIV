@@ -1,37 +1,86 @@
-
+/* Estilos generales para la tabla */
 .table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #000; /* Fondo negro */
+  color: #fff; /* Texto blanco */
+  border-radius: 8px;
+  box-shadow: 0 0 15px #ff4081; /* Sombra rosa para el efecto retro */
   margin-top: 30px;
+  overflow: hidden; /* Para que los bordes redondeados funcionen */
 }
 
+/* Estilo para las celdas de la tabla */
 .table th, .table td {
   padding: 12px;
   text-align: left;
+  border-bottom: 1px solid #fdd835; /* Borde amarillo para separar filas */
 }
 
 .table th {
-  background-color: #333;
-  color: white;
+  background-color: #333; /* Gris oscuro para el encabezado */
+  color: #fff; /* Texto blanco */
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  box-shadow: 0 0 10px #ff4081; /* Sombra para efecto retro */
 }
 
+.table td {
+  background-color: #222; /* Fondo oscuro para las filas */
+}
+
+/* Estilo para los avatares */
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  border: 2px solid #fdd835; /* Borde amarillo */
+  box-shadow: 0 0 8px #f44336; /* Sombra roja para los avatares */
 }
 
+/* Estilo para el contenedor de la tabla */
+.table-container {
+  background-color: #222; /* Fondo oscuro para resaltar la tabla */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px #ff4081; /* Efecto retro */
+  margin: 20px auto;
+  max-width: 900px; /* Máximo ancho para la tabla */
+}
+
+/* Estilo para los botones "Volver" */
 .back-link {
   display: inline-block;
   margin-top: 30px;
   text-decoration: none;
-  background-color: #333; /* Gris oscuro */
+  background-color: #f44336; /* Rojo vibrante */
   color: white;
-  padding: 10px 20px;
+  padding: 12px 25px;
   border-radius: 5px;
   font-size: 1.1rem;
+  text-align: center;
+  box-shadow: 0 0 10px #ff4081; /* Sombra para el estilo retro */
 }
 
 .back-link:hover {
-  background-color: #444; /* Gris más oscuro al pasar el ratón */
+  background-color: #b15e00; /* Rojo más oscuro al pasar el ratón */
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Estilo para los encabezados */
+h2 {
+  text-align: center;
+  color: #000000; /* Color amarillo para resaltar el título */
+  font-size: 2rem;
+  color: #1e1b1b; /* Rojo vibrante */
+  text-shadow: 
+    0 0 5px #f44336,    /* brillo rojo */
+    0 0 10px #f44336,   /* brillo rojo */
+    0 0 15px #f44336,   /* brillo rojo */
+    0 0 20px #ff4081,   /* mezcla de rosa */
+    0 0 30px #ff4081,   /* mezcla de rosa */
+    0 0 40px #ff4081,   /* mezcla de rosa */
+    0 0 50px #ff4081,   /* mezcla de rosa */
+    0 0 60px #ff4081;   /* mezcla de rosa */
 }
