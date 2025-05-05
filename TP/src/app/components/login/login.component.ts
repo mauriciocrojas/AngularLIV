@@ -26,12 +26,12 @@ export class LoginComponent {
     this.errorMessage = ""; // Limpiar mensaje anterior
 
     if (!this.email || !this.password) {
-      this.errorMessage = "Por favor, complete todos los campos.";
+      this.errorMessage = "Por favor, complete todos los campos."; // Mensaje en español
       return;
     }
 
     if (!this.validateEmail(this.email)) {
-      this.errorMessage = "Ingrese un email válido.";
+      this.errorMessage = "Ingrese un email válido."; // Mensaje en español
       return;
     }
 
@@ -41,7 +41,7 @@ export class LoginComponent {
     });
 
     if (error) {
-      this.errorMessage = "Email o contraseña incorrectos.";
+      this.errorMessage = "Correo electrónico o contraseña incorrectos."; // Mensaje en español
       console.error('Error:', error.message);
     } else {
             // Registrar el log de ingreso exitoso
