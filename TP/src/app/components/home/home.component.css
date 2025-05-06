@@ -32,7 +32,7 @@ body {
 
 .top-buttons .btn, .top-buttons button {
   background-color: transparent;
-  border: 2px solid #fdd835; /* amarillo */
+  border: 1px solid #fdd835; /* amarillo */
   color: #fdd835;
   padding: 10px 16px;
   font-size: 0.9rem;
@@ -92,8 +92,8 @@ body {
 .game-button {
   background-color: #f3c221; /* azul */
   color: #440000;
-  border: 2px solid #fff;
-  padding: 12px 20px;
+  border: 1px solid #fff;
+  padding: 10px 18px;
   font-size: 1rem;
   text-transform: uppercase;
   border-radius: 18px;
@@ -118,11 +118,11 @@ body {
 .login-button, .logout-button {
   background-color: #818181; /* rojo */
   color: #fff;
-  border: 2px solid #fff;
-  padding: 10px 18px;
-  border-radius: 16px;
+  border: 1px solid #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
   text-transform: uppercase;
-  box-shadow: 0 0 6px #f44336;
+  box-shadow: 0 0 4px #ffbbbb;
   transition: all 0.3s ease;
 }
 
