@@ -1,0 +1,50 @@
+<div class="ahorcado-container">
+    <h1 class="arcade-title">Juego del Ahorcado</h1>
+
+    <!-- Palabra oculta -->
+    <p class="palabra-oculta">
+        {{ palabraMostrada }}
+    </p>
+
+    <!-- Letras -->
+    <div class="letras">
+        <button *ngFor="let letra of abecedario" (click)="elegirLetra(letra)" class="letra-btn"
+                [disabled]="letrasErradas.includes(letra) || palabraMostrada.includes(letra) || juegoTerminado">
+            {{ letra }}
+        </button>
+    </div>
+
+    <div class="muñequito">
+        <!-- Cuerda y soporte -->
+        <div class="soporte" *ngIf="intentos <= 5">┌─┐</div>
+      
+        <!-- Cabeza -->
+        <div class="cabeza" *ngIf="intentos <= 4">│ (•‿•) </div>
+      
+        <!-- Cuello -->
+        <div class="cuello" *ngIf="intentos <= 3">    ║   </div>
+      
+        <!-- Brazos -->
+        <div class="brazos" *ngIf="intentos <= 2">  ╔═╬═╗ </div>
+      
+        <!-- Tronco -->
+        <div class="torso" *ngIf="intentos <= 1">    ║   </div>
+            
+        <!-- Pierna derecha -->
+        <div class="pierna-derecha" *ngIf="intentos <= 0">  ╱ ╲    </div>
+      
+        <!-- Base del poste -->
+        <div class="base" *ngIf="intentos <= 6">╘═════════╝</div>
+      </div>
+      
+    
+
+    <!-- Mensaje de resultado -->
+    <div *ngIf="juegoTerminado" class="mensaje">
+        <h2>{{ mensaje }}</h2>
+    </div>
+
+    <!-- Botones de control -->
+    <button (click)="reiniciar()" class="volver-button">Reiniciar</button>
+    <button (click)="volverAlInicio()" class="volver-button">Volver al inicio</button>
+</div>

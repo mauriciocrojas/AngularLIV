@@ -1,0 +1,120 @@
+/* Fondo oscuro general */
+body {
+    background-color: #121212; /* Fondo oscuro para toda la página */
+    color: #fff; /* Texto blanco por defecto */
+    font-family: 'Orbitron', sans-serif;
+}
+
+.ahorcado-container {
+    background-color: #000; /* fondo negro puro */
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.arcade-title {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #f44336;
+}
+
+.palabra-oculta {
+    font-size: 2rem;
+    margin: 20px;
+    color: #ffffff;
+    letter-spacing: 5px;
+}
+
+.letras {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centra los botones */
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.letra-btn {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    background-color: #f3c221;
+    border: 2px solid #440000;
+    color: #440000;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.letra-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Muñequito */
+.muñequito {
+    margin: 20px 0;
+    color: #fff;
+    display: flex;
+    justify-content: center; /* Centra el muñequito horizontalmente */
+    align-items: center; /* Centra el muñequito verticalmente si es necesario */
+    flex-direction: column; /* Asegura que los intentos y el muñeco se apilen verticalmente */
+    text-align: center; /* Centra los mensajes */
+}
+
+.muñequito p {
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* Estilo de los botones de control */
+.volver-button {
+    padding: 10px 20px;
+    background-color: #f3c221;
+    color: #440000;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+    margin: 10px;
+}
+
+.volver-button:hover {
+    transform: scale(1.1);
+}
+.letra-btn:disabled {
+    background-color: #ccc; /* Color gris para los botones deshabilitados */
+    color: #666; /* Color gris oscuro para el texto */
+    cursor: not-allowed; /* Cambiar el cursor para indicar que no se puede hacer clic */
+}
+/* Estilo del mensaje de victoria/derrota */
+.mensaje {
+    font-size: 2rem;
+    margin-top: 20px;
+    color: #f44336; /* Color rojo para resaltar el mensaje */
+}
+
+/* Estilo del muñequito creciendo hacia abajo */
+.muñequito {
+    margin: 20px 0;
+    color: #fff;
+    text-align: center;
+    font-size: 2rem;
+    line-height: 1.5;
+}
+
+.muñequito div {
+    margin: 5px 0; /* Espacio entre cada parte del muñeco */
+}
+
+/* Estilo de los botones de control */
+.volver-button {
+    padding: 10px 20px;
+    background-color: #f3c221;
+    color: #440000;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+    margin: 10px;
+}
+
+.volver-button:hover {
+    transform: scale(1.1);
+}

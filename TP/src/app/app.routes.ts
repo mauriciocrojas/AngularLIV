@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 
 export const routes: Routes = [
@@ -23,6 +24,18 @@ export const routes: Routes = [
     path: 'quien-soy',
     loadComponent: () => import('./components/quien-soy/quien-soy.component').then(m => m.QuienSoyComponent),
   },
-  { path: 'lista-jugadores',
-    loadComponent: () => import('./components/lista-jugadores/lista-jugadores.component').then(m => m.ListaJugadoresComponent) }
+  {
+    path: 'lista-jugadores',
+    loadComponent: () => import('./components/lista-jugadores/lista-jugadores.component').then(m => m.ListaJugadoresComponent),
+  },
+  {
+    path: 'ahorcado',
+    loadChildren: () => import('./games/ahorcado/ahorcado.module').then(m => m.AhorcadoModule)
+  }
 ];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)], // Importa RouterModule y configura las rutas
+  exports: [RouterModule] // Asegúrate de exportar RouterModule
+})
+export class AppRoutingModule { }
