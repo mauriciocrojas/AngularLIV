@@ -1,0 +1,59 @@
+.chat-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* Ajusta la altura total */
+  }
+  
+  .messages {
+    flex-grow: 1; /* Esto permite que el contenedor se expanda y ocupe el espacio disponible */
+    overflow-y: auto;
+    background: #111;
+    border: 2px solid #fdd835;
+    padding: 10px;
+    margin-bottom: 15px;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 60px;
+    margin-bottom: 10px;
+    background: black;
+    border: 2px solid #fdd835;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    padding: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: #ffffff;
+    border: 1px solid #eeb8b8;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    margin-right: 10px;
+  }
+  
+  button:hover {
+    transform: scale(1.05);
+  }
+  
+  .alert {
+    color: #ff4081;
+    font-weight: bold;
+  }
+  
+  .back-button {
+    margin-top: 20px;
+  }
+  

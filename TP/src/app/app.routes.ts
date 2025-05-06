@@ -31,7 +31,12 @@ export const routes: Routes = [
   {
     path: 'ahorcado',
     loadChildren: () => import('./games/ahorcado/ahorcado.module').then(m => m.AhorcadoModule)
+  },
+  {
+    path: 'chat',
+    loadComponent: () => import('./components/chat/chat.component').then(m => m.ChatComponent)
   }
+  
 ];
 
 @NgModule({
