@@ -31,8 +31,8 @@ h3 {
 /* Estilo de los inputs */
 .login-input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 7px;
+  margin-bottom: 8px;
   border-radius: 8px;
   border: 1px solid #ffa9a9; /* Borde amarillo */
   background-color: #333; /* Fondo oscuro para inputs */
@@ -50,17 +50,18 @@ h3 {
 /* Estilo común para todos los botones */
 .btn {
   width: 100%;
-  padding: 10px;
+  padding: 2px;
   background-color: #dc0000; /* Fondo amarillo */
   color: #440000; /* Texto rojo oscuro */
   border: 1px solid #fff;
-  border-radius: 17px;
+  border-radius: 10;
   cursor: pointer;
-  font-size: 1.2rem;
-  margin-top: 10px;
+  font-size: 1rem;
+  margin-top:5px;
   box-sizing: border-box;
-  box-shadow: 0 0 10px #f3de21;
+  box-shadow: 0 0 5px #fff8b9;
   transition: all 0.3s ease;
+
 }
 
 .btn:hover {

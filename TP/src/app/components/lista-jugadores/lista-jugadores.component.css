@@ -15,6 +15,7 @@
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #fdd835; /* Borde amarillo para separar filas */
+  color: #fff !important;
 }
 
 .table th {
