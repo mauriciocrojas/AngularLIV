@@ -20,11 +20,12 @@ export class ChatService {
     const { data: { user } } = await this.supabase.auth.getUser();
     return user;
   }
+
   async getMessages(): Promise<Message[]> {
     const { data, error } = await this.supabase
-      .from('chat')
-      .select('id, userId, text, timestamp');
-  
+      .from('chat_messages')
+      .select('id, user_id, message, created_at');
+    
     if (error) {
       console.error('Error al obtener mensajes:', error);
       return [];
@@ -32,11 +33,12 @@ export class ChatService {
   
     const messagesWithUsernames = await Promise.all(
       data.map(async (msg: any) => {
-        const username = await this.getUserName(msg.userId);
+        const username = await this.getUserName(msg.user_id);
         return { ...msg, username };
       })
     );
   
+    console.log('Mensajes obtenidos:', messagesWithUsernames);
     return messagesWithUsernames;
   }
   
@@ -46,26 +48,27 @@ export class ChatService {
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
-        table: 'chat'
+        table: 'chat_messages'
       }, async (payload) => {
         const newMsg = payload.new;
-        const username = await this.getUserName(newMsg['userId']);
-        
+        const username = await this.getUserName(newMsg['user_id']);
+  
         const message: Message = {
           id: newMsg['id'],
-          userId: newMsg['userId'],
-          text: newMsg['text'],
-          timestamp: newMsg['timestamp'],
+          user_id: newMsg['user_id'],
+          message: newMsg['message'],
+          created_at: newMsg['created_at'],
           username
         };
-        
+  
+        console.log('Nuevo mensaje:', message);
         callback(message);
-        
       })
       .subscribe();
   }
   
-  private async getUserName(userId: string): Promise<string> {
+  
+  public async getUserName(userId: string): Promise<string> {
     const { data, error } = await this.supabase
       .from('users-data')
       .select('name')

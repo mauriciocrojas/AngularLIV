@@ -1,27 +1,27 @@
-<div class="chat-container">
-    <!-- Lista de mensajes -->
-    <div class="messages" #chatContainer>
-      <div *ngFor="let message of messages">
-        <p>
-            <strong>{{ message.username || message.userId }}</strong>
-            ({{ message.timestamp | date: 'short' }}): 
-          {{ message.text }}
-        </p>
-      </div>
+<div class="messages" #chatContainer (scroll)="onScroll()">
+    <div *ngFor="let message of messages">
+      <p>
+        <strong>{{ message.username }}</strong> ({{ message.created_at | date: 'short' }}): 
+        {{ message.message }}
+      </p>
     </div>
+  </div>
   
-    <!-- Si el usuario está logueado, mostrar textarea y botón -->
+  <div>
     <ng-container *ngIf="isUserLoggedIn; else loginWarning">
       <textarea [(ngModel)]="newMessage" placeholder="Escribe un mensaje..."></textarea>
       <button (click)="send()" [disabled]="newMessage.trim() === ''">Enviar</button>
+  
+      <div *ngIf="emptyMessageWarning" class="empty-message-warning">
+        ¡El mensaje no puede estar vacío!
+      </div>
+      
     </ng-container>
   
-    <!-- Mensaje si no está logueado -->
     <ng-template #loginWarning>
       <p class="alert">Debes estar logueado para enviar un mensaje.</p>
     </ng-template>
   
-    <!-- Botón para volver al Home (siempre visible) -->
     <button (click)="goHome()" class="back-button">Volver al Home</button>
   </div>
   

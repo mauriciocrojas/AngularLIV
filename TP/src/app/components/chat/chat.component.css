@@ -1,59 +1,113 @@
 .chat-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    height: 80vh; /* Ajusta la altura total */
-  }
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #000;
+  border: 4px solid #fdd835;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #fdd835;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;  /* Puedes ajustar esta altura según tu preferencia */
+  font-family: 'Orbitron', sans-serif;
+}
+
+.messages {
+  flex-grow: 1;
+  overflow-y: auto;  /* Activamos el scroll vertical */
+  max-height: 400px;  /* Altura máxima del chat visible */
+  background: #111;
+  border: 2px inset #fdd835;
+  padding: 15px;
+  margin-bottom: 15px;
+  color: #f3f3f3;
+  font-size: 14px;
+  line-height: 1.6;
+  scrollbar-width: thin;
+  scrollbar-color: #fdd835 #111;
+}
+
+.messages p {
+  margin: 8px 0;
+  background-color: #1a1a1a;
+  padding: 8px;
+  border-left: 3px solid #f44336;
+  box-shadow: inset 0 0 5px #3800bb;
+  border-radius: 4px;
+}
+
+.messages strong {
+  color: #fdd835;
+}
+
+textarea {
+  width: 100%;
+  height: 60px;
+  background: #000;
+  border: 2px solid #fdd835;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  padding: 10px;
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  box-shadow: inset 0 0 10px #3800bb;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: #ffffff;
+  border: 2px double #fdd835;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+  margin-right: 10px;
+  box-shadow: 0 0 8px #ff4081;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px #fdd835;
+}
+
+.alert {
+  color: #ff4081; /* Rosa vibrante */
+  font-weight: bold;
+  font-family: 'Orbitron', sans-serif; /* Fuente para mantener el estilo retro */
+  background-color: rgba(255, 64, 129, 0.2); /* Fondo más oscuro al pasar el cursor */
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid #ff4081; /* Borde en rosa para hacerla más llamativa */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para darle profundidad */
+  margin-top: 10px;
+  text-align: center;
   
-  .messages {
-    flex-grow: 1; /* Esto permite que el contenedor se expanda y ocupe el espacio disponible */
-    overflow-y: auto;
-    background: #111;
-    border: 2px solid #fdd835;
-    padding: 10px;
-    margin-bottom: 15px;
-    color: white;
-    font-family: 'Orbitron', sans-serif;
-  }
-  
-  textarea {
-    width: 100%;
-    height: 60px;
-    margin-bottom: 10px;
-    background: black;
-    border: 2px solid #fdd835;
-    color: white;
-    font-family: 'Orbitron', sans-serif;
-    padding: 10px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    background-color: #f44336;
-    color: #ffffff;
-    border: 1px solid #eeb8b8;
-    font-family: 'Orbitron', sans-serif;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-    margin-right: 10px;
-  }
-  
-  button:hover {
-    transform: scale(1.05);
-  }
-  
-  .alert {
-    color: #ff4081;
-    font-weight: bold;
-  }
-  
-  .back-button {
-    margin-top: 20px;
-  }
-  
+}
+
+.alert:hover {
+}
+
+
+.back-button {
+  margin-top: 20px;
+  background-color: #3800bb;
+  border: 2px solid #fdd835;
+  color: #fff;
+}
+
+.back-button:hover {
+  background-color: #440000;
+}
+
+.empty-message-warning {
+  color: #f44336; /* Rojo para indicar error */
+  font-weight: bold;
+  background-color: rgba(244, 67, 54, 0.1); /* Fondo suave en rojo */
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  text-align: center;
+}
