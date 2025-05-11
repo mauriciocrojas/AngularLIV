@@ -1,9 +1,9 @@
 // chat.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
-import { createClient, RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseClient, RealtimeChannel } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-import { Message } from '../models/message.interface'; // ✅ Usar modelo unificado
+import { Message } from '../models/message.interface'; 
 import { Subscription } from 'rxjs';
 
 interface NewMessageType {
@@ -20,7 +20,6 @@ export class ChatService implements OnDestroy {
   private supabase: SupabaseClient;
   private channel: RealtimeChannel | null = null;
   private loggedInUserId: string | null = null; // Para almacenar el ID del usuario logueado
-  private subscription: Subscription | null = null;
 
   constructor(private auth: AuthService) {
     this.supabase = auth.getClient();
@@ -32,6 +31,7 @@ export class ChatService implements OnDestroy {
     this.loggedInUserId = user?.id || null;
   }
 
+  // Método para obtener los mensajes
   async fetchMessages(): Promise<Message[]> {
     const { data, error } = await this.supabase
       .from('chat_messages')
@@ -79,7 +79,7 @@ export class ChatService implements OnDestroy {
     return messages;
   }
 
-
+  // Método para enviar un mensaje
   async sendMessage(content: string): Promise<boolean> {
     const { user } = await this.auth.getUser();
 
@@ -102,6 +102,7 @@ export class ChatService implements OnDestroy {
     return true;
   }
 
+  // Suscripción a mensajes en tiempo real
   subscribeToMessages(onNewMessage: (msg: Message) => void): RealtimeChannel {
     this.channel = this.supabase.channel('messages-channel')
       .on('postgres_changes', {
@@ -143,6 +144,7 @@ export class ChatService implements OnDestroy {
     return this.channel;
   }
 
+  // Desuscribirse de los mensajes en tiempo real
   removeSubscription(): void {
     if (this.channel) {
       this.supabase.removeChannel(this.channel);

@@ -1,30 +1,23 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  AfterViewChecked,
-  AfterViewInit,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { Message } from '../../models/message.interface';
 import { AuthService } from '../../services/auth.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';  // Asegúrate de importar ReactiveFormsModule
 import { RealtimeChannel } from '@supabase/supabase-js';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';  // Asegúrate de importar CommonModule
+import { Router } from '@angular/router';  // Importamos Router para la navegación
 
 @Component({
   selector: 'app-chat',
-  standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule
+  ]
 })
-export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
+export class ChatComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   userEmail: string | null = null;
   currentUserId: string | null = null;
@@ -33,13 +26,13 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterVie
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
   private channel: RealtimeChannel | null = null;
   messageForm: FormGroup;
-  private subscription: Subscription | null = null;
 
   constructor(
     private chatService: ChatService,
     private auth: AuthService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router  // Inyectamos Router
   ) {
     this.messageForm = this.fb.group({
       newMessage: ['', Validators.required],
@@ -49,25 +42,15 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterVie
   async ngOnInit() {
     await this.initializeUser();
     await this.loadMessages();
+    this.scrollToBottom();  // Asegúrate de desplazarte al último mensaje
     this.subscribeToRealtimeMessages();
   }
 
-  ngAfterViewInit(): void {
-    // Asegura el scroll después de que la vista esté totalmente cargada
-    setTimeout(() => {
-      this.scrollToBottom();
-    }, 0);
-  }
-
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.channel) {
+      this.channel.unsubscribe();
     }
-    this.chatService.removeSubscription();
   }
 
   private async initializeUser() {
@@ -79,14 +62,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterVie
 
   private async loadMessages() {
     this.messages = await this.chatService.fetchMessages();
-    this.cdr.detectChanges(); // Asegura que los mensajes se rendericen antes del scroll
+    this.cdr.detectChanges();
   }
 
   private subscribeToRealtimeMessages() {
     this.channel = this.chatService.subscribeToMessages((msg: Message) => {
       this.messages.push(msg);
       this.cdr.detectChanges();
-      this.scrollToBottom();
+      this.scrollToBottom();  // Desplazar automáticamente al recibir un nuevo mensaje
     });
   }
 
@@ -102,7 +85,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterVie
     if (success) {
       this.messageForm.reset();
       await this.loadMessages();
-      this.scrollToBottom();
+      this.scrollToBottom();  // Desplazar al último mensaje después de enviar
       this.cdr.detectChanges();
     }
   }
@@ -111,17 +94,16 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterVie
     return this.currentUserId === userId;
   }
 
-  goHome() {
-    window.location.href = '/home';
-  }
-
   private scrollToBottom(): void {
     try {
-      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      if (this.chatContainer && this.chatContainer.nativeElement) {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      }
     } catch (err) {
       console.error('Error al hacer scroll:', err);
     }
   }
+
 
   formatTimestamp(timestamp: string): string {
     const date = new Date(timestamp);
@@ -136,14 +118,15 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterVie
   }
 
   onEnter(event: Event) {
-    // Realizamos el casting a KeyboardEvent
     const keyboardEvent = event as KeyboardEvent;
-
-    // Prevenimos el comportamiento por defecto de la tecla Enter
     if (keyboardEvent.key === "Enter") {
-      event.preventDefault();  // Evita que el formulario se envíe automáticamente al presionar Enter
-      this.send();  // Llama a la función send para enviar el mensaje
+      event.preventDefault();
+      this.send();
     }
   }
 
+  // Método goHome()
+  goHome() {
+    this.router.navigate(['/home']);  // Redirige a la ruta /home
+  }
 }
