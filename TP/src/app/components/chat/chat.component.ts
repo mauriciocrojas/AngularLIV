@@ -1,4 +1,13 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  AfterViewChecked,
+  AfterViewInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { Message } from '../../models/message.interface';
 import { AuthService } from '../../services/auth.service';
@@ -13,12 +22,12 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css'], // Asegúrate de que sea 'styleUrls' y no 'styleUrl'
+  styleUrls: ['./chat.component.css'],
 })
-export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   messages: Message[] = [];
   userEmail: string | null = null;
-  currentUserId: string | null = null; // Cambié 'loggedInUserId' a 'currentUserId'
+  currentUserId: string | null = null;
   isUserLoggedIn: boolean = false;
   emptyMessageWarning: boolean = false;
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
@@ -30,7 +39,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     private chatService: ChatService,
     private auth: AuthService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {
     this.messageForm = this.fb.group({
       newMessage: ['', Validators.required],
@@ -41,6 +50,13 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     await this.initializeUser();
     await this.loadMessages();
     this.subscribeToRealtimeMessages();
+  }
+
+  ngAfterViewInit(): void {
+    // Asegura el scroll después de que la vista esté totalmente cargada
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 0);
   }
 
   ngAfterViewChecked() {
@@ -57,19 +73,20 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private async initializeUser() {
     const { user } = await this.auth.getUser();
     this.userEmail = user?.email ?? null;
-    this.currentUserId = user?.id ?? null; // Asigné el ID del usuario logueado
+    this.currentUserId = user?.id ?? null;
     this.isUserLoggedIn = !!this.userEmail;
   }
 
   private async loadMessages() {
     this.messages = await this.chatService.fetchMessages();
+    this.cdr.detectChanges(); // Asegura que los mensajes se rendericen antes del scroll
   }
 
   private subscribeToRealtimeMessages() {
     this.channel = this.chatService.subscribeToMessages((msg: Message) => {
       this.messages.push(msg);
+      this.cdr.detectChanges();
       this.scrollToBottom();
-      this.cdr.detectChanges(); // Manually trigger change detection
     });
   }
 
@@ -84,11 +101,14 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     const success = await this.chatService.sendMessage(this.messageForm.value.newMessage);
     if (success) {
       this.messageForm.reset();
+      await this.loadMessages();
+      this.scrollToBottom();
+      this.cdr.detectChanges();
     }
   }
 
   isMyMessage(userId: string): boolean {
-    return this.currentUserId === userId; // Lógica para comprobar si el mensaje es del usuario logueado
+    return this.currentUserId === userId;
   }
 
   goHome() {
@@ -98,19 +118,20 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private scrollToBottom(): void {
     try {
       this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
-    } catch (err) {}
+    } catch (err) {
+      console.error('Error al hacer scroll:', err);
+    }
   }
 
-formatTimestamp(timestamp: string): string {
-  const date = new Date(timestamp);
-  return date.toLocaleString('es-AR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-}
-
+  formatTimestamp(timestamp: string): string {
+    const date = new Date(timestamp);
+    return date.toLocaleString('es-AR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
 }
