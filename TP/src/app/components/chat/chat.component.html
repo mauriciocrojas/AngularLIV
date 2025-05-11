@@ -1,27 +1,26 @@
 <div class="messages" #chatContainer (scroll)="onScroll()">
-    <div *ngFor="let message of messages">
-      <p>
-        <strong>{{ message.username }}</strong> ({{ message.created_at | date: 'short' }}): 
-        {{ message.message }}
-      </p>
+  <div *ngFor="let message of messages">
+    <p>
+      <strong>{{ message.username }}</strong>
+      ({{ message.created_at | date: 'short' }}):
+      {{ message.message }}
+    </p>
+  </div>
+</div>
+
+<div>
+  <ng-container *ngIf="isUserLoggedIn; else loginWarning">
+    <textarea [(ngModel)]="newMessage" placeholder="Escribe un mensaje..."></textarea>
+    <button (click)="send()" [disabled]="newMessage.trim() === ''">Enviar</button>
+
+    <div *ngIf="emptyMessageWarning" class="empty-message-warning">
+      ¡El mensaje no puede estar vacío!
     </div>
-  </div>
-  
-  <div>
-    <ng-container *ngIf="isUserLoggedIn; else loginWarning">
-      <textarea [(ngModel)]="newMessage" placeholder="Escribe un mensaje..."></textarea>
-      <button (click)="send()" [disabled]="newMessage.trim() === ''">Enviar</button>
-  
-      <div *ngIf="emptyMessageWarning" class="empty-message-warning">
-        ¡El mensaje no puede estar vacío!
-      </div>
-      
-    </ng-container>
-  
-    <ng-template #loginWarning>
-      <p class="alert">Debes estar logueado para enviar un mensaje.</p>
-    </ng-template>
-  
-    <button (click)="goHome()" class="back-button">Volver al Home</button>
-  </div>
-  
+  </ng-container>
+
+  <ng-template #loginWarning>
+    <p class="alert">Debes estar logueado para enviar un mensaje.</p>
+  </ng-template>
+
+  <button (click)="goHome()" class="back-button">Volver al Home</button>
+</div>
