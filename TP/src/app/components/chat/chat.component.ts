@@ -100,4 +100,17 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
     } catch (err) {}
   }
+
+formatTimestamp(timestamp: string): string {
+  const date = new Date(timestamp);
+  return date.toLocaleString('es-AR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+}
+
 }

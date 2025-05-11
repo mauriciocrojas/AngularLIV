@@ -4,7 +4,9 @@
     [ngClass]="{'message': true, 'mine': msg.user_id === currentUserId, 'theirs': msg.user_id !== currentUserId}"
   >
     <strong>{{ msg.username }}</strong>
-    {{ msg.message }} <!-- Asegúrate de que el nombre del campo de texto sea 'message', no 'text' -->
+    {{ msg.message }}
+    <br />
+    <small class="chat-timestamp">{{ formatTimestamp(msg.created_at) }}</small>
   </div>
 </div>
 
