@@ -1,68 +1,76 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { Message } from '../../models/message.interface';
-import { FormsModule } from '@angular/forms';  // Importa FormsModule para usar ngModel
-import { CommonModule } from '@angular/common';  // Importa CommonModule para usar el pipe 'date'
-
+import { AuthService } from '../../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-chat',
-  standalone: true,  // Marca el componente como standalone
-  imports: [FormsModule, CommonModule],  // Asegúrate de importar estos módulos
+  standalone: true,
+  imports: [FormsModule, CommonModule],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  styleUrl: './chat.component.css',
 })
-export class ChatComponent implements OnInit {
-  @ViewChild('chatContainer') chatContainer!: ElementRef;
-
+export class ChatComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   newMessage: string = '';
+  userEmail: string | null = null;
   isUserLoggedIn: boolean = false;
   emptyMessageWarning: boolean = false;
-  userEmail: string = '';
 
-  constructor(private chatService: ChatService) {}
+  private channel: RealtimeChannel | null = null;
 
-  async ngOnInit(): Promise<void> {
-    const user = await this.chatService.getUser();
-    this.isUserLoggedIn = !!user;
-    this.userEmail = user?.email || '';
-  
-    // Obtener los mensajes iniciales
-    const messages = await this.chatService.getMessages();
-    this.messages = messages;
-    this.scrollToBottom();
-  
-    // Suscribirse a nuevos mensajes
-    this.chatService.onNewMessage((msg) => {
-      this.messages = [...this.messages, msg];  // Actualiza el arreglo de mensajes
-      this.scrollToBottom();  // Hacer scroll hacia abajo
+  constructor(private chatService: ChatService, private auth: AuthService) {}
+
+  async ngOnInit() {
+    await this.initializeUser();  // Inicializa al usuario logueado
+    await this.loadMessages();    // Carga los mensajes históricos
+    this.channel = this.chatService.subscribeToMessages((msg: Message) => {
+      this.messages.push(msg);  // Agrega los mensajes nuevos que lleguen en tiempo real
     });
   }
   
 
-  send(): void {
-    if (this.newMessage.trim() === '') {
+  ngOnDestroy(): void {
+    this.chatService.removeSubscription();
+  }
+
+  private async initializeUser() {
+    const { user } = await this.auth.getUser();
+    this.userEmail = user?.email ?? null;
+    this.isUserLoggedIn = !!this.userEmail;
+  }
+
+  private async loadMessages() {
+    this.messages = await this.chatService.fetchMessages();
+  }
+
+  private subscribeToRealtimeMessages() {
+    this.channel = this.chatService.subscribeToMessages((msg: Message) => {
+      this.messages.push(msg);
+    });
+  }
+
+  async send() {
+    this.emptyMessageWarning = false;
+  
+    if (!this.newMessage.trim()) {
       this.emptyMessageWarning = true;
       return;
     }
-
-    this.chatService.sendMessage(this.newMessage, this.userEmail);
-    this.newMessage = '';
-    this.emptyMessageWarning = false;
+  
+    const success = await this.chatService.sendMessage(this.newMessage);
+    if (success) {
+      this.newMessage = '';  // Limpiar mensaje solo si fue exitoso
+    }
   }
+  
+  
 
-  scrollToBottom(): void {
-    setTimeout(() => {
-      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
-    }, 100);
-  }
-
-  goHome(): void {
-    // Implementar navegación
-  }
-
-  onScroll(): void {
-    // Scroll manual si querés hacer algo con scroll
+  goHome() {
+    // Puedes usar Router.navigate si tenés Router inyectado, esto es una alternativa simple
+    window.location.href = '/home';
   }
 }

@@ -1,7 +1,7 @@
 export interface Message {
-  id: number;
-  user_id: string;
+  id: string; // O 'number', dependiendo de tu base de datos
   message: string;
   created_at: string;
+  user_id: string;
   username: string;
 }
