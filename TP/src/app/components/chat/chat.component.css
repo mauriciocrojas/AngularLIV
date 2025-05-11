@@ -1,18 +1,27 @@
+/* Agregado: Fondo negro en todo el documento */
+html {
+  height: 100%;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000; /* Fondo negro para toda la página */
+  align-items: center;
+  padding: 50px;
+}
 
 .chat-container {
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px;
   background-color: #000;
   border: 4px solid #fdd835;
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 0 15px #fdd835;
   display: flex;
   flex-direction: column;
   height: 80vh;
   font-family: 'Orbitron', sans-serif;
-  overflow: hidden; /* Para evitar que el contenido se desborde */
+  overflow: hidden;
 }
 
 .messages {
@@ -30,7 +39,7 @@
   gap: 10px;
   scrollbar-width: thin;
   scrollbar-color: #fdd835 #111;
-  max-height: 60vh; /* Limitar la altura máxima del área de mensajes */
+  max-height: 60vh;
 }
 
 .message {
@@ -68,19 +77,8 @@
   font-weight: 600;
 }
 
-.message .message-text {
-  font-size: 14px;
-  color: #f3f3f3;
-}
-
-.message-time {
-  font-size: 12px;
-  color: #ccc;
-  margin-top: 5px;
-}
-
 textarea {
-  width: 100%;
+  width: 85%;
   height: 60px;
   background: #000;
   border: 2px solid #fdd835;
@@ -102,7 +100,7 @@ button {
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s;
-  margin-right: 10px;
+  margin-left: 10px;
   box-shadow: 0 0 8px #ff4081;
 }
 
@@ -125,10 +123,23 @@ button:hover {
 }
 
 .back-button {
-  margin-top: 20px;
-  background-color: #3800bb;
-  border: 2px solid #fdd835;
-  color: #fff;
+  background-color: transparent;
+  border: 1px solid #fdd835;
+  color: #fdd835;
+  padding: 5px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #fdd835;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 25px;
+  margin-bottom: 0;
+  text-align: center;
+  display: block; /* Hace que el botón sea un bloque */
+  margin-left: auto; /* Centra el botón */
+  margin-right: auto; /* Centra el botón */
 }
 
 .back-button:hover {
@@ -149,4 +160,10 @@ button:hover {
   font-size: 0.75rem;
   color: #ff4081;
   margin-left: 4px;
+}
+
+.message-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

@@ -1,29 +1,31 @@
-<div class="messages">
-  <div 
-    *ngFor="let msg of messages"
-    [ngClass]="{'message': true, 'mine': msg.user_id === currentUserId, 'theirs': msg.user_id !== currentUserId}"
-  >
-    <strong>{{ msg.username }}</strong>
-    {{ msg.message }}
-    <br />
-    <small class="chat-timestamp">{{ formatTimestamp(msg.created_at) }}</small>
+<html>
+<div class="chat-container">
+  <div class="messages">
+    <div *ngFor="let msg of messages"
+      [ngClass]="{'message': true, 'mine': msg.user_id === currentUserId, 'theirs': msg.user_id !== currentUserId}">
+      <strong>{{ msg.user_id === currentUserId ? 'Tú' : msg.username }}</strong>
+      {{ msg.message }}
+      <br />
+      <small class="chat-timestamp">{{ formatTimestamp(msg.created_at) }}</small>
+    </div>
+  </div>
+
+  <div>
+    <ng-container *ngIf="isUserLoggedIn; else loginWarning">
+      <form [formGroup]="messageForm" (ngSubmit)="send()" class="message-form">
+        <textarea formControlName="newMessage" placeholder="Escribe un mensaje..."></textarea>
+        <button type="submit" [disabled]="messageForm.invalid">Enviar</button>
+      </form>
+      <div *ngIf="emptyMessageWarning" class="empty-message-warning">
+        ¡El mensaje no puede estar vacío!
+      </div>
+    </ng-container>
+
+    <ng-template #loginWarning>
+      <p class="alert">Debes estar logueado para enviar un mensaje.</p>
+    </ng-template>
+
+    <button (click)="goHome()" class="back-button">Volver al Home</button>
   </div>
 </div>
-
-<div>
-  <ng-container *ngIf="isUserLoggedIn; else loginWarning">
-    <form [formGroup]="messageForm" (ngSubmit)="send()">
-      <textarea formControlName="newMessage" placeholder="Escribe un mensaje..."></textarea>
-      <button type="submit" [disabled]="messageForm.invalid">Enviar</button>
-    </form>
-    <div *ngIf="emptyMessageWarning" class="empty-message-warning">
-      ¡El mensaje no puede estar vacío!
-    </div>
-  </ng-container>
-
-  <ng-template #loginWarning>
-    <p class="alert">Debes estar logueado para enviar un mensaje.</p>
-  </ng-template>
-
-  <button (click)="goHome()" class="back-button">Volver al Home</button>
-</div>
+</html>
