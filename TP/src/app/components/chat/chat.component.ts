@@ -134,4 +134,16 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit, AfterVie
       year: 'numeric',
     });
   }
+
+  onEnter(event: Event) {
+    // Realizamos el casting a KeyboardEvent
+    const keyboardEvent = event as KeyboardEvent;
+
+    // Prevenimos el comportamiento por defecto de la tecla Enter
+    if (keyboardEvent.key === "Enter") {
+      event.preventDefault();  // Evita que el formulario se envíe automáticamente al presionar Enter
+      this.send();  // Llama a la función send para enviar el mensaje
+    }
+  }
+
 }

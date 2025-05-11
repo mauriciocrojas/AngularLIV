@@ -13,7 +13,11 @@
   <div>
     <ng-container *ngIf="isUserLoggedIn; else loginWarning">
       <form [formGroup]="messageForm" (ngSubmit)="send()" class="message-form">
-        <textarea formControlName="newMessage" placeholder="Escribe un mensaje..."></textarea>
+        <textarea
+          formControlName="newMessage"
+          placeholder="Escribe un mensaje..."
+          (keydown.enter)="onEnter($event)">
+        </textarea>
         <button type="submit" [disabled]="messageForm.invalid">Enviar</button>
       </form>
       <div *ngIf="emptyMessageWarning" class="empty-message-warning">
