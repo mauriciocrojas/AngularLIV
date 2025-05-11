@@ -1,18 +1,35 @@
-import { Injectable } from '@angular/core';
+// chat.service.ts
+import { Injectable, OnDestroy } from '@angular/core';
 import { createClient, RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Message } from '../models/message.interface'; // ✅ Usar modelo unificado
+import { Subscription } from 'rxjs';
+
+interface NewMessageType {
+  id: string;
+  message: string;
+  created_at: string;
+  user_id: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatService implements OnDestroy {
   private supabase: SupabaseClient;
   private channel: RealtimeChannel | null = null;
+  private loggedInUserId: string | null = null; // Para almacenar el ID del usuario logueado
+  private subscription: Subscription | null = null;
 
-  constructor(private auth: AuthService) { 
+  constructor(private auth: AuthService) {
     this.supabase = auth.getClient();
+    this.loadLoggedInUserId(); // Cargar el ID al inicializar el servicio
+  }
+
+  private async loadLoggedInUserId() {
+    const { user } = await this.auth.getUser();
+    this.loggedInUserId = user?.id || null;
   }
 
   async fetchMessages(): Promise<Message[]> {
@@ -23,69 +40,67 @@ export class ChatService {
         message,
         created_at,
         user_id,
-        "users-data"(name)
+        "users-data" (
+          name
+        )
       `)
       .order('created_at', { ascending: true });
-  
+
     if (error) {
-      console.error('Error fetching messages:', error);  // Mostrar todo el error para detalles
+      console.error('Error obteniendo los mensajes:', error);
       return [];
     }
-  
-    console.log('Fetched data:', data);  // Verificar si los datos son correctos
-  
-    // Si no hay datos, retornar un array vacío
+
     if (!data) {
-      console.error('No data returned from the query');
+      console.warn('No se han encontrado mensajes.');
       return [];
     }
-  
-    // Mapeamos los datos para que coincidan con la interfaz Message
-    const messages: Message[] = data.map(item => ({
-      id: item.id,  // Usamos 'id' de la tabla 'chat_messages'
-      message: item.message,
-      created_at: item.created_at,
-      user_id: item.user_id,
-      username: item['users-data'] && item['users-data'].length > 0 ? item['users-data'][0].name : 'Unknown',  // Accedemos al 'name' de 'users-data'
-    }));
-  
+
+    const messages: Message[] = data.map((item: any) => { // Se tipifica explícitamente 'item' como 'any'
+      let username = 'Unknown'; // Valor por defecto
+
+      if (item && item["users-data"]) {
+        if (Array.isArray(item["users-data"]) && item["users-data"].length > 0) {
+          username = item["users-data"][0]?.name || 'Unknown';
+        } else if (typeof item["users-data"] === 'object' && item["users-data"] !== null) {
+          username = item["users-data"]?.name || 'Unknown';
+        }
+      }
+
+      return {
+        id: item.id,
+        message: item.message,
+        created_at: item.created_at,
+        user_id: item.user_id,
+        username: username,
+      };
+    });
+
     return messages;
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
 
   async sendMessage(content: string): Promise<boolean> {
-    const { user } = await this.auth.getUser();  // Obtiene el usuario autenticado
-  
+    const { user } = await this.auth.getUser();
+
     if (!user) {
       console.error('No authenticated user');
       return false;
     }
-  
-    const userId = user.id;  // Asegúrate de que 'user.id' sea el ID del usuario autenticado
-  
-    const { error } = await this.supabase.from('chat_messages').insert([{
+
+    const userId = user.id;
+
+    const { data, error } = await this.supabase.from('chat_messages').insert([{
       message: content.trim(),
-      user_id: userId,  // Asociamos el mensaje con el user_id
-    }]);
-  
+      user_id: userId,
+    }]).select(); // Important: Select the inserted data to get the new message
+
     if (error) {
       console.error('Error sending message:', error.message);
       return false;
     }
-  
     return true;
   }
-  
-  
 
   subscribeToMessages(onNewMessage: (msg: Message) => void): RealtimeChannel {
     this.channel = this.supabase.channel('messages-channel')
@@ -93,9 +108,33 @@ export class ChatService {
         event: 'INSERT',
         schema: 'public',
         table: 'chat_messages'
-      }, (payload) => {
-        const newMessage = payload.new as Message;
-        onNewMessage(newMessage);
+      }, async (payload) => {
+        const newMessage = payload.new as NewMessageType;
+
+        let username = 'Unknown';
+
+        // Fetch user data
+        const { data: userData, error: userError } = await this.supabase
+          .from('users-data')
+          .select('name')
+          .eq('authid', newMessage.user_id)
+          .single();
+
+        if (!userError && userData) {
+          username = userData.name || 'Unknown';
+        } else {
+          console.error('Error fetching user name:', userError);
+        }
+
+        const message: Message = {
+          id: newMessage.id,
+          message: newMessage.message,
+          created_at: newMessage.created_at,
+          user_id: newMessage.user_id,
+          username: username
+        };
+
+        onNewMessage(message);
       })
       .subscribe((status) => {
         console.log('Realtime subscription status:', status);
@@ -109,5 +148,13 @@ export class ChatService {
       this.supabase.removeChannel(this.channel);
       this.channel = null;
     }
+  }
+
+  getLoggedInUserId(): string | null {
+    return this.loggedInUserId;
+  }
+
+  ngOnDestroy(): void {
+    this.removeSubscription();
   }
 }
