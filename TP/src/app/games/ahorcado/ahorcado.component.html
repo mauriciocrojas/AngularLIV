@@ -16,25 +16,25 @@
 
     <div class="muñequito">
         <!-- Cuerda y soporte -->
-        <div class="soporte" *ngIf="intentos <= 5">┌─┐</div>
+        <div *ngIf="intentos <= 5">┌─┐</div>
       
         <!-- Cabeza -->
-        <div class="cabeza" *ngIf="intentos <= 4">│ (•‿•) </div>
+        <div *ngIf="intentos <= 4">│ (•‿•) </div>
       
         <!-- Cuello -->
-        <div class="cuello" *ngIf="intentos <= 3">    ║   </div>
+        <div *ngIf="intentos <= 3">    ║   </div>
       
         <!-- Brazos -->
-        <div class="brazos" *ngIf="intentos <= 2">  ╔═╬═╗ </div>
+        <div *ngIf="intentos <= 2">  ╔═╬═╗ </div>
       
         <!-- Tronco -->
-        <div class="torso" *ngIf="intentos <= 1">    ║   </div>
+        <div *ngIf="intentos <= 1">    ║   </div>
             
         <!-- Pierna derecha -->
-        <div class="pierna-derecha" *ngIf="intentos <= 0">  ╱ ╲    </div>
+        <div *ngIf="intentos <= 0">  ╱ ╲    </div>
       
         <!-- Base del poste -->
-        <div class="base" *ngIf="intentos <= 6">╘═════════╝</div>
+        <div *ngIf="intentos <= 6">╚═════════╝ </div>
       </div>
       
     
