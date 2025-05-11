@@ -29,8 +29,8 @@ export const routes: Routes = [
     loadComponent: () => import('./components/lista-jugadores/lista-jugadores.component').then(m => m.ListaJugadoresComponent),
   },
   {
-    path: 'ahorcado',
-    loadChildren: () => import('./games/ahorcado/ahorcado.module').then(m => m.AhorcadoModule)
+    path: 'games',  // Ruta base para los juegos
+    loadChildren: () => import('./games/games.module').then(m => m.GamesModule)  // Carga perezosa del módulo de juegos
   },
   {
     path: 'chat',
