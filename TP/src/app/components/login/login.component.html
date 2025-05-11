@@ -1,5 +1,5 @@
 <div class="login-container">
-  <h3>Login</h3>
+  <h3 class = "login">Login</h3>
 
   <!-- Mostrar mensaje de error si hay -->
   <div *ngIf="errorMessage" class="error-message">
@@ -9,6 +9,8 @@
   <input type="email" placeholder="Email" [(ngModel)]="email" class="login-input" />
 
   <input type="password" placeholder="Password" [(ngModel)]="password" class="login-input" />
+
+  <div class="btn-container">
 
   <button (click)="login()" class="btn">
     Ingresar
@@ -21,4 +23,6 @@
   <button routerLink="/register" class="btn">
     Registrarse
   </button>
+</div>
+
 </div>
