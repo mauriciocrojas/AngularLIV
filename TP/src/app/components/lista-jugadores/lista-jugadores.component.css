@@ -1,33 +1,49 @@
+html {
+  background-color: #000;
+  text-align: center;
+  padding: 15px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
 /* Estilos generales para la tabla */
 .table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #000; /* Fondo negro */
-  color: #fff; /* Texto blanco */
+  background-color: #000;
+  color: #fff;
   border-radius: 8px;
-  box-shadow: 0 0 15px #ff4081; /* Sombra rosa para el efecto retro */
+  box-shadow: 0 0 15px #ff4081;
   margin-top: 30px;
-  overflow: hidden; /* Para que los bordes redondeados funcionen */
+  overflow: hidden;
+  margin-bottom: 20px;
+  max-width: 900px; /* Añadido max-width para controlar el ancho en pantallas grandes */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Estilo para las celdas de la tabla */
-.table th, .table td {
+.table th,
+.table td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #fdd835; /* Borde amarillo para separar filas */
+  border-bottom: 1px solid #fdd835;
   color: #fff !important;
 }
 
 .table th {
-  background-color: #333; /* Gris oscuro para el encabezado */
-  color: #fff; /* Texto blanco */
+  background-color: #333;
+  color: #fff;
   text-transform: uppercase;
   font-size: 1.1rem;
-  box-shadow: 0 0 10px #ff4081; /* Sombra para efecto retro */
+  box-shadow: 0 0 10px #ff4081;
 }
 
 .table td {
-  background-color: #222; /* Fondo oscuro para las filas */
+  background-color: #222;
 }
 
 /* Estilo para los avatares */
@@ -35,18 +51,19 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #fdd835; /* Borde amarillo */
-  box-shadow: 0 0 8px #f44336; /* Sombra roja para los avatares */
+  border: 2px solid #fdd835;
+  box-shadow: 0 0 8px #f44336;
 }
 
 /* Estilo para el contenedor de la tabla */
 .table-container {
-  background-color: #222; /* Fondo oscuro para resaltar la tabla */
+  background-color: #222;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 15px #ff4081; /* Efecto retro */
+  box-shadow: 0 0 15px #ff4081;
   margin: 20px auto;
-  max-width: 900px; /* Máximo ancho para la tabla */
+  max-width: 95%;
+  width: 95%;
 }
 
 /* Estilo para los botones "Volver" */
@@ -54,17 +71,18 @@
   display: inline-block;
   margin-top: 30px;
   text-decoration: none;
-  background-color: #f44336; /* Rojo vibrante */
+  background-color: #f44336;
   color: white;
   padding: 12px 25px;
   border-radius: 5px;
   font-size: 1.1rem;
   text-align: center;
-  box-shadow: 0 0 10px #ff4081; /* Sombra para el estilo retro */
+  box-shadow: 0 0 10px #ff4081;
+  align-self: center;
 }
 
 .back-link:hover {
-  background-color: #b15e00; /* Rojo más oscuro al pasar el ratón */
+  background-color: #b15e00;
   color: #fff;
   transform: scale(1.05);
 }
@@ -72,16 +90,78 @@
 /* Estilo para los encabezados */
 h2 {
   text-align: center;
-  color: #000000; /* Color amarillo para resaltar el título */
+  color: #1e1b1b;
   font-size: 2rem;
-  color: #1e1b1b; /* Rojo vibrante */
-  text-shadow: 
-    0 0 5px #f44336,    /* brillo rojo */
-    0 0 10px #f44336,   /* brillo rojo */
-    0 0 15px #f44336,   /* brillo rojo */
-    0 0 20px #ff4081,   /* mezcla de rosa */
-    0 0 30px #ff4081,   /* mezcla de rosa */
-    0 0 40px #ff4081,   /* mezcla de rosa */
-    0 0 50px #ff4081,   /* mezcla de rosa */
-    0 0 60px #ff4081;   /* mezcla de rosa */
+  text-shadow: 0 0 5px #f44336, 0 0 10px #f44336, 0 0 15px #f44336,
+    0 0 20px #ff4081, 0 0 30px #ff4081, 0 0 40px #ff4081,
+    0 0 50px #ff4081, 0 0 60px #ff4081;
+  margin-bottom: 20px;
+}
+
+/* Media query para pantallas más pequeñas (móviles, tablets) */
+@media (max-width: 768px) {
+  .table-container {
+    padding: 15px;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px;
+  }
+
+  .table th {
+    font-size: 0.9rem;
+  }
+
+  .table td {
+    font-size: 0.85rem;
+  }
+
+  .avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .back-link {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Media query para pantallas aún más pequeñas (móviles muy pequeños) */
+@media (max-width: 480px) {
+  .table-container {
+    padding: 10px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px;
+  }
+
+  .table th {
+    font-size: 0.8rem;
+  }
+
+  .table td {
+    font-size: 0.75rem;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .back-link {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
 }

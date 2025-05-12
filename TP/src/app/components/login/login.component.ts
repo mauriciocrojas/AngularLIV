@@ -60,7 +60,7 @@ export class LoginComponent {
   }
 
   preloadData() {
-    this.email = 'mauriciocc.rojas@gmail.com';
+    this.email = 'yiked90480@firain.com';
     this.password = '123456';
   }
 

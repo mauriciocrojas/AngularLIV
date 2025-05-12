@@ -2,16 +2,25 @@ html {
   height: 100%;
   width: 100%;
   min-height: 100vh;
-  background-color: #000; /* Fondo negro para toda la página */
-  align-items: center;
-  padding: 50px;
+  background-color: #000;
+  display: flex; /* Usar flexbox para centrar el contenido */
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
+  padding: 20px; /* Reducir el padding en pantallas grandes */
+  box-sizing: border-box; /* Incluir el padding en el ancho y alto total */
+}
+
+body {
+  margin: 0; /* Resetear el margen del body para evitar scrollbar innecesario */
+  height: 100%;
+  width: 100%;
 }
 
 .chat-container {
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 15px;
   background-color: #000;
   border: 4px solid #fdd835;
   border-radius: 10px;
@@ -31,8 +40,8 @@ html {
   padding: 15px;
   margin-bottom: 15px;
   color: #f3f3f3;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  line-height: 1.4;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -41,20 +50,36 @@ html {
   max-height: 60vh;
 }
 
+.messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: #111;
+  border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background-color: #fdd835;
+  border-radius: 10px;
+  border: 2px solid #111;
+}
+
 .message {
-  max-width: 75%;
+  max-width: 90%;
   padding: 10px 14px;
   border-radius: 16px;
   position: relative;
   display: inline-block;
   word-wrap: break-word;
   white-space: pre-line;
+  font-size: 0.9rem;
 }
 
 .message.theirs {
   background-color: #1e1e1e;
-  align-self: flex-start;
   color: #ffffff;
+  align-self: flex-start;
   border-top-left-radius: 0;
   box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
 }
@@ -69,7 +94,7 @@ html {
 
 .message strong {
   display: block;
-  font-size: 14px;
+  font-size: 0.8rem;
   color: #ff6e40;
   margin-bottom: 4px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -77,21 +102,23 @@ html {
 }
 
 textarea {
-  width: 85%;
+  width: calc(100% - 110px);
   height: 60px;
   background: #000;
   border: 2px solid #fdd835;
   color: white;
   font-family: 'Orbitron', sans-serif;
   padding: 10px;
-  font-size: 14px;
+  font-size: 0.9rem;
   resize: none;
   outline: none;
   box-shadow: inset 0 0 10px #3800bb;
+  margin-right: 10px;
+  box-sizing: border-box;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 10px 16px;
   background-color: #f44336;
   color: #ffffff;
   border: 2px double #fdd835;
@@ -99,8 +126,8 @@ button {
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s;
-  margin-left: 10px;
   box-shadow: 0 0 8px #ff4081;
+  font-size: 0.8rem;
 }
 
 button:hover {
@@ -113,36 +140,38 @@ button:hover {
   font-weight: bold;
   font-family: 'Orbitron', sans-serif;
   background-color: rgba(255, 64, 129, 0.2);
-  padding: 10px 20px;
+  padding: 10px;
   border-radius: 10px;
   border: 2px solid #ff4081;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   margin-top: 10px;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .back-button {
   background-color: transparent;
   border: 1px solid #fdd835;
   color: #fdd835;
-  padding: 5px;
-  font-size: 0.9rem;
+  padding: 8px 16px;
+  font-size: 0.8rem;
   text-transform: uppercase;
   border-radius: 8px;
   box-shadow: 0 0 10px #fdd835;
   transition: all 0.3s ease;
   cursor: pointer;
-  width: 100%;
-  margin-top: 25px;
-  margin-bottom: 0;
+  margin-top: 20px;
   text-align: center;
-  display: block; /* Hace que el botón sea un bloque */
-  margin-left: auto; /* Centra el botón */
-  margin-right: auto; /* Centra el botón */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 200px;
 }
 
 .back-button:hover {
-  background-color: #440000;
+  background-color: #b15e00;
+  color: #ffffff;
+  transform: scale(1.05);
 }
 
 .empty-message-warning {
@@ -153,16 +182,109 @@ button:hover {
   border-radius: 5px;
   margin-top: 10px;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .chat-timestamp {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #ff4081;
   margin-left: 4px;
+  display: block;
 }
 
 .message-form {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .chat-container {
+    max-width: 95%;
+    height: 90vh;
+  }
+
+  .messages {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+
+  .message {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+
+  textarea {
+    font-size: 0.8rem;
+    height: 50px;
+    width: calc(100% - 90px);
+  }
+
+  button {
+    font-size: 0.7rem;
+    padding: 8px 12px;
+  }
+
+  .alert {
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+
+  .back-button {
+    font-size: 0.7rem;
+    padding: 6px 10px;
+  }
+
+  html {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-container {
+    max-width: 100%;
+    height: 100vh;
+    border: none;
+    border-radius: 0;
+  }
+
+  .messages {
+    font-size: 0.7rem;
+    padding: 5px;
+  }
+
+  .message {
+    font-size: 0.7rem;
+    padding: 6px 10px;
+    max-width: 95%;
+  }
+
+  textarea {
+    font-size: 0.7rem;
+    height: 40px;
+    width: calc(100% - 80px);
+  }
+
+  button {
+    font-size: 0.6rem;
+    padding: 6px 10px;
+  }
+
+  .alert {
+    font-size: 0.7rem;
+    padding: 6px;
+  }
+
+  .message-form {
+    flex-direction: column;
+  }
+
+  textarea, button {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  html {
+    padding: 0;
+  }
 }
