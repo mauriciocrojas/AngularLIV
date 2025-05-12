@@ -18,7 +18,7 @@ export class RegisterComponent {
   username: string;
   password: string;
   name: string = '';
-  age: number = 0;
+  age: number | null = null; // o age = '';
   avatarFile: File | null = null;
   errorMessage: string | null = null;
 
@@ -110,13 +110,13 @@ export class RegisterComponent {
       'Email not confirmed': 'El correo electrónico no ha sido confirmado.',
       // Otros errores comunes que Supabase podría devolver
     };
-  
+
     // Detectar errores de "usuario ya registrado" de forma más flexible
     if (errorMessage.toLowerCase().includes('user already registered') || errorMessage.toLowerCase().includes('email already registered')) {
       return 'El correo electrónico ya está registrado.';
     }
-  
+
     return errorMap[errorMessage] || 'Ocurrió un error inesperado. Por favor, intenta de nuevo.';
   }
-  
+
 }
