@@ -1,8 +1,9 @@
 // games.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GamesRoutingModule } from './games-routing.module';  // Asegúrate de que esté importado el routing del módulo de juegos
-import { AhorcadoComponent } from './ahorcado/ahorcado.component';  // Importamos el componente Ahorcado
+import { GamesRoutingModule } from './games-routing.module';  // Routing del módulo de juegos
+// import { AhorcadoComponent } from './ahorcado/ahorcado.component';  // Componente Ahorcado
+// import { MayorMenorComponent } from './mayor-o-menor/mayor-o-menor.component'; // ComponenteMayorOMenor
 
 @NgModule({
   imports: [
@@ -10,7 +11,6 @@ import { AhorcadoComponent } from './ahorcado/ahorcado.component';  // Importamo
     GamesRoutingModule  // Importamos las rutas de juegos
   ],
   declarations: [
-    AhorcadoComponent  // Declaramos el AhorcadoComponent en el módulo de juegos
-  ]
+    ]
 })
 export class GamesModule { }
