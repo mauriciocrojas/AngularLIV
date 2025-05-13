@@ -51,9 +51,18 @@ export class PreguntadosComponent implements OnInit {
     this.opcionSeleccionada = null;
     this.mostrarResultado = false;
     this.respuestaCorrecta = null;
-    this.preguntaActualIndex++;
-  }
 
+    // Incrementar solo si no se ha llegado al final
+    if (this.preguntaActualIndex < this.preguntas.length - 1) {
+      this.preguntaActualIndex++;
+      console.log('Pregunta Actual Index:', this.preguntaActualIndex);
+      if (this.preguntaActualIndex == 6) {
+        // Esto se ejecuta cuando se llega al final de las preguntas
+        console.log('Juego finalizado');
+        this.mostrarResultado = false; 
+      }
+    }
+  }
   reiniciarJuego() {
     // Reiniciar el juego a su estado inicial
     this.preguntaActualIndex = 0;

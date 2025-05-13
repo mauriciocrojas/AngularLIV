@@ -1,14 +1,13 @@
-<div *ngIf="cargando" class="mensaje-cargando">
+<html>
+<div *ngIf="cargando" class="juego-container">
   <p>Cargando preguntas...</p>
 </div>
 
-<div *ngIf="!cargando && preguntas.length > 0" class="cuadro-pregunta">
+<div *ngIf="!cargando && preguntas.length > 0" class="juego-container">
   <h2>{{ preguntaActual.question }}</h2>
-  
-  <!-- Imagen de la pregunta -->
-  <img *ngIf="preguntaActual.imageUrl" [src]="preguntaActual.imageUrl" alt="Imagen relacionada" class="imagen-pregunta">
 
-  <!-- Opciones de respuesta -->
+  <img *ngIf="preguntaActual.imageUrl" [src]="preguntaActual.imageUrl" alt="Imagen relacionada" class="imagen-pregunta" />
+
   <div class="opciones">
     <button *ngFor="let opcion of preguntaActual.options"
             (click)="seleccionarOpcion(opcion)"
@@ -19,20 +18,27 @@
     </button>
   </div>
 
-  <!-- Mostrar resultado -->
   <div *ngIf="mostrarResultado">
-    <p *ngIf="respuestaCorrecta; else incorrecta">✅ ¡Correcto!</p>
-    <ng-template #incorrecta><p>❌ Incorrecto. La respuesta correcta era: {{ preguntaActual.answer }}</p></ng-template>
-    
-    <!-- Botón para siguiente pregunta -->
+    <p *ngIf="respuestaCorrecta; else incorrecta" class="mensaje-correcto">✅ ¡Correcto!</p>
+    <ng-template #incorrecta>
+      <p class="mensaje-rojo">❌ Incorrecto. La respuesta correcta era: {{ preguntaActual.answer }}</p>
+    </ng-template>
+
     <button (click)="siguientePregunta()" [disabled]="preguntaActualIndex >= preguntas.length - 1">Siguiente</button>
   </div>
 </div>
 
-<!-- Mensaje cuando no hay preguntas disponibles -->
-<div *ngIf="preguntas.length === 0 && !cargando">
-  <p>No se pudieron cargar las preguntas. Intenta nuevamente.</p>
+<!-- Mensaje de fin de juego -->
+<div *ngIf="preguntaActualIndex >= preguntas.length" class="juego-container">
+  <p class="mensaje-rojo">🎮 ¡Juego finalizado! 🎉</p>
+  <button (click)="reiniciarJuego()">Reiniciar Juego</button>
+  <button (click)="volverAlHome()">Volver al Home</button>
 </div>
 
-<button (click)="reiniciarJuego()">Reiniciar Juego</button>
-<button (click)="volverAlHome()">Volver al Home</button>
+<!-- Botones siempre visibles -->
+<div class="juego-container">
+  <button (click)="reiniciarJuego()">Reiniciar Juego</button>
+  <button (click)="volverAlHome()">Volver al Home</button>
+</div>
+
+</html>
