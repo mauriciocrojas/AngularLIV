@@ -14,7 +14,11 @@ const routes: Routes = [
   {
     path: 'preguntados',
     loadComponent: () => import('./preguntados/preguntados.component').then(m => m.PreguntadosComponent)
-  }
+  },
+  {
+  path: 'escape-galactico',
+  loadComponent: () => import('./escape-galactico/escape-galactico.component').then(m => m.EscapeGalacticoComponent) 
+}
 ];
 
 @NgModule({

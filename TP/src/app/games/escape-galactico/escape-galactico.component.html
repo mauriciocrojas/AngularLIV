@@ -1,0 +1,19 @@
+<html>
+<div class="step-container" *ngIf="steps[currentStep] as step">
+    <h2>Escape Galáctico</h2>
+    <p>{{ step.text }}</p>
+
+    <div *ngIf="step.options.length > 0; else endMessage">
+        <button *ngFor="let option of step.options" (click)="changeStep(option.next)">
+            {{ option.text }}
+        </button>
+    </div>
+
+    <ng-template #endMessage>
+        <p>¿Querés volver a empezar?</p>
+        <button (click)="changeStep('start')">Reiniciar</button>
+    </ng-template>
+
+</div>
+<button (click)="volverHome()">Volver al Home</button>
+</html>

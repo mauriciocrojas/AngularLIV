@@ -1,0 +1,33 @@
+html{
+  background-color: #000; /* fondo negro puro */
+  text-align: center;
+  padding: 15px;
+  min-height: 100vh;
+}
+
+.step-container {
+  background-color: black;
+  color: #fdd835;
+  font-family: 'Orbitron', sans-serif;
+  padding: 2rem;
+  text-align: center;
+  border: 3px solid #f44336;
+  box-shadow: 0 0 20px #ff4081;
+}
+
+button {
+  background-color: #f3c221;
+  color: #440000;
+  border: 2px solid #440000;
+  margin: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background-color: #ff4081;
+  color: white;
+}
