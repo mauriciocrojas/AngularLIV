@@ -35,9 +35,9 @@ export class EscapeGalacticoComponent {
       ]
     },
     escapeDoor: {
-      text: 'Encuentras una escotilla cerrada. ¿La forzás o buscas la llave?',
+      text: 'Encuentras una puerta cerrada. ¿La forzás o buscas la llave?',
       options: [
-        { text: 'Forzar escotilla', next: 'gameOver' },
+        { text: 'Forzar puerta', next: 'gameOver' },
         { text: 'Buscar llave', next: 'win' }
       ]
     },
@@ -46,7 +46,7 @@ export class EscapeGalacticoComponent {
       options: []
     },
     gameOver: {
-      text: 'Tu decisión no funcionó. Fin del juego.',
+      text: 'Tu decisión no funcionó, te quebraste el hombro al golpear la puerta. Fin del juego.',
       options: []
     },
     win: {
@@ -58,6 +58,11 @@ export class EscapeGalacticoComponent {
   changeStep(next: StepKey) {
     this.currentStep = next;
   }
+
+  reiniciarJuego() {
+  this.currentStep = 'start';
+}
+
 
   volverHome() {
     window.location.href = '/home'; // O usar el RouterLink si es necesario

@@ -70,8 +70,7 @@ export class AhorcadoComponent {
     this.mensaje = ''; // Limpiar el mensaje
   }
 
-  // Lógica para volver al inicio
-  volverAlInicio() {
+  volverHome() {
     window.location.href = '/home'; // O usar el RouterLink si es necesario
   }
 }

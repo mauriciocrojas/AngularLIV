@@ -27,7 +27,7 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
   timerId: any;
   respuestaJugador: string = '';
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.iniciarJuego();
@@ -117,7 +117,7 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
     this.iniciarJuego();
   }
 
-    volverHome() {
+  volverHome() {
     window.location.href = '/home'; // O usar el RouterLink si es necesario
   }
 }

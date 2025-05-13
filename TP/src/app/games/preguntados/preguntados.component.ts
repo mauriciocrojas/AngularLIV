@@ -59,7 +59,7 @@ export class PreguntadosComponent implements OnInit {
       if (this.preguntaActualIndex == 6) {
         // Esto se ejecuta cuando se llega al final de las preguntas
         console.log('Juego finalizado');
-        this.mostrarResultado = false; 
+        this.mostrarResultado = false;
       }
     }
   }
@@ -71,9 +71,8 @@ export class PreguntadosComponent implements OnInit {
     this.respuestaCorrecta = null;
   }
 
-  volverAlHome() {
-    // Navegar al home
-    this.router.navigate(['/home']);
+  volverHome() {
+    window.location.href = '/home'; // O usar el RouterLink si es necesario
   }
 
   get preguntaActual(): TriviaQuestion {

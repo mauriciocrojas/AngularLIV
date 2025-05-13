@@ -6,14 +6,13 @@
 <div *ngIf="!cargando && preguntas.length > 0" class="juego-container">
   <h2>{{ preguntaActual.question }}</h2>
 
-  <img *ngIf="preguntaActual.imageUrl" [src]="preguntaActual.imageUrl" alt="Imagen relacionada" class="imagen-pregunta" />
+  <img *ngIf="preguntaActual.imageUrl" [src]="preguntaActual.imageUrl" alt="Imagen relacionada"
+    class="imagen-pregunta" />
 
   <div class="opciones">
-    <button *ngFor="let opcion of preguntaActual.options"
-            (click)="seleccionarOpcion(opcion)"
-            [disabled]="mostrarResultado"
-            [class.correcta]="mostrarResultado && opcion === preguntaActual.answer"
-            [class.incorrecta]="mostrarResultado && opcion === opcionSeleccionada && opcion !== preguntaActual.answer">
+    <button *ngFor="let opcion of preguntaActual.options" (click)="seleccionarOpcion(opcion)"
+      [disabled]="mostrarResultado" [class.correcta]="mostrarResultado && opcion === preguntaActual.answer"
+      [class.incorrecta]="mostrarResultado && opcion === opcionSeleccionada && opcion !== preguntaActual.answer">
       {{ opcion }}
     </button>
   </div>
@@ -32,13 +31,16 @@
 <div *ngIf="preguntaActualIndex >= preguntas.length" class="juego-container">
   <p class="mensaje-rojo">🎮 ¡Juego finalizado! 🎉</p>
   <button (click)="reiniciarJuego()">Reiniciar Juego</button>
-  <button (click)="volverAlHome()">Volver al Home</button>
+  <div class="back-home-container">
+    <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
+  </div>
 </div>
 
 <!-- Botones siempre visibles -->
-<div class="juego-container">
-  <button (click)="reiniciarJuego()">Reiniciar Juego</button>
-  <button (click)="volverAlHome()">Volver al Home</button>
+  <button (click)="reiniciarJuego()">Reiniciar</button>
+
+  <div class="back-home-container">
+  <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
 </div>
 
 </html>
