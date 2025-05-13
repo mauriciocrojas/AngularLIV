@@ -94,7 +94,7 @@ button:hover {
   transition: background-color 0.3s, color 0.3s, transform 0.2s ease;
   border-radius: 8px;
   width: 40%;
-  max-width: 210px;
+  max-width: 200px;
 }
 
 .back-home-btn:hover {
