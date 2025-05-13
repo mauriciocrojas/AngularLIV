@@ -1,0 +1,38 @@
+<div *ngIf="cargando" class="mensaje-cargando">
+  <p>Cargando preguntas...</p>
+</div>
+
+<div *ngIf="!cargando && preguntas.length > 0" class="cuadro-pregunta">
+  <h2>{{ preguntaActual.question }}</h2>
+  
+  <!-- Imagen de la pregunta -->
+  <img *ngIf="preguntaActual.imageUrl" [src]="preguntaActual.imageUrl" alt="Imagen relacionada" class="imagen-pregunta">
+
+  <!-- Opciones de respuesta -->
+  <div class="opciones">
+    <button *ngFor="let opcion of preguntaActual.options"
+            (click)="seleccionarOpcion(opcion)"
+            [disabled]="mostrarResultado"
+            [class.correcta]="mostrarResultado && opcion === preguntaActual.answer"
+            [class.incorrecta]="mostrarResultado && opcion === opcionSeleccionada && opcion !== preguntaActual.answer">
+      {{ opcion }}
+    </button>
+  </div>
+
+  <!-- Mostrar resultado -->
+  <div *ngIf="mostrarResultado">
+    <p *ngIf="respuestaCorrecta; else incorrecta">✅ ¡Correcto!</p>
+    <ng-template #incorrecta><p>❌ Incorrecto. La respuesta correcta era: {{ preguntaActual.answer }}</p></ng-template>
+    
+    <!-- Botón para siguiente pregunta -->
+    <button (click)="siguientePregunta()" [disabled]="preguntaActualIndex >= preguntas.length - 1">Siguiente</button>
+  </div>
+</div>
+
+<!-- Mensaje cuando no hay preguntas disponibles -->
+<div *ngIf="preguntas.length === 0 && !cargando">
+  <p>No se pudieron cargar las preguntas. Intenta nuevamente.</p>
+</div>
+
+<button (click)="reiniciarJuego()">Reiniciar Juego</button>
+<button (click)="volverAlHome()">Volver al Home</button>

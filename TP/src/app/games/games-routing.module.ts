@@ -1,8 +1,6 @@
 // games-routing.module.ts
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AhorcadoComponent } from './ahorcado/ahorcado.component';  // Importamos el AhorcadoComponent
-import { MayorMenorComponent } from './mayor-o-menor/mayor-o-menor.component'; // ComponenteMayorOMenor
 
 const routes: Routes = [
   {
@@ -12,6 +10,10 @@ const routes: Routes = [
   {
     path: 'mayor-o-menor',
     loadComponent: () => import('./mayor-o-menor/mayor-o-menor.component').then(m => m.MayorMenorComponent)
+  },
+  {
+    path: 'preguntados',
+    loadComponent: () => import('./preguntados/preguntados.component').then(m => m.PreguntadosComponent)
   }
 ];
 
