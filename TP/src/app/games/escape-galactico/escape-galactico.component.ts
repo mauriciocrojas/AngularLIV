@@ -31,13 +31,13 @@ export class EscapeGalacticoComponent {
       text: 'El panel de control está quemado. ¿Intentás repararlo o buscar otra opción?',
       options: [
         { text: 'Intentar repararlo', next: 'electrocutado' },
-        { text: 'Buscar otra sala', next: 'gameOver' }
+        { text: 'Darle un golpazo por la impotencia', next: 'gameOver' }
       ]
     },
     escapeDoor: {
       text: 'Encuentras una puerta cerrada. ¿La forzás o buscas la llave?',
       options: [
-        { text: 'Forzar puerta', next: 'gameOver' },
+        { text: 'Forzar la puerta con un golpe', next: 'gameOver' },
         { text: 'Buscar llave', next: 'win' }
       ]
     },
@@ -46,7 +46,7 @@ export class EscapeGalacticoComponent {
       options: []
     },
     gameOver: {
-      text: 'Tu decisión no funcionó, te quebraste el hombro al golpear la puerta. Fin del juego.',
+      text: 'Tu decisión no funcionó, te quebraste el hombro en el impacto. Fin del juego.',
       options: []
     },
     win: {
