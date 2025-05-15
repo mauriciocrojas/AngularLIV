@@ -3,16 +3,20 @@
   <p>Cargando preguntas...</p>
 </div>
 
-<div *ngIf="!cargando && preguntas.length > 0" class="juego-container">
+<!-- Vista del juego en curso -->
+<div *ngIf="!cargando && !juegoFinalizado && preguntas.length > 0" class="juego-container">
   <h2>{{ preguntaActual.question }}</h2>
 
-  <img *ngIf="preguntaActual.imageUrl" [src]="preguntaActual.imageUrl" alt="Imagen relacionada"
-    class="imagen-pregunta" />
+  <p class="puntuacion">Puntuación: {{ puntuacion }}</p>
+
+  <img *ngIf="preguntaActual.imageUrl" [src]="preguntaActual.imageUrl" alt="Imagen relacionada" class="imagen-pregunta" />
 
   <div class="opciones">
-    <button *ngFor="let opcion of preguntaActual.options" (click)="seleccionarOpcion(opcion)"
-      [disabled]="mostrarResultado" [class.correcta]="mostrarResultado && opcion === preguntaActual.answer"
-      [class.incorrecta]="mostrarResultado && opcion === opcionSeleccionada && opcion !== preguntaActual.answer">
+    <button *ngFor="let opcion of preguntaActual.options"
+            (click)="seleccionarOpcion(opcion)"
+            [disabled]="mostrarResultado"
+            [class.correcta]="mostrarResultado && opcion === preguntaActual.answer"
+            [class.incorrecta]="mostrarResultado && opcion === opcionSeleccionada && opcion !== preguntaActual.answer">
       {{ opcion }}
     </button>
   </div>
@@ -23,24 +27,23 @@
       <p class="mensaje-rojo">❌ Incorrecto. La respuesta correcta era: {{ preguntaActual.answer }}</p>
     </ng-template>
 
-    <button (click)="siguientePregunta()" [disabled]="preguntaActualIndex >= preguntas.length - 1">Siguiente</button>
+    <button (click)="siguientePregunta()">Siguiente</button>
   </div>
 </div>
 
-<!-- Mensaje de fin de juego -->
-<div *ngIf="preguntaActualIndex >= preguntas.length" class="juego-container">
+<!-- Fin del juego -->
+<div *ngIf="!cargando && juegoFinalizado" class="juego-container">
   <p class="mensaje-rojo">🎮 ¡Juego finalizado! 🎉</p>
-  <button (click)="reiniciarJuego()">Reiniciar Juego</button>
+  <p class="mensaje-correcto">Tu puntuación final fue: {{ puntuacion }} / {{ preguntas.length }}</p>
+</div>
+
+<!-- Botones siempre visibles -->
+<div class="botones-abajo">
+  <button (click)="reiniciarJuego()">Reiniciar</button>
   <div class="back-home-container">
     <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
   </div>
 </div>
 
-<!-- Botones siempre visibles -->
-  <button (click)="reiniciarJuego()">Reiniciar</button>
-
-  <div class="back-home-container">
-  <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
-</div>
 
 </html>

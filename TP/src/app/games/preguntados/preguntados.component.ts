@@ -3,7 +3,7 @@ import { TriviaService, TriviaQuestion } from '../../../app/services/trivia.serv
 import { PixabayService } from '../../../app/services/pixabay.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';  // Importar Router
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-preguntados',
@@ -19,21 +19,20 @@ export class PreguntadosComponent implements OnInit {
   mostrarResultado = false;
   respuestaCorrecta: boolean | null = null;
   cargando = true;
+  puntuacion = 0;
+  juegoFinalizado = false;
 
   constructor(
     private triviaService: TriviaService,
     private pixabayService: PixabayService,
-    private router: Router  // Inyectar Router
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.triviaService.getQuestions().subscribe(data => {
-      this.preguntas = data.filter((item: any) => item.question); // Filtrar preguntas que no estén vacías
-
-      // Buscar imágenes para cada pregunta
+      this.preguntas = data.filter((item: any) => item.question);
       this.preguntas.forEach((pregunta, index) => {
         this.pixabayService.searchImage(pregunta.question).subscribe(response => {
-          // Asignar la primera imagen que devuelve la API
           this.preguntas[index].imageUrl = response.hits[0]?.webformatURL || '';
         });
       });
@@ -43,7 +42,11 @@ export class PreguntadosComponent implements OnInit {
 
   seleccionarOpcion(opcion: string) {
     this.opcionSeleccionada = opcion;
-    this.respuestaCorrecta = opcion === this.preguntaActual.answer;
+    const esCorrecta = opcion === this.preguntaActual.answer;
+    this.respuestaCorrecta = esCorrecta;
+    if (esCorrecta) {
+      this.puntuacion++;
+    }
     this.mostrarResultado = true;
   }
 
@@ -52,27 +55,24 @@ export class PreguntadosComponent implements OnInit {
     this.mostrarResultado = false;
     this.respuestaCorrecta = null;
 
-    // Incrementar solo si no se ha llegado al final
     if (this.preguntaActualIndex < this.preguntas.length - 1) {
       this.preguntaActualIndex++;
-      console.log('Pregunta Actual Index:', this.preguntaActualIndex);
-      if (this.preguntaActualIndex == 6) {
-        // Esto se ejecuta cuando se llega al final de las preguntas
-        console.log('Juego finalizado');
-        this.mostrarResultado = false;
-      }
+    } else {
+      this.juegoFinalizado = true;
     }
   }
+
   reiniciarJuego() {
-    // Reiniciar el juego a su estado inicial
     this.preguntaActualIndex = 0;
     this.opcionSeleccionada = null;
     this.mostrarResultado = false;
     this.respuestaCorrecta = null;
+    this.puntuacion = 0;
+    this.juegoFinalizado = false;
   }
 
   volverHome() {
-    window.location.href = '/home'; // O usar el RouterLink si es necesario
+    window.location.href = '/home';
   }
 
   get preguntaActual(): TriviaQuestion {

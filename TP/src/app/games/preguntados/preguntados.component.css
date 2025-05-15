@@ -24,6 +24,13 @@ h2 {
   text-shadow: 1.5px 1.5px #440000;
 }
 
+.puntuacion {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ff4081;
+  margin: 1rem 0;
+}
+
 .imagen-pregunta {
   width: 300px;
   height: 400px;
@@ -35,7 +42,6 @@ h2 {
   display: block;
 }
 
-
 .opciones {
   display: flex;
   flex-wrap: wrap;
@@ -45,7 +51,7 @@ h2 {
 }
 
 .opciones button {
-  flex: 1 1 calc(50% - 20px); /* 2 por fila */
+  flex: 1 1 calc(50% - 20px);
   min-width: 120px;
   background-color: #f3c221;
   color: #440000;
@@ -60,7 +66,7 @@ h2 {
 
 @media (max-width: 450px) {
   .opciones button {
-    flex: 1 1 100%; /* una opción por fila en móviles */
+    flex: 1 1 100%;
   }
 }
 
@@ -111,11 +117,6 @@ button:hover {
   transform: scale(1.0375);
   background-color: #ff4081;
   color: white;
-}
-
-.mensaje-cargando p {
-  font-size: 1.2rem;
-  color: #ff4081;
 }
 
 .back-home-container {
