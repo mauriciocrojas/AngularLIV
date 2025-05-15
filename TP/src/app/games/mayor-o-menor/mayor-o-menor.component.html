@@ -1,6 +1,6 @@
 <html>
 <div class="juego-container">
-  <h2>Mayor o Menor</h2>
+  <h2 class="arcade-title">Mayor o Menor</h2>
 
   <div class="carta">
     <p>Carta actual:</p>
@@ -29,13 +29,13 @@
   </div>
 
   <p><strong *ngIf="mensaje" [ngClass]="{ 'mensaje-rojo': juegoTerminado }">{{ mensaje }}</strong></p>
-  <p><strong>Puntaje: {{ puntaje }}</strong></p>
+  <p *ngIf="!juegoTerminado"><strong>Puntaje: {{ puntaje }}</strong></p>
 
 </div>
-  <button (click)="reiniciar()">Reiniciar</button>
+
+<button (click)="reiniciar()">Reiniciar</button>
 
 <div class="back-home-container">
   <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
 </div>
-
 </html>

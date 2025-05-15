@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-type StepKey = 'start' | 'panel' | 'escapeDoor' | 'electrocutado' | 'gameOver' | 'win';
+type StepKey = 'start' | 'panel' | 'escapeDoor' | 'cafetera' | 'enfermeria' | 'electrocutado' | 'gameOver' | 'win';
 
 interface Step {
   text: string;
@@ -18,53 +18,75 @@ interface Step {
 })
 export class EscapeGalacticoComponent {
   currentStep: StepKey = 'start';
+  score = 0;
+  gameEnded = false;
 
   steps: Record<StepKey, Step> = {
     start: {
-      text: 'Estás atrapado en una nave espacial averiada. ¿Qué haces primero?',
+      text: 'Te despertás en una nave espacial apunto de explotar. Todo tiembla y hay olor a quemado. ¿Qué hacés?',
       options: [
         { text: 'Revisar el panel de control', next: 'panel' },
-        { text: 'Buscar una salida de emergencia', next: 'escapeDoor' }
+        { text: 'Buscar una salida de emergencia', next: 'escapeDoor' },
       ]
     },
     panel: {
-      text: 'El panel de control está quemado. ¿Intentás repararlo o buscar otra opción?',
+      text: 'Llegás al panel de control. Está chispeando y parece dañado. ¿Qué hacés?',
       options: [
-        { text: 'Intentar repararlo', next: 'electrocutado' },
-        { text: 'Darle un golpazo por la impotencia', next: 'gameOver' }
+        { text: 'Intentar repararlo igual', next: 'electrocutado' },
+        { text: 'Darle un golpazo por la bronca', next: 'gameOver' }
       ]
     },
     escapeDoor: {
-      text: 'Encuentras una puerta cerrada. ¿La forzás o buscas la llave?',
+      text: 'Encontrás una puerta de emergencia bloqueda con un candado electrónico. ¿Qué hacés?',
       options: [
-        { text: 'Forzar la puerta con un golpe', next: 'gameOver' },
-        { text: 'Buscar llave', next: 'win' }
+        { text: 'Forzarla con una barra', next: 'gameOver' },
+        { text: 'Buscar la llave magnética', next: 'cafetera' }
+      ]
+    },
+    cafetera: {
+      text: 'Vas a la sala común. No hay nadie, pero ves una un ducto de ventilación en el piso.',
+      options: [
+        { text: 'Meterte por los ductos de ventilación', next: 'enfermeria' },
+        { text: 'Seguir buscando en la nave', next: 'gameOver' }
+      ]
+    },
+    enfermeria: {
+      text: 'Entrás a la enfermería desde los ductos. Encontrás un maletín con una tarjeta magnética.',
+      options: [
+        { text: 'Volver a la puerta de emergencia y probar la tarjeta', next: 'win' },
+        { text: 'Explorar más la enfermería', next: 'gameOver' }
       ]
     },
     electrocutado: {
-      text: 'Te electrocutás al intentar repararlo. Fin del juego.',
+      text: 'Tocás el panel y te da una descarga. Te desmayás en el acto.',
       options: []
     },
     gameOver: {
-      text: 'Tu decisión no funcionó, te quebraste el hombro en el impacto. Fin del juego.',
+      text: 'Lo que hiciste no funcionó. La nave colapsa con vos dentro.',
       options: []
     },
     win: {
-      text: '¡Encontraste la llave y escapaste con éxito! 🎉',
+      text: '¡La tarjeta funciona! Entrás al módulo de escape y lo lanzás justo antes de que la nave explote. Flotás en el espacio, pero estás vivo. ¡Buen trabajo!',
       options: []
     }
   };
 
   changeStep(next: StepKey) {
+    if (this.steps[next].options.length > 0) {
+      this.score += 10;
+    } else {
+      this.gameEnded = true;
+    }
     this.currentStep = next;
   }
 
   reiniciarJuego() {
-  this.currentStep = 'start';
-}
-
+    this.currentStep = 'start';
+    this.score = 0;
+    this.gameEnded = false;
+  }
 
   volverHome() {
-    window.location.href = '/home'; // O usar el RouterLink si es necesario
+    window.location.href = '/home'; // O usar Router si preferís hacerlo con Angular Router
   }
 }

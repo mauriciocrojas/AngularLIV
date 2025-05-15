@@ -1,55 +1,43 @@
 <html>
-<div class="ahorcado-container">
-    <h1 class="arcade-title">Juego del Ahorcado</h1>
+  <div class="ahorcado-container">
+  <div class="top-info">
+    <div class="vidas">Vidas: {{ intentos }}</div>
+    <div class="pista">Pista: {{ pista }}</div>
+  </div>
 
-    <!-- Palabra oculta -->
-    <p class="palabra-oculta">
-        {{ palabraMostrada }}
-    </p>
+  <h1 class="arcade-title">Ahorcado</h1>
 
-    <!-- Letras -->
-    <div class="letras">
-        <button *ngFor="let letra of abecedario" (click)="elegirLetra(letra)" class="letra-btn"
-                [disabled]="letrasErradas.includes(letra) || palabraMostrada.includes(letra) || juegoTerminado">
-            {{ letra }}
-        </button>
-    </div>
+  <p class="palabra-oculta">{{ palabraMostrada }}</p>
 
-    <div class="muñequito">
-        <!-- Cuerda y soporte -->
-        <div *ngIf="intentos <= 5">┌─┐</div>
-      
-        <!-- Cabeza -->
-        <div *ngIf="intentos <= 4">│ (•‿•) </div>
-      
-        <!-- Cuello -->
-        <div *ngIf="intentos <= 3">    ║   </div>
-      
-        <!-- Brazos -->
-        <div *ngIf="intentos <= 2">  ╔═╬═╗ </div>
-      
-        <!-- Tronco -->
-        <div *ngIf="intentos <= 1">    ║   </div>
-            
-        <!-- Pierna derecha -->
-        <div *ngIf="intentos <= 0">  ╱ ╲    </div>
-      
-        <!-- Base del poste -->
-        <div *ngIf="intentos <= 6">╚═════════╝ </div>
-      </div>
-      
-    
+  <div class="letras">
+    <button
+      *ngFor="let letra of abecedario"
+      (click)="elegirLetra(letra)"
+      class="letra-btn"
+      [disabled]="letrasErradas.includes(letra) || palabraMostrada.includes(letra) || juegoTerminado">
+      {{ letra }}
+    </button>
+  </div>
 
-    <!-- Mensaje de resultado -->
-    <div *ngIf="juegoTerminado" class="mensaje">
-        <h2>{{ mensaje }}</h2>
-    </div>
+  <div class="muñequito">
+    <div *ngIf="intentos <= 5">┌─┐</div>
+    <div *ngIf="intentos <= 4">│ (•‿•) </div>
+    <div *ngIf="intentos <= 3">    ║   </div>
+    <div *ngIf="intentos <= 2">  ╔═╬═╗ </div>
+    <div *ngIf="intentos <= 1">    ║   </div>
+    <div *ngIf="intentos <= 0">  ╱ ╲    </div>
+    <div *ngIf="intentos <= 6">╚═════════╝ </div>
+  </div>
 
-    <!-- Botones de control -->
+  <div *ngIf="juegoTerminado" class="mensaje">
+    <h2>{{ mensaje }}</h2>
+  </div>
+
 
 </div>
-    <button (click)="reiniciar()" class="volver-button">Reiniciar</button>
-<div class="back-home-container">
-  <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
-</div>
+  <button (click)="reiniciar()" class="volver-button">Reiniciar</button>
+
+  <div class="back-home-container">
+    <button class="back-home-btn" (click)="volverHome()"><strong>Volver al inicio</strong></button>
+  </div>
 </html>

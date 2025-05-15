@@ -17,6 +17,14 @@ html {
   box-shadow: 0 0 15px #f44336;
 }
 
+
+.arcade-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #f44336;
+  text-shadow: 0 0 8px rgba(244, 67, 54, 0.8);
+}
+
 h2 {
   color: #f3c221;
   font-size: 1.875rem;

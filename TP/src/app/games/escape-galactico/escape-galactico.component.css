@@ -12,27 +12,43 @@ html {
   padding: 2rem;
   text-align: center;
   border: 3px solid #f44336;
-  box-shadow: 0 0 20px #ff4081;
+  box-shadow: 0 0 10px #f44336aa;
   max-width: 600px;
   margin: auto;
   border-radius: 12px;
   width: 90%;
 }
 
-/* Botones principales */
+.arcade-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #f44336;
+  text-shadow: 0 0 8px rgba(244, 67, 54, 0.8);
+}
+
+
+/* Texto con sombra ligera */
+.step-container p {
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 2px #440000aa;
+  margin-bottom: 2rem;
+  line-height: 1.4;
+}
+
+/* Botones de opciones un poco más chicos y anchos */
 button {
   background-color: #f3c221;
   color: #440000;
   border: 2px solid #440000;
   margin: 1rem 0.5rem;
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
+  padding: 0.7rem 2rem;
+  font-size: 0.95rem;
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.3s, color 0.3s;
   border-radius: 8px;
-  width: 80%;
-  max-width: 300px;
+  width: 90%;
+  max-width: 320px;
 }
 
 button:hover {
@@ -41,7 +57,6 @@ button:hover {
   color: white;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .step-container {
     padding: 1.5rem;
@@ -49,8 +64,8 @@ button:hover {
   }
 
   button {
-    font-size: 1rem;
-    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
     width: 100%;
     max-width: none;
     margin: 0.5rem 0;
@@ -62,21 +77,20 @@ button:hover {
     padding: 1rem;
   }
 
-  h2 {
+  .step-container h2 {
     font-size: 1.5rem;
   }
 
-  p {
+  .step-container p {
     font-size: 1rem;
   }
 
   button {
-    font-size: 0.95rem;
-    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
   }
 }
 
-/* Botón Volver */
 .back-home-container {
   margin-top: 0.5rem;
   display: flex;
@@ -110,7 +124,6 @@ button:hover {
   }
 }
 
-/* Botón Reiniciar */
 .reiniciar-container {
   display: flex;
   justify-content: center;
@@ -136,4 +149,45 @@ button:hover {
   transform: scale(1.0375);
   background-color: #ff4081;
   color: white;
+}
+
+.end-message {
+  color: #ff1212;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  text-shadow:
+    0 0 4px #a22222cc,
+    0 0 10px #f3c221aa,
+    0 0 15px #f3c22188;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.end-message strong {
+  color: #ff4081;
+  font-size: 1.6rem;
+  text-shadow:
+    0 0 6px #ff4081dd,
+    0 0 12px #ff4081bb;
+  display: inline-block;
+  padding: 0 6px;
+  border-bottom: 2px solid #ff4081cc;
+  margin-left: 8px;
+}
+
+.end-message-win {
+  color: #00e676;
+  text-shadow:
+    0 0 4px #00e676aa,
+    0 0 10px #fdd83588;
+  font-weight: bold;
+}
+
+.end-message-lose {
+  color: #ff1212;
+  text-shadow:
+    0 0 4px #a22222cc,
+    0 0 10px #f3c221aa;
+  font-weight: bold;
 }

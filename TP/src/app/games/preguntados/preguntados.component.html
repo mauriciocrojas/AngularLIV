@@ -4,7 +4,10 @@
 </div>
 
 <!-- Vista del juego en curso -->
+ 
 <div *ngIf="!cargando && !juegoFinalizado && preguntas.length > 0" class="juego-container">
+    <h2 class = "arcade-title">Preguntados</h2>
+
   <h2>{{ preguntaActual.question }}</h2>
 
   <p class="puntuacion">Puntuación: {{ puntuacion }}</p>
