@@ -28,15 +28,15 @@
 <div *ngIf="!isLoggedIn" class="login-section">
   <p>No hay sesión activa.</p>
   <div class="auth-buttons">
-    <button (click)="goToLogin()" class="login-button">Iniciar sesión</button><br><br>
-    <button routerLink="/register" class="login-button">Registro</button>
+    <button (click)="goToLogin()" class="login-button"><strong>Iniciar sesión</strong></button><br><br>
+    <button routerLink="/register" class="login-button"><strong>Registro</strong></button>
   </div>
 </div>
 
   <!-- Si está logueado -->
   <div *ngIf="isLoggedIn" class="user-info">
     <p>Sesión iniciada como: <strong>{{ userEmail }}</strong></p>
-    <button (click)="logout()" class="logout-button">Cerrar sesión</button>
+    <button (click)="logout()" class="logout-button"><strong>Cerrar sesión</strong></button>
   </div>
 
 </div>
