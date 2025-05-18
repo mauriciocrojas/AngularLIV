@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { GameResultsService } from '../../services/game-results';
+
 
 interface Carta {
   valor: number;
@@ -27,7 +29,7 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
   timerId: any;
   respuestaJugador: string = '';
 
-  constructor() { }
+  constructor(private gameResultsService: GameResultsService) { } // 👈 Inyección del servicio
 
   ngOnInit(): void {
     this.iniciarJuego();
@@ -84,6 +86,7 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
       this.puntaje++;
       this.mensaje = '¡Correcto!';
     } else {
+      this.guardarResultado(); // 👈 Guardar al ganar
       this.mensaje = `¡Perdiste! Era ${correcta.toUpperCase()}. Puntaje final: ${this.puntaje}`;
       this.juegoTerminado = true;
     }
@@ -119,6 +122,10 @@ export class MayorMenorComponent implements OnInit, OnDestroy {
 
   volverHome() {
     window.location.href = '/home'; // O usar el RouterLink si es necesario
+  }
+
+  private guardarResultado() {
+    this.gameResultsService.saveResult('Mayor o Menor', this.puntaje);
   }
 }
 

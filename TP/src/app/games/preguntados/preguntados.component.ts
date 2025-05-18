@@ -4,6 +4,7 @@ import { PixabayService } from '../../../app/services/pixabay.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { GameResultsService } from '../../../app/services/game-results'; // ✅ Importado
 
 @Component({
   selector: 'app-preguntados',
@@ -21,11 +22,13 @@ export class PreguntadosComponent implements OnInit {
   cargando = true;
   puntuacion = 0;
   juegoFinalizado = false;
+  puntajeRegistrado = false; // ✅ Flag para evitar múltiples guardados
 
   constructor(
     private triviaService: TriviaService,
     private pixabayService: PixabayService,
-    private router: Router
+    private router: Router,
+    private gameResultsService: GameResultsService // ✅ Inyectado
   ) { }
 
   ngOnInit(): void {
@@ -41,6 +44,8 @@ export class PreguntadosComponent implements OnInit {
   }
 
   seleccionarOpcion(opcion: string) {
+    if (this.mostrarResultado || this.juegoFinalizado) return;
+
     this.opcionSeleccionada = opcion;
     const esCorrecta = opcion === this.preguntaActual.answer;
     this.respuestaCorrecta = esCorrecta;
@@ -59,6 +64,12 @@ export class PreguntadosComponent implements OnInit {
       this.preguntaActualIndex++;
     } else {
       this.juegoFinalizado = true;
+
+      // ✅ Guardar el resultado solo una vez
+      if (!this.puntajeRegistrado) {
+        this.gameResultsService.saveResult('Preguntados', this.puntuacion);
+        this.puntajeRegistrado = true;
+      }
     }
   }
 
@@ -69,6 +80,7 @@ export class PreguntadosComponent implements OnInit {
     this.respuestaCorrecta = null;
     this.puntuacion = 0;
     this.juegoFinalizado = false;
+    this.puntajeRegistrado = false; // ✅ Reset al reiniciar
   }
 
   volverHome() {

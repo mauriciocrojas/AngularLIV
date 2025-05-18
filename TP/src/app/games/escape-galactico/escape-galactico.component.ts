@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { GameResultsService } from '../../services/game-results';
 
 type StepKey = 'start' | 'panel' | 'escapeDoor' | 'cafetera' | 'enfermeria' | 'electrocutado' | 'gameOver' | 'win';
 
@@ -21,9 +22,11 @@ export class EscapeGalacticoComponent {
   score = 0;
   gameEnded = false;
 
+  constructor(private gameResultsService: GameResultsService) {}
+
   steps: Record<StepKey, Step> = {
     start: {
-      text: 'Te despertás en una nave espacial apunto de explotar. Todo tiembla y hay olor a quemado. ¿Qué hacés?',
+      text: 'Te despertás en una nave espacial a punto de explotar. Todo tiembla y hay olor a quemado. ¿Qué hacés?',
       options: [
         { text: 'Revisar el panel de control', next: 'panel' },
         { text: 'Buscar una salida de emergencia', next: 'escapeDoor' },
@@ -76,6 +79,7 @@ export class EscapeGalacticoComponent {
       this.score += 10;
     } else {
       this.gameEnded = true;
+      this.gameResultsService.saveResult('Escape Galáctico', this.score);
     }
     this.currentStep = next;
   }
