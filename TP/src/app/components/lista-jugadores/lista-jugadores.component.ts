@@ -2,13 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
-import { UserData } from '../../models/user-data';
 import { Router, RouterModule } from '@angular/router';
 
-
-
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
-
 
 @Component({
   selector: 'app-lista-jugadores',
@@ -17,45 +13,76 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   templateUrl: './lista-jugadores.component.html',
   styleUrl: './lista-jugadores.component.scss'
 })
-
-
 export class ListaJugadoresComponent implements OnInit {
-
-  usersdata: UserData[] = [];
+  isLoggedIn: boolean = false;
   userEmail: string | null = null;
-  isLoggedIn: boolean = false; // Estado para saber si el usuario está logueado
 
-    constructor(private router: Router) {}
+  gameResults: {
+    game: string;
+    data: {
+      email: string;
+      fecha: string;
+      score: string;
+    }[];
+  }[] = [];
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.checkSession();
-    this.getUserData();
+    this.getAllGameResults();
   }
 
   async checkSession() {
     const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      this.isLoggedIn = true;
-      this.userEmail = session.user.email ?? null;
-    } else {
-      this.isLoggedIn = false;
+    this.isLoggedIn = !!session;
+    this.userEmail = session?.user.email ?? null;
+  }
+
+  async getAllGameResults() {
+    const { data, error } = await supabase.from('results_games').select('*');
+
+    if (error) {
+      console.error('Error obteniendo resultados:', error.message);
+      return;
     }
-  }
 
-  getUserData() {
-    supabase.from('users-data').select('*').then(({ data, error }) => {
-      if (error) {
-        console.error('Error:', error.message);
-      } else {
-        this.usersdata = data;
-        this.usersdata.forEach(user => {
-          console.log('Avatar URL:', this.getAvatarUrl(user.avatarUrl));
-        });
+    const groupedResults: { [key: string]: any[] } = {};
+
+    for (const entry of data) {
+      if (!groupedResults[entry.game]) {
+        groupedResults[entry.game] = [];
       }
-    });
+
+      groupedResults[entry.game].push({
+        email: entry.email,
+        fecha: entry.created_at,
+        score: entry.score
+      });
+    }
+
+    this.gameResults = Object.keys(groupedResults).map(game => ({
+      game,
+      data: groupedResults[game]
+    }));
   }
 
-  getAvatarUrl(avatarUrl: string) {
-    return supabase.storage.from('images').getPublicUrl(avatarUrl).data.publicUrl;
-  }
+//   getUserData() {
+//     supabase.from('users-data').select('*').then(({ data, error }) => {
+//       if (error) {
+//         console.error('Error:', error.message);
+//       } else {
+//         this.usersdata = data;
+//         this.usersdata.forEach(user => {
+//           console.log('Avatar URL:', this.getAvatarUrl(user.avatarUrl));
+//         });
+//       }
+//     });
+//   }
+
+//   getAvatarUrl(avatarUrl: string) {
+//     return supabase.storage.from('images').getPublicUrl(avatarUrl).data.publicUrl;
+//   }
+// }
+
 }

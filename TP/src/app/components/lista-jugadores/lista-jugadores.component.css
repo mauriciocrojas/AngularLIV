@@ -9,7 +9,43 @@ html {
   margin: 0;
 }
 
-/* Estilos generales para la tabla */
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px; /* ancho máximo fijo para que entren máximo 2 tablas por fila */
+  margin: 0 auto;
+}
+
+.table-container {
+  background-color: #222;
+  padding: 15px; /* reducido de 20px */
+  border-radius: 8px;
+  box-shadow: 0 0 15px #ff4081;
+  margin: 20px 0;
+  flex: 1 1 calc(50% - 10px); /* dos tablas por fila */
+  max-width: calc(50% - 10px);
+  overflow-x: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Media query para pantallas medianas y tablets (menos de 900px) */
+@media (max-width: 900px) {
+  .grid-container {
+    max-width: 100%; /* que ocupe todo el ancho */
+  }
+  .table-container {
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin: 10px 0;
+  }
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -17,68 +53,47 @@ html {
   color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 15px #ff4081;
-  margin-top: 30px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  max-width: 900px; /* Añadido max-width para controlar el ancho en pantallas grandes */
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 15px; /* reducido de 20px */
+  min-width: 280px; /* un poco más pequeño */
+  font-size: 0.85rem; /* achicamos texto de toda la tabla */
 }
 
-/* Estilo para las celdas de la tabla */
 .table th,
 .table td {
-  padding: 12px;
+  padding: 8px 10px; /* reducido de 12px */
   text-align: left;
   border-bottom: 1px solid #fdd835;
   color: #fff !important;
+  white-space: nowrap;
+  font-weight: normal;
 }
 
 .table th {
   background-color: #333;
   color: #fff;
   text-transform: uppercase;
-  font-size: 1.1rem;
+  font-size: 0.95rem; /* achicamos encabezados */
   box-shadow: 0 0 10px #ff4081;
+  font-weight: bold;
 }
 
 .table td {
   background-color: #222;
 }
 
-/* Estilo para los avatares */
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #fdd835;
-  box-shadow: 0 0 8px #f44336;
-}
-
-/* Estilo para el contenedor de la tabla */
-.table-container {
-  background-color: #222;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 15px #ff4081;
-  margin: 20px auto;
-  max-width: 95%;
-  width: 95%;
-}
-
-/* Estilo para los botones "Volver" */
 .back-link {
   display: inline-block;
-  margin-top: 30px;
+  margin: 25px auto 0; /* menos margen superior */
   text-decoration: none;
   background-color: #f44336;
   color: white;
-  padding: 12px 25px;
+  padding: 10px 20px; /* reducido */
   border-radius: 5px;
-  font-size: 1.1rem;
+  font-size: 1rem; /* un poco más chico */
   text-align: center;
   box-shadow: 0 0 10px #ff4081;
-  align-self: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .back-link:hover {
@@ -87,81 +102,58 @@ html {
   transform: scale(1.05);
 }
 
-/* Estilo para los encabezados */
 h2 {
-  text-align: center;
-  color: #1e1b1b;
-  font-size: 2rem;
-  text-shadow: 0 0 5px #f44336, 0 0 10px #f44336, 0 0 15px #f44336,
-    0 0 20px #ff4081, 0 0 30px #ff4081, 0 0 40px #ff4081,
-    0 0 50px #ff4081, 0 0 60px #ff4081;
-  margin-bottom: 20px;
+  font-size: 1.7rem;
+  margin-bottom: 1rem;
+  color: #f44336;
+  text-shadow: 0 0 8px rgba(244, 67, 54, 0.8);
 }
 
-/* Media query para pantallas más pequeñas (móviles, tablets) */
+.arcade-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #f44336;
+  text-shadow: 0 0 8px rgba(244, 67, 54, 0.8);
+}
+
 @media (max-width: 768px) {
   .table-container {
-    padding: 15px;
+    padding: 12px; /* un poco menos */
   }
 
   .table th,
   .table td {
-    padding: 10px;
-  }
-
-  .table th {
-    font-size: 0.9rem;
-  }
-
-  .table td {
-    font-size: 0.85rem;
-  }
-
-  .avatar {
-    width: 35px;
-    height: 35px;
-  }
-
-  .back-link {
-    font-size: 1rem;
-    padding: 10px 20px;
+    padding: 6px 8px; /* reducido */
+    font-size: 0.8rem; /* texto más pequeño */
   }
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+  }
+
+  .back-link {
+    font-size: 0.9rem;
+    padding: 8px 16px;
   }
 }
 
-/* Media query para pantallas aún más pequeñas (móviles muy pequeños) */
 @media (max-width: 480px) {
   .table-container {
-    padding: 10px;
-  }
-
-  .table th,
-  .table td {
     padding: 8px;
   }
 
-  .table th {
-    font-size: 0.8rem;
-  }
-
+  .table th,
   .table td {
-    font-size: 0.75rem;
-  }
-
-  .avatar {
-    width: 30px;
-    height: 30px;
-  }
-
-  .back-link {
-    font-size: 0.9rem;
-    padding: 8px 15px;
+    padding: 5px 6px;
+    font-size: 0.7rem;
   }
 
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+  }
+
+  .back-link {
+    font-size: 0.8rem;
+    padding: 6px 12px;
   }
 }

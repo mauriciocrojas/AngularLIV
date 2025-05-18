@@ -1,13 +1,9 @@
-<html>
-<!-- Lista de jugadores -->
-<div class="table-container">
-  <h2>Lista de jugadores:</h2>
+  <!-- <h2>Lista de jugadores:</h2>
   <table class="table">
     <thead>
       <tr>
         <th>Nombre</th>
         <th>Edad</th>
-        <!-- <th>authId</th> -->
         <th>Foto</th>
       </tr>
     </thead>
@@ -15,13 +11,40 @@
       <tr *ngFor="let user of usersdata">
         <td>{{ user.name }}</td>
         <td>{{ user.age }}</td>
-        <!-- <td>{{ user.authId }}</td> -->
         <td>
           <img class="avatar" [src]="getAvatarUrl(user.avatarUrl)" alt="Foto de usuario">
         </td>
       </tr>
     </tbody>
-  </table>
-  <a routerLink="/home" class="back-link">Volver</a>
+  </table> -->
+
+
+  <html>
+      <h1 class="arcade-title">Resultados</h1>
+
+<div class="grid-container">
+  <div *ngFor="let game of gameResults" class="table-container">
+    <h2>{{ game.game }}</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Fecha</th>
+          <th>Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let result of game.data">
+          <td>{{ result.email }}</td>
+          <td>{{ result.fecha | date: 'short' }}</td>
+          <td>{{ result.score }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-</html>
+
+<a routerLink="/home" class="back-link">Volver</a>
+
+
+  </html>
