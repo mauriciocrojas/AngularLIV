@@ -262,12 +262,15 @@ textarea {
   textarea {
     font-size: 0.7rem;
     height: 40px;
-    width: calc(100% - 80px);
+    width: 100%; /* <--- CAMBIO: forzamos 100% en vez de calc(...) */
+    margin-right: 0; /* <--- elimina margen lateral */
   }
 
-  button {
+  .button-enviar {
     font-size: 0.6rem;
-    padding: 6px 10px;
+    padding: 8px 12px;
+    width: 100%; /* <--- ocupa todo el ancho */
+    margin-top: 5px; /* <--- separación con el textarea */
   }
 
   .alert {
@@ -277,10 +280,6 @@ textarea {
 
   .message-form {
     flex-direction: column;
-  }
-
-  textarea, button {
-    margin-bottom: 10px;
     width: 100%;
   }
 
@@ -288,3 +287,4 @@ textarea {
     padding: 0;
   }
 }
+
