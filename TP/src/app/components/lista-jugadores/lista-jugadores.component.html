@@ -20,7 +20,7 @@
 
 
   <html>
-      <h1 class="arcade-title">Resultados</h1>
+      <h1 class="arcade-title">Puntuaciones</h1>
 
 <div class="grid-container">
   <div *ngFor="let game of gameResults" class="table-container">
@@ -44,7 +44,7 @@
   </div>
 </div>
 
-<a routerLink="/home" class="back-link">Volver</a>
+    <button (click)="goHome()" class="back-link">Volver</button>
 
 
   </html>

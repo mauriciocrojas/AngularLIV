@@ -67,6 +67,11 @@ export class ListaJugadoresComponent implements OnInit {
     }));
   }
 
+    // Método goHome()
+  goHome() {
+    this.router.navigate(['/home']);  // Redirige a la ruta /home
+  }
+
 //   getUserData() {
 //     supabase.from('users-data').select('*').then(({ data, error }) => {
 //       if (error) {

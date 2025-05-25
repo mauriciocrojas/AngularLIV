@@ -18,7 +18,7 @@
           placeholder="Escribe un mensaje..."
           (keydown.enter)="onEnter($event)">
         </textarea>
-        <button type="submit" [disabled]="messageForm.invalid">Enviar</button>
+        <button class="button-enviar" type="submit" [disabled]="messageForm.invalid">Enviar</button>
       </form>
       <div *ngIf="emptyMessageWarning" class="empty-message-warning">
         ¡El mensaje no puede estar vacío!
@@ -29,7 +29,7 @@
       <p class="alert">Debes estar logueado para enviar un mensaje.</p>
     </ng-template>
 
-    <button (click)="goHome()" class="back-button">Volver al Home</button>
+    <button (click)="goHome()" class="back-button">Volver</button>
   </div>
 </div>
 </html>

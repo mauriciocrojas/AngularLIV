@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: '/home', // Redirecciona a /home cuando la ruta esté vacía
-    pathMatch: 'full', 
+    pathMatch: 'full',
   },
   {
     path: 'home',
@@ -33,10 +33,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/chat/chat.component').then(m => m.ChatComponent)
   },
   {
+    path: 'encuesta',
+    loadComponent: () => import('./components/encuesta/encuesta.component').then(m => m.EncuestaComponent)
+  },
+  {
     path: 'games',  // Ruta base para los juegos
     loadChildren: () => import('./games/games.module').then(m => m.GamesModule)  // Carga del módulo de juegos
   }
-  ];
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)], // Importa RouterModule y configura las rutas

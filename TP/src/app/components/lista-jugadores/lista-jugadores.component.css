@@ -15,17 +15,20 @@ html {
   justify-content: space-between;
   gap: 20px;
   width: 100%;
-  max-width: 900px; /* ancho máximo fijo para que entren máximo 2 tablas por fila */
+  max-width: 900px;
+  /* ancho máximo fijo para que entren máximo 2 tablas por fila */
   margin: 0 auto;
 }
 
 .table-container {
   background-color: #222;
-  padding: 15px; /* reducido de 20px */
+  padding: 15px;
+  /* reducido de 20px */
   border-radius: 8px;
   box-shadow: 0 0 15px #ff4081;
   margin: 20px 0;
-  flex: 1 1 calc(50% - 10px); /* dos tablas por fila */
+  flex: 1 1 calc(50% - 10px);
+  /* dos tablas por fila */
   max-width: calc(50% - 10px);
   overflow-x: auto;
   box-sizing: border-box;
@@ -37,8 +40,10 @@ html {
 /* Media query para pantallas medianas y tablets (menos de 900px) */
 @media (max-width: 900px) {
   .grid-container {
-    max-width: 100%; /* que ocupe todo el ancho */
+    max-width: 100%;
+    /* que ocupe todo el ancho */
   }
+
   .table-container {
     flex: 1 1 100%;
     max-width: 100%;
@@ -53,14 +58,18 @@ html {
   color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 15px #ff4081;
-  margin: 0 auto 15px; /* reducido de 20px */
-  min-width: 280px; /* un poco más pequeño */
-  font-size: 0.85rem; /* achicamos texto de toda la tabla */
+  margin: 0 auto 15px;
+  /* reducido de 20px */
+  min-width: 280px;
+  /* un poco más pequeño */
+  font-size: 0.85rem;
+  /* achicamos texto de toda la tabla */
 }
 
 .table th,
 .table td {
-  padding: 8px 10px; /* reducido de 12px */
+  padding: 8px 10px;
+  /* reducido de 12px */
   text-align: left;
   border-bottom: 1px solid #fdd835;
   color: #fff !important;
@@ -72,7 +81,8 @@ html {
   background-color: #333;
   color: #fff;
   text-transform: uppercase;
-  font-size: 0.95rem; /* achicamos encabezados */
+  font-size: 0.95rem;
+  /* achicamos encabezados */
   box-shadow: 0 0 10px #ff4081;
   font-weight: bold;
 }
@@ -82,23 +92,25 @@ html {
 }
 
 .back-link {
-  display: inline-block;
-  margin: 25px auto 0; /* menos margen superior */
-  text-decoration: none;
-  background-color: #f44336;
-  color: white;
-  padding: 10px 20px; /* reducido */
-  border-radius: 5px;
-  font-size: 1rem; /* un poco más chico */
-  text-align: center;
-  box-shadow: 0 0 10px #ff4081;
-  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid #fdd835;
+  color: #fdd835;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #fdd835;
   transition: all 0.3s ease;
+  cursor: pointer;
+  width: 200px;
+  margin-top: 2px;
+  text-align: center;
+
 }
 
 .back-link:hover {
   background-color: #b15e00;
-  color: #fff;
+  color: #ffffff;
   transform: scale(1.05);
 }
 
@@ -111,20 +123,46 @@ h2 {
 
 .arcade-title {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #f44336;
-  text-shadow: 0 0 8px rgba(244, 67, 54, 0.8);
+  text-align: center;
+  color: #000000;
+  text-shadow: 0 0 5px #ffffff,
+               0 0 10px #57532d,
+               0 0 15px #57532d,
+               0 0 20px #57532d,
+               0 0 30px #57532d,
+               0 0 40px #57532d,
+               0 0 50px #57532d,
+               0 0 60px #57532d;
+  margin-bottom: 30px;
+}
+
+
+.arcade-title:hover {
+  font-size: 2.7rem;
+  color: #000000;
+  text-shadow: 0 0 5px #ffffff,
+               0 0 10px #f44336,
+               0 0 15px #3800bb,
+               0 0 20px #ff4081,
+               0 0 30px #ff4081,
+               0 0 40px #ff4081,
+               0 0 50px #ff4081,
+               0 0 60px #ff4081;
+  transition: all 0.5s ease;
 }
 
 @media (max-width: 768px) {
   .table-container {
-    padding: 12px; /* un poco menos */
+    padding: 12px;
+    /* un poco menos */
   }
 
   .table th,
   .table td {
-    padding: 6px 8px; /* reducido */
-    font-size: 0.8rem; /* texto más pequeño */
+    padding: 6px 8px;
+    /* reducido */
+    font-size: 0.8rem;
+    /* texto más pequeño */
   }
 
   h2 {
