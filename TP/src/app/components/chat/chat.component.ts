@@ -84,9 +84,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     const success = await this.chatService.sendMessage(this.messageForm.value.newMessage);
     if (success) {
       this.messageForm.reset();
-      await this.loadMessages();
-      this.scrollToBottom();  // Desplazar al último mensaje después de enviar
-      this.cdr.detectChanges();
+      // await this.loadMessages();
+      // this.scrollToBottom();  // Desplazar al último mensaje después de enviar
+      // this.cdr.detectChanges();
     }
   }
 

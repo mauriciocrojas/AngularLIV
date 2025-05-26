@@ -103,28 +103,33 @@ export class ChatService implements OnDestroy {
   }
 
   // Suscripción a mensajes en tiempo real
-  subscribeToMessages(onNewMessage: (msg: Message) => void): RealtimeChannel {
-    this.channel = this.supabase.channel('messages-channel')
-      .on('postgres_changes', {
+ subscribeToMessages(callback: (message: Message) => void): RealtimeChannel {
+  if (this.channel) {
+    this.channel.unsubscribe();
+  }
+
+  this.channel = this.supabase
+    .channel('chat-messages-channel')
+    .on(
+      'postgres_changes',
+      {
         event: 'INSERT',
         schema: 'public',
-        table: 'chat_messages'
-      }, async (payload) => {
+        table: 'chat_messages',
+      },
+      async (payload) => {
         const newMessage = payload.new as NewMessageType;
 
+        // Traemos el nombre del usuario manualmente
         let username = 'Unknown';
-
-        // Fetch user data
-        const { data: userData, error: userError } = await this.supabase
+        const { data: userData, error } = await this.supabase
           .from('users-data')
           .select('name')
-          .eq('authid', newMessage.user_id)
+          .eq('authId', newMessage.user_id)
           .single();
 
-        if (!userError && userData) {
-          username = userData.name || 'Unknown';
-        } else {
-          console.error('Error fetching user name:', userError);
+        if (!error && userData) {
+          username = userData.name;
         }
 
         const message: Message = {
@@ -132,17 +137,21 @@ export class ChatService implements OnDestroy {
           message: newMessage.message,
           created_at: newMessage.created_at,
           user_id: newMessage.user_id,
-          username: username
+          username,
         };
 
-        onNewMessage(message);
-      })
-      .subscribe((status) => {
-        console.log('Realtime subscription status:', status);
-      });
+        callback(message);
+      }
+    )
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('📡 Suscrito a mensajes en tiempo real');
+      }
+    });
 
-    return this.channel;
-  }
+  return this.channel;
+}
+
 
   // Desuscribirse de los mensajes en tiempo real
   removeSubscription(): void {
