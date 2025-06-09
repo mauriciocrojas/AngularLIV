@@ -1,43 +1,32 @@
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
 <div class="home-container">
   <!-- Nav -->
   <div class="top-buttons">
-    <button class="game-button" routerLink="/quien-soy">Quién soy</button>
-    <button class="game-button" routerLink="/lista-jugadores">Puntuaciones</button>
-    <button class="game-button" routerLink="/chat">Chat</button>
-    <button class="game-button" routerLink="/encuesta">Encuesta</button>
-
-  </div>
-  <hr style="border: 2px solid #fdd835; width: 60%; box-shadow: 0 0 10px #fdd835;">
-
-
-  <h1 class="title">🎮 Central de juegos </h1>
-
-  <!-- Lista de juegos -->
-  <div class="game-list">
-    <button class="game-button" routerLink="/games/ahorcado">Ahorcado</button>
-    <button class="game-button" routerLink="/games/mayor-o-menor">Mayor o Menor</button>
-    <button class="game-button" routerLink="/games/preguntados">Preguntados</button>
-    <button class="game-button" routerLink="/games/escape-galactico">Escape Galáctico</button>
+    <button class="nav-button" routerLink="/quien-soy">Quién soy</button>
+    <button class="nav-button" routerLink="/pacientes">Pacientes</button>
+    <button class="nav-button" routerLink="/especialistas">Especialistas</button>
+    <button class="nav-button" routerLink="/admin">Administración</button>
   </div>
 
-  <hr style="border: 2px solid #fdd835; width: 60%; box-shadow: 0 0 10px #fdd835;">
+  <hr class="divider">
 
+  <h1 class="title">🏥 Clínica Online</h1>
 
-<!-- Si no está logueado -->
-<div *ngIf="!isLoggedIn" class="login-section">
-  <p>No hay sesión activa.</p>
-  <div class="auth-buttons">
-    <button (click)="goToLogin()" class="login-button"><strong>Iniciar sesión</strong></button><br><br>
-    <button routerLink="/register" class="login-button"><strong>Registro</strong></button>
+  <hr class="divider">
+
+  <!-- Si no está logueado -->
+  <div *ngIf="!isLoggedIn" class="login-section">
+    <p>No hay sesión activa.</p>
+    <div class="auth-buttons">
+      <button (click)="goToLogin()" class="login-button"><strong>Iniciar sesión</strong></button><br><br>
+      <button routerLink="/register" class="login-button"><strong>Registro</strong></button>
+    </div>
   </div>
-</div>
 
   <!-- Si está logueado -->
   <div *ngIf="isLoggedIn" class="user-info">
     <p>Sesión iniciada como: <strong>{{ userEmail }}</strong></p>
     <button (click)="logout()" class="logout-button"><strong>Cerrar sesión</strong></button>
   </div>
-
 </div>

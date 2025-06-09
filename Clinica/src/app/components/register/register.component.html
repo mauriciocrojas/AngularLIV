@@ -1,20 +1,47 @@
 <div class="register-container">
   <h3 class="registro">Registro</h3>
-  <input type="text" placeholder="Email" [(ngModel)]="username" class="register-input" />
-  <input type="password" placeholder="Password" [(ngModel)]="password" class="register-input" />
-  <input type="text" placeholder="Nombre" [(ngModel)]="name" class="register-input" />
-  <input type="number" placeholder="Edad" [(ngModel)]="age" class="register-input" />
-  <input type="file" (change)="onFileSelected($event)" class="register-input" />
 
-  <div class="btn-container">
-    <button (click)="register()" class="btn"> Registrar </button>
+  <select [(ngModel)]="tipoUsuario" class="register-input">
+    <option value="" disabled selected>Seleccioná tipo de usuario</option>
+    <option value="paciente">Paciente</option>
+    <option value="especialista">Especialista</option>
+  </select>
 
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
+  <input type="text" placeholder="Nombre" [(ngModel)]="nombre" class="register-input" />
+  <input type="text" placeholder="Apellido" [(ngModel)]="apellido" class="register-input" />
+  <input type="number" placeholder="Edad" [(ngModel)]="edad" class="register-input" />
+  <input type="text" placeholder="DNI" [(ngModel)]="dni" class="register-input" />
 
-      <button routerLink="/login" class="btn"> Ir al Login </button>
-
+  <!-- Condicional obra social -->
+  <div *ngIf="tipoUsuario === 'paciente'" class="register-input">
+    <label>Obra Social:</label>
+    <select [(ngModel)]="obraSocial">
+      <option value="" disabled selected>Seleccioná una opción</option>
+      <option value="Galeno">Galeno</option>
+      <option value="Swiss Medical">Swiss Medical</option>
+      <option value="OSDE">OSDE</option>
+    </select>
   </div>
 
+  <!-- Condicional especialidad -->
+  <div *ngIf="tipoUsuario === 'especialista'" class="register-input">
+    <label>Especialidad:</label>
+    <select [(ngModel)]="especialidadSeleccionada">
+      <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
+    </select>
+    <input type="text" placeholder="Nueva especialidad (opcional)" [(ngModel)]="nuevaEspecialidad" />
+  </div>
+
+  <input type="email" placeholder="Email" [(ngModel)]="username" class="register-input" />
+  <input type="password" placeholder="Contraseña" [(ngModel)]="password" class="register-input" />
+
+  <!-- Archivos -->
+  <label>Seleccionar {{ tipoUsuario === 'paciente' ? '2 imágenes' : '1 imagen' }} de perfil</label>
+  <input type="file" (change)="onFilesSelected($event)" [multiple]="tipoUsuario === 'paciente'" />
+
+  <div class="btn-container">
+    <button (click)="register()" class="btn">Registrar</button>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <button routerLink="/login" class="btn">Ir al Login</button>
+  </div>
 </div>

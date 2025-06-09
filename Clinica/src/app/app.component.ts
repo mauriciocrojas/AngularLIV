@@ -15,5 +15,5 @@ import { HttpClientModule } from '@angular/common/http'; // ✅ agregado
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'GameCenter';
+  title = 'Clinica Online';
 }

@@ -22,6 +22,19 @@ export class RegisterComponent {
   avatarFile: File | null = null;
   errorMessage: string | null = null;
 
+  tipoUsuario: 'paciente' | 'especialista' | '' = '';
+  nombre = '';
+  apellido = '';
+  edad: number | null = null;
+  dni = '';
+  obraSocial = '';
+  especialidadSeleccionada = '';
+  nuevaEspecialidad = '';
+  imagenes: File[] = [];
+
+  especialidades = ['Cardiología', 'Pediatría', 'Traumatología', 'Dermatología']; // se puede ir completando
+
+
   constructor(private router: Router) {
     this.username = '';
     this.password = '';
@@ -44,32 +57,61 @@ export class RegisterComponent {
     });
   }
 
-  // Guardar datos adicionales del usuario en la base de datos
-  saveUserData(user: User) {
-    console.log('Guardando datos del usuario...');
+  async saveUserData(user: User) {
+  const urls = await this.uploadImages();
 
-    // Verifica que el avatar se haya subido
-    this.saveFile().then((data) => {
-      if (data) {
-        console.log('Avatar subido correctamente:', data);
-        supabase.from('users-data').insert([{
-          authId: user.id,
-          name: this.name,
-          age: this.age,
-          avatarUrl: data.path
-        }]).then(({ data, error }) => {
-          if (error) {
-            console.error('Error al guardar en users-data:', error.message);
-          } else {
-            console.log('Datos de usuario guardados correctamente en users-data:', data);
-            this.router.navigate(['/home']);
-          }
-        });
-      } else {
-        console.error('Error al subir el archivo del avatar');
-      }
-    });
+  if (!urls) {
+    this.errorMessage = 'Error al subir imágenes.';
+    return;
   }
+
+  const especialidadFinal = this.nuevaEspecialidad.trim() || this.especialidadSeleccionada;
+
+  const dataToInsert: any = {
+    id: user.id,
+    nombre: this.nombre,
+    apellido: this.apellido,
+    edad: this.edad,
+    dni: this.dni,
+    email: this.username,
+    tipo_usuario: this.tipoUsuario,
+    imagenes: urls,
+    confirmado: false,
+    created_at: new Date().toISOString()
+  };
+
+  if (this.tipoUsuario === 'paciente') {
+    dataToInsert.obra_social = this.obraSocial;
+  } else if (this.tipoUsuario === 'especialista') {
+    dataToInsert.especialidad = especialidadFinal;
+  }
+
+  const { error } = await supabase.from('usuarios').insert([dataToInsert]);
+
+  if (error) {
+    console.error('Error al guardar en Supabase:', error.message);
+    this.errorMessage = 'Error al guardar los datos del usuario.';
+  } else {
+    this.router.navigate(['/home']);
+  }
+}
+
+async uploadImages(): Promise<string[] | null> {
+  if (!this.imagenes.length) return null;
+
+  const urls: string[] = [];
+
+  for (const img of this.imagenes) {
+    const { data, error } = await supabase.storage
+      .from('images')
+      .upload(`users/${Date.now()}-${img.name}`, img, { upsert: false });
+
+    if (error) return null;
+    urls.push(data.path);
+  }
+
+  return urls;
+}
 
   // Función para subir el archivo de avatar
   async saveFile() {
@@ -95,9 +137,9 @@ export class RegisterComponent {
   }
 
   // Manejo de archivo seleccionado
-  onFileSelected(event: any) {
-    this.avatarFile = event.target.files[0];
-  }
+onFilesSelected(event: any) {
+  this.imagenes = Array.from(event.target.files);
+}
 
   // Función para traducir los mensajes de error
   translateError(errorMessage: string): string {

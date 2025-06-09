@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/gamecenter/browser",
+    "public": "dist/clinica/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
