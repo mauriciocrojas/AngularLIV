@@ -1,0 +1,34 @@
+<html>
+  <div class="step-container" *ngIf="steps[currentStep] as step">
+    <h2 class="arcade-title">Escape Galáctico</h2>
+    <p>{{ step.text }}</p>
+
+    <div *ngIf="step.options.length > 0; else endMessage">
+      <button *ngFor="let option of step.options" (click)="changeStep(option.next)">
+        {{ option.text }}
+      </button>
+    </div>
+
+    <ng-template #endMessage>
+      <p
+        class="end-message"
+        [ngClass]="{
+          'end-message-win': currentStep === 'win',
+          'end-message-lose': currentStep !== 'win'
+        }"
+      >
+        {{ currentStep === 'win' ? '¡Escapaste con éxito de la nave! 🛸' : '¡Fin del juego! La nave colapsó. 💥' }}
+        <br /><br />Tu puntaje: <strong>{{ score }}</strong>
+      </p>
+      <p class="end-message">¿Querés volver a empezar?</p>
+    </ng-template>
+  </div>
+
+  <div class="reiniciar-container">
+    <button class="reiniciar-btn" (click)="reiniciarJuego()">Reiniciar</button>
+  </div>
+
+  <div class="back-home-container">
+    <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
+  </div>
+</html>

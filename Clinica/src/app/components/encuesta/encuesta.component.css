@@ -1,0 +1,168 @@
+/* Estilos generales para el formulario de registro */
+.register-container {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Estilos para el encabezado */
+.registro {
+    font-size: 2.5rem;
+    text-align: center;
+    color: #000000;
+    text-shadow: 0 0 5px #ffffff,
+        0 0 10px #57532d,
+        0 0 15px #57532d,
+        0 0 20px #57532d,
+        0 0 30px #57532d,
+        0 0 40px #57532d,
+        0 0 50px #57532d,
+        0 0 60px #57532d;
+    margin-bottom: 30px;
+}
+
+.registro:hover {
+    font-size: 2.7rem;
+    color: #000000;
+    text-shadow: 0 0 5px #ffffff,
+        0 0 10px #f44336,
+        0 0 15px #3800bb,
+        0 0 20px #ff4081,
+        0 0 30px #ff4081,
+        0 0 40px #ff4081,
+        0 0 50px #ff4081,
+        0 0 60px #ff4081;
+    transition: all 0.5s ease;
+}
+
+/* Estilos para los campos de entrada */
+.register-input {
+    width: 100%;
+    max-width: 400px;
+    /* Limitamos el ancho máximo de los inputs */
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ff9b9b;
+    background-color: #333;
+    color: #fff;
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.register-input:focus {
+    border-color: #f44336;
+    box-shadow: 0 0 0.5rem #f44336;
+    outline: none;
+}
+
+.btn-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    max-width: 400px;
+    /* Limitamos el ancho máximo de los botones */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Estilo común para todos los botones */
+.btn {
+    background-color: transparent;
+    border: 1px solid #fdd835;
+    color: #fdd835;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #fdd835;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 200px;
+    margin-top: 2px;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: #b15e00;
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Estilo del mensaje de error */
+.error-message {
+    color: #ff4081;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 0 0.5rem #ff4081;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    background-color: rgba(255, 64, 129, 0.1);
+    border: 1px solid #ff4081;
+    width: 200px;
+
+}
+
+
+
+/* Media query para pantallas más pequeñas (teléfonos, tablets) */
+@media (max-width: 768px) {
+    .register-container {
+        padding: 20px;
+    }
+
+    .registro {
+        font-size: 1.8rem;
+    }
+
+    .register-input {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .error-message {
+        font-size: 0.8rem;
+    }
+}
+
+/* Media query para pantallas aún más pequeñas (teléfonos muy pequeños) */
+@media (max-width: 480px) {
+    .register-container {
+        padding: 10px;
+    }
+
+    .registro {
+        font-size: 1.5rem;
+    }
+
+    .register-input {
+        font-size: 0.8rem;
+        padding: 0.6rem;
+    }
+
+    .btn {
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .error-message {
+        font-size: 0.75rem;
+    }
+}

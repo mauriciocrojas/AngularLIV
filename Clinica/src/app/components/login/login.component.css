@@ -1,0 +1,164 @@
+/* Estilos generales para el login */
+.login-container {
+  background-color: #000;
+  color: #fff;
+  padding: 20px;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.login {
+  font-size: 2.5rem;
+  text-align: center;
+  color: #000000;
+  text-shadow: 0 0 5px #ffffff,
+    0 0 10px #57532d,
+    0 0 15px #57532d,
+    0 0 20px #57532d,
+    0 0 30px #57532d,
+    0 0 40px #57532d,
+    0 0 50px #57532d,
+    0 0 60px #57532d;
+  margin-bottom: 30px;
+}
+
+.login:hover {
+  font-size: 2.7rem;
+  color: #000000;
+  text-shadow: 0 0 5px #ffffff,
+    0 0 10px #f44336,
+    0 0 15px #3800bb,
+    0 0 20px #ff4081,
+    0 0 30px #ff4081,
+    0 0 40px #ff4081,
+    0 0 50px #ff4081,
+    0 0 60px #ff4081;
+  transition: all 0.5s ease;
+}
+
+/* Estilo de los inputs */
+.login-input {
+  width: 100%;
+  max-width: 400px;
+  /* Limitamos el ancho para que no se vea gigante en pantallas grandes */
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ffa9a9;
+  background-color: #333;
+  color: #fff;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-input:focus {
+  border-color: #f44336;
+  box-shadow: 0 0 8px #f44336;
+}
+
+/* Contenedor para centrar los botones */
+.btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Estilo común para todos los botones */
+.btn {
+  background-color: transparent;
+  border: 1px solid #fdd835;
+  color: #fdd835;
+  padding: 10px 20px;
+  /* Aumentamos el padding horizontal para que se vean más grandes */
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #fdd835;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  /* Limitamos el ancho de los botones */
+  text-align: center;
+}
+
+/* Efecto hover */
+.btn:hover {
+  background-color: #b15e00;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.error-message {
+  color: #ff4081;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 0 8px #ff4081;
+}
+
+/* Media queries para hacerlo responsive */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 50px 20px;
+  }
+
+  .login {
+    font-size: 1.8rem;
+    /* Reducimos un poco el tamaño del título en tablets */
+  }
+
+  .login-input {
+    font-size: 0.9rem;
+    padding: 8px;
+    max-width: 100%;
+    /* Los inputs ocupan el 100% en pantallas pequeñas */
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 8px 15px;
+    /* Ajustamos el padding de los botones en tablets */
+    max-width: 100%;
+  }
+
+  .error-message {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 10px;
+  }
+
+  .login {
+    font-size: 1.5rem;
+    /* Reducimos aún más el tamaño del título en móviles */
+  }
+
+  .login-input {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+
+  .btn {
+    font-size: 0.7rem;
+    padding: 6px 12px;
+    /* Ajustamos el padding de los botones en móviles */
+  }
+
+  .error-message {
+    font-size: 0.8rem;
+  }
+}

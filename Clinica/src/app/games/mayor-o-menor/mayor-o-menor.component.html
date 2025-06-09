@@ -1,0 +1,41 @@
+<html>
+<div class="juego-container">
+  <h2 class="arcade-title">Mayor o Menor</h2>
+
+  <div class="carta">
+    <p>Carta actual:</p>
+    <div class="carta-display">
+      {{ cartaActual?.valor }} {{ cartaActual?.palo }}
+    </div>
+  </div>
+
+  <div class="carta" *ngIf="mostrarSiguienteCarta">
+    <p>Carta recogida:</p>
+    <div class="carta-display" *ngIf="!cartaRecogidaTapada">
+      {{ siguienteCarta?.valor }} {{ siguienteCarta?.palo }}
+    </div>
+    <div class="carta-display" *ngIf="cartaRecogidaTapada">
+      Tapada
+    </div>
+  </div>
+
+  <div *ngIf="!juegoTerminado">
+    <p>¿La próxima carta será...?</p>
+    <div class="botones-apuesta">
+      <button (click)="adivinar('mayor')" [disabled]="!!respuestaJugador">Mayor</button>
+      <button (click)="adivinar('igual')" [disabled]="!!respuestaJugador">Igual</button>
+      <button (click)="adivinar('menor')" [disabled]="!!respuestaJugador">Menor</button>
+    </div>
+  </div>
+
+  <p><strong *ngIf="mensaje" [ngClass]="{ 'mensaje-rojo': juegoTerminado }">{{ mensaje }}</strong></p>
+  <p *ngIf="!juegoTerminado"><strong>Puntaje: {{ puntaje }}</strong></p>
+
+</div>
+
+<button (click)="reiniciar()">Reiniciar</button>
+
+<div class="back-home-container">
+  <button class="back-home-btn" (click)="volverHome()">Volver al inicio</button>
+</div>
+</html>
