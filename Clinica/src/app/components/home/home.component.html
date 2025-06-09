@@ -3,10 +3,7 @@
 <div class="home-container">
   <!-- Nav -->
   <div class="top-buttons">
-    <!-- <button class="nav-button" routerLink="/quien-soy">Quién soy</button> -->
-    <button class="nav-button" routerLink="/pacientes">Pacientes</button>
-    <button class="nav-button" routerLink="/especialistas">Especialistas</button>
-    <button class="nav-button" routerLink="/admin">Administración</button>
+    <button *ngIf="esAdmin" class="nav-button" routerLink="/usuarios">Usuarios</button>
   </div>
 
   <hr class="divider">
@@ -26,7 +23,9 @@
 
   <!-- Si está logueado -->
   <div *ngIf="isLoggedIn" class="user-info">
-    <p>Sesión iniciada como: <strong>{{ userEmail }}</strong></p>
+    <p>
+      Sesión iniciada como: <strong>{{ tipoUsuario || 'Usuario' }}</strong> — {{ userEmail }}
+    </p>
     <button (click)="logout()" class="logout-button"><strong>Cerrar sesión</strong></button>
   </div>
 </div>

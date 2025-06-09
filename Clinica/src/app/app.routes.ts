@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
+import { AdminGuard } from './guards/admin.guard';
+
 
 export const routes: Routes = [
   {
@@ -25,9 +27,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/quien-soy/quien-soy.component').then(m => m.QuienSoyComponent),
   },
   {
-    path: 'lista-jugadores',
-    loadComponent: () => import('./components/lista-jugadores/lista-jugadores.component').then(m => m.ListaJugadoresComponent),
-  },
+    path: 'usuarios',
+    loadComponent: () => import('./components/usuarios/usuarios.component').then(m => m.UsuariosComponent),
+    canActivate: [AdminGuard]
+  }
+  ,
   {
     path: 'chat',
     loadComponent: () => import('./components/chat/chat.component').then(m => m.ChatComponent)

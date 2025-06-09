@@ -1,0 +1,61 @@
+<div class="usuarios-container">
+  <h2>Gestión de Usuarios</h2>
+
+  <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Confirmado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of usuarios">
+        <td>{{ user.tipo_usuario }}</td>
+        <td>{{ user.nombre }} {{ user.apellido }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.confirmado ? 'Sí' : 'No' }}</td>
+        <td>
+          <button *ngIf="user.tipo_usuario === 'especialista'" (click)="cambiarEstado(user)">
+            {{ user.confirmado ? 'Inhabilitar' : 'Habilitar' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Crear Nuevo Usuario</h3>
+  <div class="form">
+    <select [(ngModel)]="nuevoUsuario.tipo_usuario">
+      <option value="" disabled selected>Tipo de usuario</option>
+      <option value="paciente">Paciente</option>
+      <option value="especialista">Especialista</option>
+      <option value="administrador">Administrador</option>
+    </select>
+
+    <input type="text" placeholder="Nombre" [(ngModel)]="nuevoUsuario.nombre" />
+    <input type="text" placeholder="Apellido" [(ngModel)]="nuevoUsuario.apellido" />
+    <input type="number" placeholder="Edad" [(ngModel)]="nuevoUsuario.edad" />
+    <input type="text" placeholder="DNI" [(ngModel)]="nuevoUsuario.dni" />
+
+    <input type="email" placeholder="Email" [(ngModel)]="nuevoUsuario.email" />
+    <input type="password" placeholder="Password" [(ngModel)]="nuevoUsuario.password" />
+
+    <input type="file" (change)="onFileSelected($event)" />
+
+    <input *ngIf="nuevoUsuario.tipo_usuario === 'especialista'" type="text" placeholder="Especialidad"
+      [(ngModel)]="nuevoUsuario.especialidad" />
+    <input *ngIf="nuevoUsuario.tipo_usuario === 'paciente'" type="text" placeholder="Obra Social"
+      [(ngModel)]="nuevoUsuario.obra_social" />
+
+    <button (click)="crearUsuario()">Crear Usuario</button>
+  </div>
+  <div class="btn-container">
+    <button routerLink="/home">Volver</button>
+  </div>
+
+</div>

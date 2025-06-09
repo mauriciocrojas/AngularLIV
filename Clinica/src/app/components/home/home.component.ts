@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
-import { UserData } from '../../models/user-data';
 import { environment } from '../../../environments/environment';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -10,21 +9,24 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
 
-  usersdata: UserData[] = [];
   userEmail: string | null = null;
-  isLoggedIn: boolean = false; // Estado para saber si el usuario está logueado
+  isLoggedIn: boolean = false;
+  esAdmin: boolean = false;
+  tipoUsuario: string | null = null; // Para mostrar tipo usuario en UI
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {
-    this.checkSession();
-    this.getUserData();
+  async ngOnInit() {
+    await this.checkSession();
+    if (this.isLoggedIn) {
+      await this.loadUserType();
+    }
   }
 
   async checkSession() {
@@ -34,31 +36,41 @@ export class HomeComponent implements OnInit {
       this.userEmail = session.user.email ?? null;
     } else {
       this.isLoggedIn = false;
+      this.userEmail = null;
+      this.esAdmin = false;
+      this.tipoUsuario = null;
     }
   }
 
-  getUserData() {
-    supabase.from('users-data').select('*').then(({ data, error }) => {
-      if (error) {
-        console.error('Error:', error.message);
-      } else {
-        this.usersdata = data;
-        this.usersdata.forEach(user => {
-          console.log('Avatar URL:', this.getAvatarUrl(user.avatarUrl));
-        });
-      }
-    });
-  }
+  async loadUserType() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
 
-  getAvatarUrl(avatarUrl: string) {
-    return supabase.storage.from('images').getPublicUrl(avatarUrl).data.publicUrl;
+    const userId = session.user.id;
+    const { data, error } = await supabase
+      .from('usuarios')
+      .select('tipo_usuario')
+      .eq('id', userId)
+      .single();
+
+    if (error || !data) {
+      console.error('Error al obtener tipo_usuario:', error?.message);
+      this.esAdmin = false;
+      this.tipoUsuario = null;
+      return;
+    }
+
+    this.tipoUsuario = data.tipo_usuario;
+    this.esAdmin = data.tipo_usuario === 'administrador';
   }
 
   logout() {
     supabase.auth.signOut().then(() => {
-      // No redirige al login, solo cambia el estado de la sesión
       this.isLoggedIn = false;
       this.userEmail = null;
+      this.esAdmin = false;
+      this.tipoUsuario = null;
+      this.router.navigate(['/login']);
     }).catch((error) => {
       console.error('Error al cerrar sesión:', error.message);
     });
