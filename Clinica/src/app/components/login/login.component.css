@@ -1,164 +1,107 @@
-/* Estilos generales para el login */
 .login-container {
-  background-color: #000;
-  color: #fff;
-  padding: 20px;
-  width: 100%;
+  background-color: hsl(52, 23%, 74%);
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 40 40 M 40 0 L 0 40' stroke='%23c5e1a5' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 40px 40px;
   min-height: 100vh;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
 }
 
-.login {
+
+.login-title {
   font-size: 2.5rem;
+  margin-bottom: 25px;
+  color: #1b5e20;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   text-align: center;
-  color: #000000;
-  text-shadow: 0 0 5px #ffffff,
-    0 0 10px #57532d,
-    0 0 15px #57532d,
-    0 0 20px #57532d,
-    0 0 30px #57532d,
-    0 0 40px #57532d,
-    0 0 50px #57532d,
-    0 0 60px #57532d;
-  margin-bottom: 30px;
 }
 
-.login:hover {
-  font-size: 2.7rem;
-  color: #000000;
-  text-shadow: 0 0 5px #ffffff,
-    0 0 10px #f44336,
-    0 0 15px #3800bb,
-    0 0 20px #ff4081,
-    0 0 30px #ff4081,
-    0 0 40px #ff4081,
-    0 0 50px #ff4081,
-    0 0 60px #ff4081;
-  transition: all 0.5s ease;
-}
-
-/* Estilo de los inputs */
 .login-input {
   width: 100%;
   max-width: 400px;
-  /* Limitamos el ancho para que no se vea gigante en pantallas grandes */
-  padding: 10px;
+  padding: 10px 14px;
   margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ffa9a9;
-  background-color: #333;
-  color: #fff;
-  box-sizing: border-box;
+  border-radius: 6px;
+  border: 1px solid #81c784;
+  background-color: #ffffff;
+  color: #2e7d32;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  box-sizing: border-box;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
 .login-input:focus {
-  border-color: #f44336;
-  box-shadow: 0 0 8px #f44336;
+  border-color: #388e3c;
+  box-shadow: 0 0 5px rgba(56, 142, 60, 0.5);
+  outline: none;
 }
 
-/* Contenedor para centrar los botones */
 .btn-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 10px;
   width: 100%;
-}
-
-/* Estilo común para todos los botones */
-.btn {
-  background-color: transparent;
-  border: 1px solid #fdd835;
-  color: #fdd835;
-  padding: 10px 20px;
-  /* Aumentamos el padding horizontal para que se vean más grandes */
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  border-radius: 8px;
-  box-shadow: 0 0 10px #fdd835;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  width: 100%;
   max-width: 300px;
-  /* Limitamos el ancho de los botones */
-  text-align: center;
 }
 
-/* Efecto hover */
+.btn {
+  padding: 10px;
+  font-size: 1rem;
+  text-align: center;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s;
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+}
+
 .btn:hover {
-  background-color: #b15e00;
-  color: #ffffff;
-  transform: scale(1.05);
+  background-color: #388e3c;
+  transform: scale(1.03);
+}
+
+.btn-outline {
+  background-color: white;
+  color: #4caf50;
+  border: 1px solid #4caf50;
+}
+
+.btn-outline:hover {
+  background-color: #e8f5e9;
+}
+
+.btn-secondary {
+  background-color: #81c784;
+}
+
+.btn-secondary:hover {
+  background-color: #66bb6a;
 }
 
 .error-message {
-  color: #ff4081;
-  font-size: 1rem;
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
   margin-bottom: 15px;
   text-align: center;
-  font-weight: bold;
-  box-shadow: 0 0 8px #ff4081;
+  width: 100%;
+  max-width: 400px;
 }
 
-/* Media queries para hacerlo responsive */
 @media (max-width: 768px) {
-  .login-container {
-    padding: 50px 20px;
-  }
-
-  .login {
-    font-size: 1.8rem;
-    /* Reducimos un poco el tamaño del título en tablets */
-  }
-
-  .login-input {
-    font-size: 0.9rem;
-    padding: 8px;
-    max-width: 100%;
-    /* Los inputs ocupan el 100% en pantallas pequeñas */
+  .login-title {
+    font-size: 2rem;
   }
 
   .btn {
-    font-size: 0.8rem;
-    padding: 8px 15px;
-    /* Ajustamos el padding de los botones en tablets */
-    max-width: 100%;
-  }
-
-  .error-message {
     font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .login-container {
-    padding: 30px 10px;
-  }
-
-  .login {
-    font-size: 1.5rem;
-    /* Reducimos aún más el tamaño del título en móviles */
-  }
-
-  .login-input {
-    font-size: 0.8rem;
-    padding: 6px;
-  }
-
-  .btn {
-    font-size: 0.7rem;
-    padding: 6px 12px;
-    /* Ajustamos el padding de los botones en móviles */
-  }
-
-  .error-message {
-    font-size: 0.8rem;
   }
 }

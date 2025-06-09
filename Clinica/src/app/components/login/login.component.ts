@@ -18,56 +18,90 @@ export class LoginComponent {
 
   email: string = "";
   password: string = "";
-  errorMessage: string = ""; // <-- Para mostrar errores
+  errorMessage: string = "";
 
   constructor(private router: Router) {}
 
   async login() {
-    this.errorMessage = ""; // Limpiar mensaje anterior
+  this.errorMessage = '';
 
-    if (!this.email || !this.password) {
-      this.errorMessage = "Por favor, complete todos los campos."; // Mensaje en español
-      return;
-    }
-
-    if (!this.validateEmail(this.email)) {
-      this.errorMessage = "Ingrese un email válido."; // Mensaje en español
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: this.email,
-      password: this.password,
-    });
-
-    if (error) {
-      this.errorMessage = "Correo electrónico o contraseña incorrectos."; // Mensaje en español
-      console.error('Error:', error.message);
-    } else {
-            // Registrar el log de ingreso exitoso
-            const { error: logError } = await supabase.from('login_logs').insert({
-              email: this.email,
-              login_date: new Date().toISOString()
-            });
-
-            if (logError) {
-              console.error('Error registrando el log de login:', logError.message);
-              // Muestro error, pero no frenaría el login
-            }
-
-            this.router.navigate(['/home']);
-          }
+  // Validaciones básicas
+  if (!this.email || !this.password) {
+    this.errorMessage = 'Por favor, complete todos los campos.';
+    return;
   }
 
+  if (!this.validateEmail(this.email)) {
+    this.errorMessage = 'Ingrese un correo electrónico válido.';
+    return;
+  }
+
+  // Intentar iniciar sesión
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: this.email,
+    password: this.password,
+  });
+
+  if (error) {
+    // Analizar mensaje de error
+    if (error.message.includes('Email not confirmed')) {
+      this.errorMessage = 'Debe verificar su correo electrónico antes de ingresar. Revise su bandeja de entrada.';
+    } else if (error.message.includes('Invalid login credentials')) {
+      this.errorMessage = 'Correo electrónico o contraseña incorrectos.';
+    } else {
+      this.errorMessage = 'Error al iniciar sesión. Intente nuevamente más tarde.';
+    }
+    console.error('Error:', error.message);
+    return;
+  }
+
+  const user = data.user;
+
+  // Verificación de email (seguridad adicional por si pasa el control anterior)
+  if (!user?.email_confirmed_at) {
+    this.errorMessage = 'Debe verificar su correo electrónico antes de ingresar. Revise su bandeja de entrada.';
+    return;
+  }
+
+  // Obtener datos adicionales del usuario desde la tabla `usuarios`
+  const { data: userData, error: userError } = await supabase
+    .from('usuarios')
+    .select('tipo_usuario, confirmado')
+    .eq('id', user.id)
+    .single();
+
+  if (userError || !userData) {
+    this.errorMessage = 'Error obteniendo los datos del usuario.';
+    console.error('Error obteniendo usuario:', userError?.message);
+    return;
+  }
+
+  const { tipo_usuario, confirmado } = userData;
+
+  // Validar aprobación del administrador para especialistas
+  if (tipo_usuario === 'especialista' && !confirmado) {
+    this.errorMessage = 'Un administrador debe aprobar su cuenta antes de ingresar.';
+    return;
+  }
+
+  // Registrar el acceso
+  await supabase.from('login_logs').insert({
+    email: this.email,
+    login_date: new Date().toISOString(),
+  });
+
+  // Redireccionar al home
+  this.router.navigate(['/home']);
+}
+
+
   preloadData() {
-    this.email = 'yiked90480@firain.com';
+    this.email = 'mauriciocc.rojas@gmail.com';
     this.password = '123456';
   }
 
   validateEmail(email: string) {
-    // Validación simple de email
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   }
-
 }

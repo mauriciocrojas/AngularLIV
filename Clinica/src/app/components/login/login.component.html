@@ -1,28 +1,27 @@
 <div class="login-container">
-  <h3 class = "login">Login</h3>
+  <h3 class="login-title">Ingreso a la Clínica</h3>
 
-  <!-- Mostrar mensaje de error si hay -->
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 
-  <input type="email" placeholder="Email" [(ngModel)]="email" class="login-input" />
+  <input
+    type="email"
+    placeholder="Correo electrónico"
+    [(ngModel)]="email"
+    class="login-input"
+  />
 
-  <input type="password" placeholder="Password" [(ngModel)]="password" class="login-input" />
+  <input
+    type="password"
+    placeholder="Contraseña"
+    [(ngModel)]="password"
+    class="login-input"
+  />
 
   <div class="btn-container">
-
-  <button (click)="login()" class="btn">
-    Ingresar
-  </button>
-
-  <button (click)="preloadData()" class="btn">
-    Precargar Datos
-  </button>
-
-  <button routerLink="/register" class="btn">
-    Registrarse
-  </button>
-</div>
-
+    <button (click)="login()" class="btn">Ingresar</button>
+    <button (click)="preloadData()" class="btn btn-outline">Precargar Datos</button>
+    <button routerLink="/register" class="btn btn-secondary">Registrarse</button>
+  </div>
 </div>
