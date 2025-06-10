@@ -12,7 +12,7 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   imports: [FormsModule, RouterLink, CommonModule],
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.css']  // Ojo: cambié a .css como preferís
 })
 export class RegisterComponent {
   username: string = '';
@@ -31,6 +31,8 @@ export class RegisterComponent {
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
+  loading: boolean = false;  // <--- Spinner activo
+
   especialidades = ['Cardiología', 'Pediatría', 'Traumatología', 'Dermatología'];
 
   constructor(private router: Router) {}
@@ -44,6 +46,8 @@ export class RegisterComponent {
       return;
     }
 
+    this.loading = true;  // <--- activo spinner al iniciar registro
+
     supabase.auth.signUp({
       email: this.username,
       password: this.password,
@@ -51,9 +55,11 @@ export class RegisterComponent {
       if (error) {
         console.error('Error en el registro:', error.message);
         this.errorMessage = this.translateError(error.message);
+        this.loading = false;  // <--- desactivo spinner si hay error
       } else if (data.user) {
         console.log('Usuario registrado:', data.user);
         await this.saveUserData(data.user);
+        this.loading = false;  // <--- desactivo spinner al finalizar
       }
     });
   }
@@ -63,6 +69,7 @@ export class RegisterComponent {
 
     if (urls === null) {
       this.errorMessage = 'Error al subir imágenes.';
+      this.loading = false;  // <--- desactivo spinner si falla imagen
       return;
     }
 

@@ -3,7 +3,8 @@
 <div class="home-container">
   <!-- Nav -->
   <div class="top-buttons">
-    <button *ngIf="esAdmin" class="nav-button" routerLink="/usuarios">Usuarios</button>
+    <button *ngIf="esAdmin && !cargandoUsuarios" class="nav-button" (click)="irAUsuarios()">Usuarios</button>
+    <div *ngIf="cargandoUsuarios" class="spinner"></div>
   </div>
 
   <hr class="divider">

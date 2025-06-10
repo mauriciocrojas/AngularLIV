@@ -10,6 +10,7 @@
     placeholder="Correo electrónico"
     [(ngModel)]="email"
     class="login-input"
+    [disabled]="loading"
   />
 
   <input
@@ -17,11 +18,14 @@
     placeholder="Contraseña"
     [(ngModel)]="password"
     class="login-input"
+    [disabled]="loading"
   />
 
-  <div class="btn-container">
+  <div class="btn-container" *ngIf="!loading">
     <button (click)="login()" class="btn">Ingresar</button>
     <button (click)="preloadData()" class="btn btn-outline">Precargar Datos</button>
     <button routerLink="/register" class="btn btn-secondary">Registrarse</button>
   </div>
+
+  <div *ngIf="loading" class="spinner"></div>
 </div>

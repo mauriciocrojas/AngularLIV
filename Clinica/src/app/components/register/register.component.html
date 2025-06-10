@@ -1,45 +1,68 @@
 <div class="register-container">
   <h3 class="registro">Registro</h3>
 
-  <select [(ngModel)]="tipoUsuario" class="register-input" required>
-    <option value="" disabled selected>Seleccioná tipo de usuario</option>
-    <option value="paciente">Paciente</option>
-    <option value="especialista">Especialista</option>
-  </select>
+  <form class="form">
+    <fieldset>
+      <legend>Datos Generales</legend>
+      <div class="form-group">
+        <select [(ngModel)]="tipoUsuario" name="tipoUsuario" required class="register-input">
+          <option value="" disabled selected>Seleccioná tipo de usuario</option>
+          <option value="paciente">Paciente</option>
+          <option value="especialista">Especialista</option>
+        </select>
 
-  <input type="text" placeholder="Nombre" [(ngModel)]="nombre" class="register-input" />
-  <input type="text" placeholder="Apellido" [(ngModel)]="apellido" class="register-input" />
-  <input type="number" placeholder="Edad" [(ngModel)]="edad" class="register-input" />
-  <input type="text" placeholder="DNI" [(ngModel)]="dni" class="register-input" />
+        <input type="text" name="nombre" placeholder="Nombre" [(ngModel)]="nombre" class="register-input" />
+        <input type="text" name="apellido" placeholder="Apellido" [(ngModel)]="apellido" class="register-input" />
+        <input type="number" name="edad" placeholder="Edad" [(ngModel)]="edad" class="register-input" />
+        <input type="text" name="dni" placeholder="DNI" [(ngModel)]="dni" class="register-input" />
+      </div>
+    </fieldset>
 
-  <div *ngIf="tipoUsuario === 'paciente'" class="register-input">
-    <label>Obra Social:</label>
-    <select [(ngModel)]="obraSocial" class="register-input">
-      <option value="" disabled selected>Seleccioná una opción</option>
-      <option value="Galeno">Galeno</option>
-      <option value="Swiss Medical">Swiss Medical</option>
-      <option value="OSDE">OSDE</option>
-    </select>
-  </div>
+    <fieldset *ngIf="tipoUsuario === 'paciente'">
+      <legend>Datos del Paciente</legend>
+      <div class="form-group">
+        <label>Obra Social:</label>
+        <select [(ngModel)]="obraSocial" name="obraSocial" class="register-input">
+          <option value="" disabled selected>Seleccioná una opción</option>
+          <option value="Galeno">Galeno</option>
+          <option value="Swiss Medical">Swiss Medical</option>
+          <option value="OSDE">OSDE</option>
+        </select>
+      </div>
+    </fieldset>
 
-  <div *ngIf="tipoUsuario === 'especialista'" class="register-input">
-    <label>Especialidad:</label>
-    <select [(ngModel)]="especialidadSeleccionada" class="register-input">
-      <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
-    </select>
-    <input type="text" placeholder="Nueva especialidad (opcional)" [(ngModel)]="nuevaEspecialidad" class="register-input" />
-  </div>
+    <fieldset *ngIf="tipoUsuario === 'especialista'">
+      <legend>Datos del Especialista</legend>
+      <div class="form-group">
+        <label>Especialidad:</label>
+        <select [(ngModel)]="especialidadSeleccionada" name="especialidadSeleccionada" class="register-input">
+          <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
+        </select>
+        <input type="text" name="nuevaEspecialidad" placeholder="Nueva especialidad (opcional)" [(ngModel)]="nuevaEspecialidad" class="register-input" />
+      </div>
+    </fieldset>
 
-  <input type="email" placeholder="Email" [(ngModel)]="username" class="register-input" />
-  <input type="password" placeholder="Contraseña" [(ngModel)]="password" class="register-input" />
+    <fieldset>
+      <legend>Acceso</legend>
+      <div class="form-group">
+        <input type="email" name="email" placeholder="Email" [(ngModel)]="username" class="register-input" />
+        <input type="password" name="password" placeholder="Contraseña" [(ngModel)]="password" class="register-input" />
 
-  <label>Seleccionar {{ tipoUsuario === 'paciente' ? '2 imágenes' : '1 imagen' }} de perfil</label>
-  <input type="file" (change)="onFilesSelected($event)" [multiple]="tipoUsuario === 'paciente'" class="register-input" />
+        <label>Seleccionar {{ tipoUsuario === 'paciente' ? '2 imágenes' : '1 imagen' }} de perfil</label>
+        <input type="file" (change)="onFilesSelected($event)" [multiple]="tipoUsuario === 'paciente'" class="register-input" />
+      </div>
+    </fieldset>
 
-  <div class="btn-container">
-    <button (click)="register()" class="btn">Registrar</button>
-    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-    <button routerLink="/login" class="btn">Ir al Login</button>
+    <div class="btn-container">
+      <button type="button" (click)="register()" class="btn" [disabled]="loading">Registrar</button>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+      <button routerLink="/login" class="btn">Ir al Login</button>
+    </div>
+  </form>
+
+  <!-- Spinner overlay -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner"></div>
   </div>
 </div>

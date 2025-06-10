@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   isLoggedIn: boolean = false;
   esAdmin: boolean = false;
   tipoUsuario: string | null = null; // Para mostrar tipo usuario en UI
+  cargandoUsuarios: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -78,5 +79,12 @@ export class HomeComponent implements OnInit {
 
   goToLogin() {
     this.router.navigate(['/login']);
+  }
+
+  irAUsuarios() {
+    this.cargandoUsuarios = true;
+    setTimeout(() => {
+      this.router.navigate(['/usuarios']);
+    }, 700);
   }
 }
