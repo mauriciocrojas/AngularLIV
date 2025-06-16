@@ -1,20 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
-import { createClient, User } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
+
+// Para reCAPTCHA
+import { RecaptchaModule, RecaptchaComponent } from 'ng-recaptcha';
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
 @Component({
   standalone: true,
-  imports: [FormsModule, RouterLink, CommonModule],
+  imports: [FormsModule, RouterLink, CommonModule, RecaptchaModule],
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']  // Ojo: cambié a .css como preferís
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
+  @ViewChild(RecaptchaComponent) recaptcha!: RecaptchaComponent;
+
   username: string = '';
   password: string = '';
 
@@ -28,16 +33,30 @@ export class RegisterComponent {
   nuevaEspecialidad: string = '';
   imagenes: File[] = [];
 
+  captchaToken: string | null = null;
+
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
-  loading: boolean = false;  // <--- Spinner activo
+  loading: boolean = false;
 
   especialidades = ['Cardiología', 'Pediatría', 'Traumatología', 'Dermatología'];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
-  register() {
+  onCaptchaResolved(token: string | null) {
+    if (token && token.trim() !== '') {
+      this.captchaToken = token;
+    } else {
+      this.captchaToken = null;
+    }
+  }
+
+  setTipoUsuario(tipo: 'paciente' | 'especialista') {
+    this.tipoUsuario = tipo;
+  }
+
+  async register() {
     this.errorMessage = null;
     this.successMessage = null;
 
@@ -46,73 +65,106 @@ export class RegisterComponent {
       return;
     }
 
-    this.loading = true;  // <--- activo spinner al iniciar registro
-
-    supabase.auth.signUp({
-      email: this.username,
-      password: this.password,
-    }).then(async ({ data, error }) => {
-      if (error) {
-        console.error('Error en el registro:', error.message);
-        this.errorMessage = this.translateError(error.message);
-        this.loading = false;  // <--- desactivo spinner si hay error
-      } else if (data.user) {
-        console.log('Usuario registrado:', data.user);
-        await this.saveUserData(data.user);
-        this.loading = false;  // <--- desactivo spinner al finalizar
-      }
-    });
-  }
-
-  async saveUserData(user: User) {
-    const urls = await this.uploadImages();
-
-    if (urls === null) {
-      this.errorMessage = 'Error al subir imágenes.';
-      this.loading = false;  // <--- desactivo spinner si falla imagen
+    if (!this.captchaToken || this.captchaToken.trim() === '') {
+      this.errorMessage = 'Por favor, completá el captcha.';
+      this.recaptcha.reset();
       return;
     }
 
-    let especialidadesFinal: string[] = [];
+    this.loading = true;
 
-    if (this.tipoUsuario === 'especialista') {
-      if (this.especialidadSeleccionada) {
-        especialidadesFinal.push(this.especialidadSeleccionada);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: this.username,
+        password: this.password,
+      });
+
+      if (error) {
+        this.errorMessage = this.translateError(error.message);
+        this.loading = false;
+        this.recaptcha.reset();
+        return;
       }
-      const nueva = this.nuevaEspecialidad.trim();
-      if (nueva && !especialidadesFinal.includes(nueva)) {
-        especialidadesFinal.push(nueva);
+
+      if (!data.user) {
+        this.errorMessage = 'No se pudo crear el usuario.';
+        this.loading = false;
+        this.recaptcha.reset();
+        return;
       }
-    }
 
-    const dataToInsert: any = {
-      id: user.id,
-      nombre: this.nombre,
-      apellido: this.apellido,
-      edad: this.edad,
-      dni: this.dni,
-      email: this.username,
-      tipo_usuario: this.tipoUsuario,
-      imagenes: urls,
-      confirmado: false,
-      created_at: new Date().toISOString()
-    };
+      const urls = await this.uploadImages();
 
-    if (this.tipoUsuario === 'paciente') {
-      dataToInsert.obra_social = this.obraSocial;
-    } else if (this.tipoUsuario === 'especialista') {
-      dataToInsert.especialidad = especialidadesFinal;
-    }
+      if (urls === null) {
+        this.errorMessage = 'Error al subir imágenes.';
+        this.loading = false;
+        this.recaptcha.reset();
+        return;
+      }
 
-    const { error } = await supabase.from('usuarios').insert([dataToInsert]);
+      let especialidadesFinal: string[] = [];
 
-    if (error) {
-      console.error('Error al guardar en Supabase:', error.message);
-      this.errorMessage = 'Error al guardar los datos del usuario.';
-    } else {
+      if (this.tipoUsuario === 'especialista') {
+        if (this.especialidadSeleccionada) {
+          especialidadesFinal.push(this.especialidadSeleccionada);
+        }
+        const nueva = this.nuevaEspecialidad.trim();
+        if (nueva && !especialidadesFinal.includes(nueva)) {
+          especialidadesFinal.push(nueva);
+        }
+      }
+
+      const dataToInsert: any = {
+        id: data.user.id,
+        nombre: this.nombre,
+        apellido: this.apellido,
+        edad: this.edad,
+        dni: this.dni,
+        email: this.username,
+        tipo_usuario: this.tipoUsuario,
+        imagenes: urls,
+        confirmado: false,
+        created_at: new Date().toISOString()
+      };
+
+      if (this.tipoUsuario === 'paciente') {
+        dataToInsert.obra_social = this.obraSocial;
+      } else if (this.tipoUsuario === 'especialista') {
+        dataToInsert.especialidad = especialidadesFinal;
+      }
+
+      const { error: insertError } = await supabase.from('usuarios').insert([dataToInsert]);
+
+      if (insertError) {
+        this.errorMessage = 'Error al guardar los datos del usuario.';
+        this.loading = false;
+        this.recaptcha.reset();
+        return;
+      }
+
       this.successMessage = this.tipoUsuario === 'especialista'
         ? 'Se registró correctamente como especialista. Por favor, confirme su correo electrónico. Posteriormente, un administrador deberá validar su registro para poder acceder al sistema.'
         : 'Se registró correctamente como paciente. Por favor, confirme su correo electrónico para completar el proceso.';
+
+      // Reset campos
+      this.username = '';
+      this.password = '';
+      this.nombre = '';
+      this.apellido = '';
+      this.edad = null;
+      this.dni = '';
+      this.obraSocial = '';
+      this.especialidadSeleccionada = '';
+      this.nuevaEspecialidad = '';
+      this.imagenes = [];
+      this.captchaToken = null;
+      this.recaptcha.reset();
+
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Error inesperado.';
+      this.recaptcha.reset();
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -149,16 +201,13 @@ export class RegisterComponent {
       'Email not confirmed': 'El correo electrónico no ha sido confirmado.',
     };
 
-    if (errorMessage.toLowerCase().includes('user already registered') || errorMessage.toLowerCase().includes('email already registered')) {
+    if (
+      errorMessage.toLowerCase().includes('user already registered') ||
+      errorMessage.toLowerCase().includes('email already registered')
+    ) {
       return 'El correo electrónico ya está registrado.';
     }
 
     return errorMap[errorMessage] || 'Ocurrió un error inesperado. Por favor, intenta de nuevo.';
   }
-  
-  setTipoUsuario(tipo: 'paciente' | 'especialista') {
-    this.tipoUsuario = tipo;
-  }
-
-
 }

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'; // ✅ agregado
+import { HttpClientModule } from '@angular/common/http';
+import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,16 @@ import { HttpClientModule } from '@angular/common/http'; // ✅ agregado
   imports: [
     RouterOutlet,
     FormsModule,
-    HttpClientModule // ✅ necesario para usar servicios HTTP en componentes standalone
+    HttpClientModule,
+    RecaptchaModule
+  ],
+  providers: [
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: 'TU_SITE_KEY_AQUÍ'
+      } as RecaptchaSettings
+    }
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

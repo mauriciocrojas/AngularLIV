@@ -13,7 +13,7 @@
     </button>
   </div>
 
-  <form class="form" *ngIf="tipoUsuario">
+  <form class="form" *ngIf="tipoUsuario" (ngSubmit)="register()">
     <fieldset>
       <legend>Datos Generales</legend>
       <div class="form-group">
@@ -28,7 +28,7 @@
       <legend>Datos del Paciente</legend>
       <div class="form-group">
         <label>Obra Social:</label>
-        <select [(ngModel)]="obraSocial" name="obraSocial" class="register-input">
+        <select [(ngModel)]="obraSocial" name="obraSocial" class="register-input" required>
           <option value="" disabled selected>Seleccioná una opción</option>
           <option value="Galeno">Galeno</option>
           <option value="Swiss Medical">Swiss Medical</option>
@@ -42,6 +42,7 @@
       <div class="form-group">
         <label>Especialidad:</label>
         <select [(ngModel)]="especialidadSeleccionada" name="especialidadSeleccionada" class="register-input">
+          <option value="" disabled selected>Seleccioná una opción</option>
           <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
         </select>
         <input type="text" name="nuevaEspecialidad" placeholder="Nueva especialidad (opcional)"
@@ -52,25 +53,32 @@
     <fieldset>
       <legend>Acceso</legend>
       <div class="form-group">
-        <input type="email" name="email" placeholder="Email" [(ngModel)]="username" class="register-input" />
-        <input type="password" name="password" placeholder="Contraseña" [(ngModel)]="password" class="register-input" />
+        <input type="email" name="email" placeholder="Email" [(ngModel)]="username" class="register-input" required />
+        <input type="password" name="password" placeholder="Contraseña" [(ngModel)]="password" class="register-input"
+          required />
 
         <label>Seleccionar {{ tipoUsuario === 'paciente' ? '2 imágenes' : '1 imagen' }} de perfil</label>
         <input type="file" (change)="onFilesSelected($event)" [multiple]="tipoUsuario === 'paciente'"
           class="register-input" />
       </div>
-      <!-- Botón para volver a elegir tipo de usuario -->
-      <div class="volver-container">
-        <button type="button" class="btn volver-btn" (click)="tipoUsuario = ''">Volver</button>
+      <!-- reCAPTCHA -->
+      <div class="captcha-container">
+        <re-captcha siteKey="6LeuL2MrAAAAAIjNfAG0qcfH8x1IdsElq7tdVHyB" (resolved)="onCaptchaResolved($event)">
+        </re-captcha>
       </div>
 
+
+      <!-- Botón para volver a elegir tipo de usuario -->
+      <div class="volver-container">
+        <button type="button" class="btn volver-btn" (click)="tipoUsuario = ''" [disabled]="loading">Volver</button>
+      </div>
     </fieldset>
 
     <div class="volver-container">
-      <button class="btn volver-btn" (click)="register()"  [disabled]="loading">Registrar</button>
+      <button type="submit" class="btn volver-btn" [disabled]="loading || !captchaToken">Registrar</button>
       <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
       <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-      <button routerLink="/login" class="btn volver-btn">Ir al Login</button>
+      <button routerLink="/login" class="btn volver-btn" [disabled]="loading">Ir al Login</button>
     </div>
   </form>
 

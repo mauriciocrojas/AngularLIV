@@ -26,7 +26,7 @@ form.form {
   padding: 25px;
   width: 100%;
   max-width: 600px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 fieldset {
@@ -117,6 +117,7 @@ button:hover {
   border: 1px solid #a5d6a7;
   padding: 10px 16px;
   margin-top: 10px;
+  margin-left: 5px;
   border-radius: 6px;
   max-width: 400px;
   text-align: center;
@@ -146,8 +147,13 @@ button:hover {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .user-type-selector {
@@ -209,4 +215,11 @@ button:hover {
 
 .volver-btn:hover {
   background-color: #a5d6a7;
+}
+
+.captcha-container {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
 }
