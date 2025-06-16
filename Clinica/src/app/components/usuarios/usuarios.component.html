@@ -1,15 +1,13 @@
 <div class="usuarios-container">
-
   <h2>Gestión de Usuarios</h2>
-
 
   <!-- Loading -->
   <div *ngIf="loading" class="loading-overlay">
     <div class="spinner"></div>
   </div>
 
-  <!-- Contenido solo si no está cargando -->
   <div *ngIf="!loading">
+    <!-- Tabla de usuarios -->
     <div class="tabla-scroll">
       <table>
         <thead>
@@ -38,21 +36,34 @@
     </div>
     <div *ngIf="mensaje2" class="mensaje">{{ mensaje2 }}</div>
 
-
     <br><br><h3>Crear Nuevo Usuario</h3>
     <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
 
-    <form class="form">
+    <!-- Selección de tipo de usuario con imágenes -->
+    <div *ngIf="!nuevoUsuario.tipo_usuario" class="tipo-seleccion">
+      <strong>Seleccioná el tipo de usuario:</strong>
+      <div class="tipo-opciones">
+        <div (click)="nuevoUsuario.tipo_usuario = 'paciente'" class="opcion">
+          <img src="assets/paciente.png" alt="Paciente">
+          <span>Paciente</span>
+        </div>
+        <div (click)="nuevoUsuario.tipo_usuario = 'especialista'" class="opcion">
+          <img src="assets/especialista.png" alt="Especialista">
+          <span>Especialista</span>
+        </div>
+        <div (click)="nuevoUsuario.tipo_usuario = 'administrador'" class="opcion">
+          <img src="assets/admin.png" alt="Administrador">
+          <span>Administrador</span>
+        </div>
+      </div>
+    </div>
+
+    <form *ngIf="nuevoUsuario.tipo_usuario" class="form">
+      <button type="button" class="btn-volver" (click)="nuevoUsuario.tipo_usuario = ''">← Volver a elegir tipo</button>
+
       <fieldset>
         <legend>Datos Generales</legend>
         <div class="form-group">
-          <select name="tipo_usuario" [(ngModel)]="nuevoUsuario.tipo_usuario">
-            <option value="" disabled selected>Tipo de usuario</option>
-            <option value="paciente">Paciente</option>
-            <option value="especialista">Especialista</option>
-            <option value="administrador">Administrador</option>
-          </select>
-
           <input name="nombre" type="text" placeholder="Nombre" [(ngModel)]="nuevoUsuario.nombre" />
           <input name="apellido" type="text" placeholder="Apellido" [(ngModel)]="nuevoUsuario.apellido" />
           <input name="edad" type="number" placeholder="Edad" [(ngModel)]="nuevoUsuario.edad" />
@@ -68,36 +79,33 @@
           <input type="file" multiple (change)="onFilesSelected($event)" />
           <label>Seleccionar {{ nuevoUsuario.tipo_usuario === 'paciente' ? '2 imágenes' : '1 imagen' }}</label>
         </div>
-        <br>
-        <fieldset *ngIf="nuevoUsuario.tipo_usuario === 'especialista'">
-          <legend>Datos del Especialista</legend>
-          <div class="form-group">
-            <label>Especialidad existente:</label>
-            <select name="especialidadSeleccionada" [(ngModel)]="nuevoUsuario.especialidadSeleccionada">
-              <option value="" disabled selected>Seleccionar especialidad</option>
-              <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
-            </select>
-
-            <input name="nuevaEspecialidad" type="text" placeholder="Especialidad adicional"
-              [(ngModel)]="nuevoUsuario.nuevaEspecialidad" />
-          </div>
-        </fieldset>
-
-        <fieldset *ngIf="nuevoUsuario.tipo_usuario === 'paciente'">
-          <legend>Datos del Paciente</legend>
-          <div class="form-group">
-            <label>Obra Social:</label>
-            <select name="obra_social" [(ngModel)]="nuevoUsuario.obra_social">
-              <option value="" disabled selected>Seleccionar obra social</option>
-              <option value="Swiss Medical">Swiss Medical</option>
-              <option value="Galeno">Galeno</option>
-              <option value="OSDE">OSDE</option>
-            </select>
-          </div>
-        </fieldset>
       </fieldset>
 
+      <fieldset *ngIf="nuevoUsuario.tipo_usuario === 'especialista'">
+        <legend>Datos del Especialista</legend>
+        <div class="form-group">
+          <label>Especialidad existente:</label>
+          <select name="especialidadSeleccionada" [(ngModel)]="nuevoUsuario.especialidadSeleccionada">
+            <option value="" disabled selected>Seleccionar especialidad</option>
+            <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
+          </select>
+          <input name="nuevaEspecialidad" type="text" placeholder="Especialidad adicional"
+            [(ngModel)]="nuevoUsuario.nuevaEspecialidad" />
+        </div>
+      </fieldset>
 
+      <fieldset *ngIf="nuevoUsuario.tipo_usuario === 'paciente'">
+        <legend>Datos del Paciente</legend>
+        <div class="form-group">
+          <label>Obra Social:</label>
+          <select name="obra_social" [(ngModel)]="nuevoUsuario.obra_social">
+            <option value="" disabled selected>Seleccionar obra social</option>
+            <option value="Swiss Medical">Swiss Medical</option>
+            <option value="Galeno">Galeno</option>
+            <option value="OSDE">OSDE</option>
+          </select>
+        </div>
+      </fieldset>
 
       <button type="button" (click)="crearUsuario()">Crear Usuario</button>
     </form>

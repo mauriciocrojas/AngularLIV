@@ -180,3 +180,50 @@ input[type="file"] {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.tipo-seleccion {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tipo-opciones {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.opcion {
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.opcion:hover {
+  transform: scale(1.05);
+}
+
+.opcion img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.opcion span {
+  display: block;
+  font-weight: bold;
+  color: #2d6a4f;
+}
+
+.btn-volver {
+  background-color: #d00000;
+  color: white;
+  margin-bottom: 1rem;
+  max-width: 200px;
+}
+
+.btn-volver:hover {
+  background-color: #9d0208;
+}

@@ -1,16 +1,22 @@
 <div class="register-container">
   <h3 class="registro">Registro</h3>
 
-  <form class="form">
+  <!-- Botones de selección -->
+  <div class="user-type-selector" *ngIf="!tipoUsuario">
+    <button class="user-type-button" (click)="setTipoUsuario('paciente')">
+      <img src="assets/paciente.png" alt="Paciente" />
+      <span>Paciente</span>
+    </button>
+    <button class="user-type-button" (click)="setTipoUsuario('especialista')">
+      <img src="assets/especialista.png" alt="Especialista" />
+      <span>Especialista</span>
+    </button>
+  </div>
+
+  <form class="form" *ngIf="tipoUsuario">
     <fieldset>
       <legend>Datos Generales</legend>
       <div class="form-group">
-        <select [(ngModel)]="tipoUsuario" name="tipoUsuario" required class="register-input">
-          <option value="" disabled selected>Seleccioná tipo de usuario</option>
-          <option value="paciente">Paciente</option>
-          <option value="especialista">Especialista</option>
-        </select>
-
         <input type="text" name="nombre" placeholder="Nombre" [(ngModel)]="nombre" class="register-input" />
         <input type="text" name="apellido" placeholder="Apellido" [(ngModel)]="apellido" class="register-input" />
         <input type="number" name="edad" placeholder="Edad" [(ngModel)]="edad" class="register-input" />
@@ -38,7 +44,8 @@
         <select [(ngModel)]="especialidadSeleccionada" name="especialidadSeleccionada" class="register-input">
           <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
         </select>
-        <input type="text" name="nuevaEspecialidad" placeholder="Nueva especialidad (opcional)" [(ngModel)]="nuevaEspecialidad" class="register-input" />
+        <input type="text" name="nuevaEspecialidad" placeholder="Nueva especialidad (opcional)"
+          [(ngModel)]="nuevaEspecialidad" class="register-input" />
       </div>
     </fieldset>
 
@@ -49,15 +56,21 @@
         <input type="password" name="password" placeholder="Contraseña" [(ngModel)]="password" class="register-input" />
 
         <label>Seleccionar {{ tipoUsuario === 'paciente' ? '2 imágenes' : '1 imagen' }} de perfil</label>
-        <input type="file" (change)="onFilesSelected($event)" [multiple]="tipoUsuario === 'paciente'" class="register-input" />
+        <input type="file" (change)="onFilesSelected($event)" [multiple]="tipoUsuario === 'paciente'"
+          class="register-input" />
       </div>
+      <!-- Botón para volver a elegir tipo de usuario -->
+      <div class="volver-container">
+        <button type="button" class="btn volver-btn" (click)="tipoUsuario = ''">Volver</button>
+      </div>
+
     </fieldset>
 
-    <div class="btn-container">
-      <button type="button" (click)="register()" class="btn" [disabled]="loading">Registrar</button>
+    <div class="volver-container">
+      <button class="btn volver-btn" (click)="register()"  [disabled]="loading">Registrar</button>
       <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
       <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-      <button routerLink="/login" class="btn">Ir al Login</button>
+      <button routerLink="/login" class="btn volver-btn">Ir al Login</button>
     </div>
   </form>
 

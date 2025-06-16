@@ -35,7 +35,7 @@ export class RegisterComponent {
 
   especialidades = ['Cardiología', 'Pediatría', 'Traumatología', 'Dermatología'];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   register() {
     this.errorMessage = null;
@@ -155,4 +155,10 @@ export class RegisterComponent {
 
     return errorMap[errorMessage] || 'Ocurrió un error inesperado. Por favor, intenta de nuevo.';
   }
+  
+  setTipoUsuario(tipo: 'paciente' | 'especialista') {
+    this.tipoUsuario = tipo;
+  }
+
+
 }
