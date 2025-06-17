@@ -1,0 +1,66 @@
+<body>
+<div class="turnos-container">
+  <button class="btn-volver" (click)="volverAtras()">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+    Volver atrás
+  </button>
+
+  <h2>Solicitar Turno</h2>
+
+  <!-- resto del formulario igual -->
+  <div class="campo">
+    <label for="especialidad">Especialidad:</label>
+    <select id="especialidad" [(ngModel)]="filtroEspecialidad" (change)="filtrarEspecialistas()">
+      <option value="" disabled selected>Seleccionar especialidad</option>
+      <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
+    </select>
+  </div>
+
+  <div class="campo" *ngIf="especialistas.length > 0">
+    <label>Especialistas:</label>
+    <select [(ngModel)]="especialistaSel" (change)="limpiarDisponibilidad()">
+      <option value="" disabled selected>Seleccionar especialista</option>
+      <option *ngFor="let e of especialistas" [value]="e.id">{{ e.nombre }} {{ e.apellido }}</option>
+    </select>
+  </div>
+
+  <div *ngIf="especialistaSel" class="fecha-seleccion">
+    <label>Seleccionar Fecha:</label>
+    <div class="fecha-selectores">
+      <select [(ngModel)]="dia" (change)="cargarDisponibilidad()">
+        <option value="" disabled selected>Día</option>
+        <option *ngFor="let d of dias" [value]="d">{{ d }}</option>
+      </select>
+
+      <select [(ngModel)]="mes" (change)="cargarDisponibilidad()">
+        <option value="" disabled selected>Mes</option>
+        <option *ngFor="let m of meses" [value]="m.valor">{{ m.nombre }}</option>
+      </select>
+
+      <select [(ngModel)]="anio" (change)="cargarDisponibilidad()">
+        <option value="" disabled selected>Año</option>
+        <option *ngFor="let a of anios" [value]="a">{{ a }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="disponibilidad.length > 0" class="campo">
+    <label>Turnos disponibles:</label>
+    <select [(ngModel)]="disponibilidadSel">
+      <option value="" disabled selected>Seleccionar turno</option>
+      <option *ngFor="let d of disponibilidad" [value]="d.id">
+        {{ d.fecha }} | {{ d.hora_inicio }} - {{ d.hora_fin }}
+      </option>
+    </select>
+  </div>
+<br>
+  <div class="campo">
+    <button class="btn" (click)="solicitar()" [disabled]="!disponibilidadSel">Solicitar Turno</button>
+  </div>
+
+  <div class="success" *ngIf="success">{{ success }}</div>
+  <div class="error" *ngIf="error">{{ error }}</div>
+</div>
+</body>

@@ -1,0 +1,112 @@
+.register-container {
+  background-color: hsl(52, 23%, 74%);
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 40 40 M 40 0 L 0 40' stroke='%23c5e1a5' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 40px 40px;
+  min-height: 100vh;
+  padding: 30px;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #1b5e20;
+}
+
+h3 {
+  font-size: 2.5rem;
+  color: #1b5e20;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.filtros input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #a5d6a7;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background-color: #fff;
+  color: #1b5e20;
+}
+
+.filtros input:focus {
+  border-color: #4caf50;
+  outline: none;
+  box-shadow: 0 0 4px #81c784;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.turno-item {
+  background-color: #fff;
+  border: 1px solid #a5d6a7;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  color: #1b5e20;
+}
+
+.estado {
+  font-weight: bold;
+  margin-left: 10px;
+  color: #2e7d32;
+}
+
+.acciones {
+  margin-top: 10px;
+}
+
+.acciones button {
+  background-color: #a5d6a7;
+  border: 1px solid #2e7d32;
+  color: #2e7d32;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.acciones button:hover {
+  background-color: #81c784;
+  color: #fff;
+}
+
+.btn-volver {
+  background-color: #a5d6a7;
+  border: 1px solid #2e7d32;
+  color: #2e7d32;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-volver:hover {
+  background-color: #81c784;
+  color: #fff;
+}

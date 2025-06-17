@@ -1,0 +1,181 @@
+/* Para centrar verticalmente y dar altura mínima a toda la pantalla */
+body, html {
+  background-color: hsl(52, 23%, 74%);
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 40 40 M 40 0 L 0 40' stroke='%23c5e1a5' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 40px 40px;
+  min-height: 100vh;
+  padding: 30px;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #1b5e20;
+}
+
+/* Contenedor con fondo blanco, sombra y tamaño máximo para que no se extienda mucho */
+.turnos-container {
+  background-color: #fff;
+  color: #1b5e20;
+  padding: 40px 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgb(0 0 0 / 0.15);
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Resto de estilos igual, podés pegar los que me pasaste para labels, selects, botones, etc. */
+
+
+.turnos-container h2 {
+  text-align: center;
+  color: #0a5c0a;
+  margin-bottom: 2rem; /* un poco más espacio debajo del título */
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+
+.campo {
+  margin-bottom: 1.6rem; /* margen más amplio para mejor separación */
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.6rem; /* espacio claro entre label y select */
+  font-weight: 600;
+  font-size: 1rem;
+  color: #145214;
+}
+
+select,
+input[type="time"] {
+  width: 100%;
+  padding: 0.6rem 1rem; /* más padding para más cómodo */
+  font-size: 1.05rem;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #1b5e20;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+select:focus,
+input[type="time"]:focus {
+  outline: none;
+  border-color: #0a5c0a;
+  box-shadow: 0 0 6px #8bc34aaa;
+}
+
+.fecha-selectores {
+  display: flex;
+  gap: 1rem; /* más espacio horizontal entre selects */
+}
+
+.fecha-selectores select {
+  flex: 1;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  background-color: #0a5c0a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+  font-weight: 600;
+  box-shadow: 0 3px 5px #0a5c0a99;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: #087108;
+  transform: scale(1.03);
+  box-shadow: 0 5px 12px #0a5c0aaa;
+}
+
+.btn:disabled {
+  background-color: #a5d6a7;
+  cursor: default;
+  box-shadow: none;
+  color: #5a7a50;
+}
+
+.success,
+.error {
+  margin-top: 1.2rem;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.success {
+  color: #1b6e1b;
+  background: #d9f4d9;
+  border: 1.5px solid #70a870;
+}
+
+.error {
+  color: #912323;
+  background: #fcdede;
+  border: 1.5px solid #c94a4a;
+}
+
+select option[disabled][selected] {
+  color: #999;
+}
+
+/* Pequeños ajustes para responsive */
+@media (max-width: 400px) {
+  .fecha-selectores {
+    flex-direction: column;
+  }
+  .fecha-selectores select {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.btn-volver {
+  align-self: flex-start;
+  background-color: transparent;
+  border: none;
+  color: #0a5c0a;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.btn-volver:hover {
+  color: #087108;
+}
+
+.btn-volver svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}

@@ -1,0 +1,70 @@
+<div class="register-container">
+  <button class="btn-volver" (click)="volver()">&larr; Volver atrás</button>
+
+  <h3>{{ rol === 'administrador' ? 'Turnos' : 'Mis Turnos' }}</h3>
+
+  <ul>
+    <li *ngFor="let t of filtered" class="turno-item">
+      <div>
+        <strong>{{ t.especialidad }}</strong> — {{ t.fecha_hora | date: 'short' }}
+        — <span class="estado">{{ t.estado }}</span>
+      </div>
+      <div>
+        <small>Paciente: {{ t.paciente_nombre }} {{ t.paciente_apellido }}</small><br />
+        <small>Especialista: {{ t.especialista_nombre }} {{ t.especialista_apellido }}</small>
+      </div>
+      <div class="acciones">
+        <!-- botones como antes -->
+        <button
+          *ngIf="isVisible(t, 'cancelar')"
+          type="button"
+          (click)="accion(t, 'cancelar')"
+        >
+          Cancelar
+        </button>
+        <button
+          *ngIf="isVisible(t, 'aceptar')"
+          type="button"
+          (click)="accion(t, 'aceptar')"
+        >
+          Aceptar
+        </button>
+        <button
+          *ngIf="isVisible(t, 'rechazar')"
+          type="button"
+          (click)="accion(t, 'rechazar')"
+        >
+          Rechazar
+        </button>
+        <button
+          *ngIf="isVisible(t, 'finalizar')"
+          type="button"
+          (click)="accion(t, 'finalizar')"
+        >
+          Finalizar
+        </button>
+        <button
+          *ngIf="isVisible(t, 'verResena')"
+          type="button"
+          (click)="accion(t, 'verResena')"
+        >
+          Ver reseña
+        </button>
+        <button
+          *ngIf="isVisible(t, 'calificar')"
+          type="button"
+          (click)="accion(t, 'calificar')"
+        >
+          Calificar
+        </button>
+        <button
+          *ngIf="isVisible(t, 'encuesta')"
+          type="button"
+          (click)="accion(t, 'encuesta')"
+        >
+          Completar encuesta
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>

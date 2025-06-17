@@ -1,0 +1,80 @@
+<div class="register-container">
+  <div class="card-perfil">
+    <h2>¡Hola, {{usuario.nombre}}!</h2>
+    <p><strong>Email:</strong> {{usuario.email}}</p>
+    <p><strong>DNI:</strong> {{usuario.dni}}</p>
+    <p><strong>Tipo:</strong> {{usuario.tipo_usuario}}</p>
+
+    <div *ngIf="esEspecialista">
+      <p><strong>Especialidad/es:</strong> {{ parsearEspecialidad(usuario.especialidad) }}</p>
+    </div>
+
+    <div *ngIf="esPaciente">
+      <p><strong>Obra social:</strong> {{usuario.obra_social}}</p>
+    </div>
+  </div>
+
+  <div class="fotos-section">
+    <div *ngIf="imagenes.length > 0; else noFotos" class="imagenes-lista">
+      <img *ngFor="let img of imagenes" [src]="img" alt="Foto de perfil" />
+    </div>
+    <ng-template #noFotos>
+      <p class="no-foto">No se encontraron fotos cargadas.</p>
+    </ng-template>
+  </div>
+
+  <div *ngIf="esEspecialista" class="disponibilidad-section">
+    <h3>Mi disponibilidad</h3>
+    <div class="disponibilidad-cards">
+      <div class="card-disponibilidad" *ngFor="let disp of disponibilidad">
+        <p class="fecha">{{ disp.fecha | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Especialidad:</strong> {{ disp.especialidad }}</p>
+        <p><strong>Horario:</strong> {{ disp.hora_inicio }} – {{ disp.hora_fin }}</p>
+      </div>
+    </div>
+
+    <button *ngIf="!mostrarFormularioDisp" class="btn-agregar-disp" (click)="toggleFormularioDisp()">
+      Agregar disponibilidad
+    </button><br><br>
+
+    <div *ngIf="mostrarFormularioDisp" class="form-agregar-disponibilidad">
+      <h4>Agregar disponibilidad</h4>
+
+      <div class="form-group" *ngIf="especialidadesDisponibles.length > 0">
+        <label for="especialidad">Especialidad</label>
+        <select id="especialidad" [(ngModel)]="nueva.especialidad" name="especialidad">
+          <option *ngFor="let esp of especialidadesDisponibles" [value]="esp">
+            {{ esp }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha_disp">Fecha</label>
+        <input id="fecha_disp" type="date" [(ngModel)]="nueva.fecha" />
+      </div>
+
+      <div class="form-group">
+        <label for="hi">Hora inicio</label>
+        <input id="hi" type="time" [(ngModel)]="nueva.hi" />
+      </div>
+
+      <div class="form-group">
+        <label for="hf">Hora fin</label>
+        <input id="hf" type="time" [(ngModel)]="nueva.hf" />
+      </div>
+
+      <button type="button" (click)="agregarDisp()">Agregar</button>
+
+      <p *ngIf="error" class="error-message">{{error}}</p>
+      <p *ngIf="success" class="success-message">{{success}}</p>
+
+      <button class="btn-cancelar" (click)="toggleFormularioDisp()">Cancelar</button>
+    </div>
+
+    <br />
+
+  </div>
+      <button class="volver-btn" (click)="volverHome()">← Volver al Home</button>
+
+</div>

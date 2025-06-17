@@ -11,14 +11,14 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.css']  // Cambié a .css
 })
 export class HomeComponent implements OnInit {
 
   userEmail: string | null = null;
   isLoggedIn: boolean = false;
   esAdmin: boolean = false;
-  tipoUsuario: string | null = null; // Para mostrar tipo usuario en UI
+  tipoUsuario: string | null = null; 
   cargandoUsuarios: boolean = false;
 
   constructor(private router: Router) {}
@@ -87,4 +87,16 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/usuarios']);
     }, 700);
   }
+
+  irATurnos() {
+    this.router.navigate(['/turnos']);
+  }
+
+    irASolicitarTurnos() {
+    this.router.navigate(['/solicitar-turno']);
+  }
+  irAMiPerfil() {
+    this.router.navigate(['/mi-perfil']);
+  }
+
 }

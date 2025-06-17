@@ -23,8 +23,12 @@ export const routes: Routes = [
     loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent),
   },
   {
-    path: 'quien-soy',
-    loadComponent: () => import('./components/quien-soy/quien-soy.component').then(m => m.QuienSoyComponent),
+    path: 'mi-perfil',
+    loadComponent: () => import('./components/mi-perfil/mi-perfil.component').then(m => m.MiPerfilComponent),
+  },
+  {
+    path: 'solicitar-turno',
+    loadComponent: () => import('./components/solicitar-turno/solicitar-turno.component').then(m => m.SolicitarTurnosComponent),
   },
   {
     path: 'usuarios',
@@ -33,8 +37,8 @@ export const routes: Routes = [
   }
   ,
   {
-    path: 'chat',
-    loadComponent: () => import('./components/chat/chat.component').then(m => m.ChatComponent)
+    path: 'turnos',
+    loadComponent: () => import('./components/turnos/turnos.component').then(m => m.TurnosComponent)
   },
   {
     path: 'encuesta',

@@ -1,7 +1,5 @@
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-
 <div class="home-container">
-  <!-- Nav -->
+
   <div class="top-buttons">
     <button *ngIf="esAdmin && !cargandoUsuarios" class="nav-button" (click)="irAUsuarios()">Usuarios</button>
     <div *ngIf="cargandoUsuarios" class="spinner"></div>
@@ -13,20 +11,27 @@
 
   <hr class="divider">
 
-  <!-- Si no está logueado -->
   <div *ngIf="!isLoggedIn" class="login-section">
     <p>No hay sesión activa.</p>
-    <div class="auth-buttons">
-      <button (click)="goToLogin()" class="login-button"><strong>Iniciar sesión</strong></button><br><br>
-      <button routerLink="/register" class="login-button"><strong>Registro</strong></button>
-    </div>
+    <button (click)="goToLogin()" class="login-button"><strong>Iniciar sesión</strong></button><br><br>
+    <button routerLink="/register" class="login-button"><strong>Registro</strong></button>
   </div>
 
-  <!-- Si está logueado -->
   <div *ngIf="isLoggedIn" class="user-info">
-    <p>
-      Sesión iniciada como: <strong>{{ tipoUsuario || 'Usuario' }}</strong> — {{ userEmail }}
-    </p>
+    <p>Sesión iniciada como: <strong>{{ tipoUsuario || 'Usuario' }}</strong> — {{ userEmail }}</p>
+
+    <!-- Botones según tipo de usuario -->
+    <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irATurnos()">Mis Turnos</button>
+    <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irASolicitarTurnos()">Solicitar Turno</button>
+    <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irAMiPerfil()">Mi Perfil</button>
+
+    <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irATurnos()">Mis Turnos</button>
+    <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irAMiPerfil()">Mi Perfil</button>
+
+    <button *ngIf="tipoUsuario === 'administrador'" class="nav-button" (click)="irATurnos()">Administrar Turnos</button>
+    <button *ngIf="tipoUsuario === 'administrador'" class="nav-button" (click)="irASolicitarTurnos()">Solicitar Turno</button>
+    <br><br>
     <button (click)="logout()" class="logout-button"><strong>Cerrar sesión</strong></button>
   </div>
+
 </div>

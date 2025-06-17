@@ -19,10 +19,24 @@ export class AuthService {
     return this.supabase;
   }
 
-  // Obtiene el usuario actualmente logueado
+  // Obtiene el usuario actualmente logueado con datos extendidos
   async getUser() {
-    const user = await this.supabase.auth.getUser();
-    return user.data;
+    const { data: authData } = await this.supabase.auth.getUser();
+    const user = authData?.user;
+    if (!user) return null;
+
+    const { data: perfil, error } = await this.supabase
+      .from('usuarios')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error al obtener perfil del usuario:', error.message);
+      return null;
+    }
+
+    return { ...user, ...perfil };
   }
 
   // Inicia sesión con email y password
