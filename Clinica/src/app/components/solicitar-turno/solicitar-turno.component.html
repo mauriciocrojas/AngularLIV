@@ -1,66 +1,56 @@
 <body>
-<div class="turnos-container">
-  <button class="btn-volver" (click)="volverAtras()">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <polyline points="15 18 9 12 15 6"></polyline>
-    </svg>
-    Volver atrás
-  </button>
+  <div class="turnos-container">
+    <button class="btn-volver" (click)="volverAtras()">
+      <svg viewBox="0 0 24 24">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Volver atrás
+    </button>
 
-  <h2>Solicitar Turno</h2>
+    <h2>Solicitar Turno</h2>
 
-  <!-- resto del formulario igual -->
-  <div class="campo">
-    <label for="especialidad">Especialidad:</label>
-    <select id="especialidad" [(ngModel)]="filtroEspecialidad" (change)="filtrarEspecialistas()">
-      <option value="" disabled selected>Seleccionar especialidad</option>
-      <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
-    </select>
-  </div>
+    <button class="btn-volver" *ngIf="filtroEspecialidad || especialistaSel" (click)="volverPaso()">← Volver paso</button>
 
-  <div class="campo" *ngIf="especialistas.length > 0">
-    <label>Especialistas:</label>
-    <select [(ngModel)]="especialistaSel" (change)="limpiarDisponibilidad()">
-      <option value="" disabled selected>Seleccionar especialista</option>
-      <option *ngFor="let e of especialistas" [value]="e.id">{{ e.nombre }} {{ e.apellido }}</option>
-    </select>
-  </div>
-
-  <div *ngIf="especialistaSel" class="fecha-seleccion">
-    <label>Seleccionar Fecha:</label>
-    <div class="fecha-selectores">
-      <select [(ngModel)]="dia" (change)="cargarDisponibilidad()">
-        <option value="" disabled selected>Día</option>
-        <option *ngFor="let d of dias" [value]="d">{{ d }}</option>
-      </select>
-
-      <select [(ngModel)]="mes" (change)="cargarDisponibilidad()">
-        <option value="" disabled selected>Mes</option>
-        <option *ngFor="let m of meses" [value]="m.valor">{{ m.nombre }}</option>
-      </select>
-
-      <select [(ngModel)]="anio" (change)="cargarDisponibilidad()">
-        <option value="" disabled selected>Año</option>
-        <option *ngFor="let a of anios" [value]="a">{{ a }}</option>
+    <div class="campo" *ngIf="usuario?.tipo_usuario === 'administrador'">
+      <label for="paciente">Seleccionar paciente:</label>
+      <select id="paciente" [(ngModel)]="pacienteSeleccionado">
+        <option disabled selected value="">-- Seleccionar paciente --</option>
+        <option *ngFor="let p of pacientes" [value]="p.id">{{ p.nombre }} {{ p.apellido }}</option>
       </select>
     </div>
-  </div>
 
-  <div *ngIf="disponibilidad.length > 0" class="campo">
-    <label>Turnos disponibles:</label>
-    <select [(ngModel)]="disponibilidadSel">
-      <option value="" disabled selected>Seleccionar turno</option>
-      <option *ngFor="let d of disponibilidad" [value]="d.id">
-        {{ d.fecha }} | {{ d.hora_inicio }} - {{ d.hora_fin }}
-      </option>
-    </select>
-  </div>
-<br>
-  <div class="campo">
-    <button class="btn" (click)="solicitar()" [disabled]="!disponibilidadSel">Solicitar Turno</button>
-  </div>
+    <div class="seleccion-grid" *ngIf="!filtroEspecialidad">
+      <button *ngFor="let esp of especialidades" (click)="seleccionarEspecialidad(esp)" class="boton-img">
+        <img [src]="imagenesEspecialidades[esp] || 'assets/default-especialidad.png'" alt="Especialidad" />
+      </button>
+    </div>
 
-  <div class="success" *ngIf="success">{{ success }}</div>
-  <div class="error" *ngIf="error">{{ error }}</div>
-</div>
+    <div class="seleccion-grid" *ngIf="filtroEspecialidad && !especialistaSel">
+      <div *ngFor="let e of especialistas" class="boton-profesional" (click)="seleccionarEspecialista(e)">
+        <span>{{ e.nombre }} {{ e.apellido }}</span>
+        <ng-container *ngIf="e.imagenes?.length > 0; else defaultImg">
+          <img [src]="'https://vjthgijqloomeatknoxz.supabase.co/storage/v1/object/public/images/' + e.imagenes[0]" alt="Especialista" />
+        </ng-container>
+        <ng-template #defaultImg>
+          <img src="assets/default-user.png" alt="Especialista" />
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="seleccion-grid" *ngIf="especialistaSel && disponibilidad.length > 0">
+      <button *ngFor="let turno of disponibilidad" class="boton-turno"
+        [class.seleccionado]="turno.id === disponibilidadSel"
+        (click)="disponibilidadSel = turno.id">
+        {{ turno.fecha?.split('-').reverse().join('/') }} 
+        {{ turno.hora_inicio?.slice(0,5) }} - {{ turno.hora_fin?.slice(0,5) }}
+      </button>
+    </div>
+
+    <div class="campo" *ngIf="disponibilidadSel">
+      <button class="btn" (click)="solicitar()">Solicitar Turno</button>
+    </div>
+
+    <div class="success" *ngIf="success">{{ success }}</div>
+    <div class="error" *ngIf="error">{{ error }}</div>
+  </div>
 </body>

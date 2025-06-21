@@ -6,7 +6,6 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
-
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
 @Component({
@@ -27,37 +26,15 @@ export class SolicitarTurnosComponent implements OnInit {
   success = '';
   filtroEspecialidad = '';
 
-  dias: string[] = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-  meses = [
-    { nombre: 'Enero', valor: '01' },
-    { nombre: 'Febrero', valor: '02' },
-    { nombre: 'Marzo', valor: '03' },
-    { nombre: 'Abril', valor: '04' },
-    { nombre: 'Mayo', valor: '05' },
-    { nombre: 'Junio', valor: '06' },
-    { nombre: 'Julio', valor: '07' },
-    { nombre: 'Agosto', valor: '08' },
-    { nombre: 'Septiembre', valor: '09' },
-    { nombre: 'Octubre', valor: '10' },
-    { nombre: 'Noviembre', valor: '11' },
-    { nombre: 'Diciembre', valor: '12' },
-  ];
-  anios: string[] = [];
+  pacientes: any[] = [];
+  pacienteSeleccionado = '';
 
-  dia = '';
-  mes = '';
-  anio = '';
-
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) { }
 
   async ngOnInit() {
     this.usuario = await this.authService.getUser();
     if (!this.usuario) return;
 
-    const anioActual = new Date().getFullYear();
-    this.anios = [anioActual, anioActual + 1].map(a => a.toString());
-
-    // Cargar especialidades únicas de especialistas
     const { data, error } = await supabase
       .from('usuarios')
       .select('especialidad')
@@ -73,176 +50,184 @@ export class SolicitarTurnosComponent implements OnInit {
         (data || [])
           .flatMap((u: any) => {
             if (!u.especialidad) return [];
-            if (typeof u.especialidad === 'string' && u.especialidad.startsWith('[')) {
-              try {
-                return JSON.parse(u.especialidad);
-              } catch {
-                return [u.especialidad];
-              }
+            try {
+              return JSON.parse(u.especialidad);
+            } catch {
+              return [u.especialidad];
             }
-            if (Array.isArray(u.especialidad)) return u.especialidad;
-            return [u.especialidad];
           })
           .filter((e) => !!e)
       )
     );
+
+    if (this.usuario.tipo_usuario === 'administrador') {
+      const { data: pacientesData, error: pacientesError } = await supabase
+        .from('usuarios')
+        .select('id, nombre, apellido')
+        .eq('tipo_usuario', 'paciente');
+
+      if (pacientesError) {
+        this.error = 'Error al cargar pacientes: ' + pacientesError.message;
+        return;
+      }
+
+      this.pacientes = pacientesData || [];
+    }
   }
 
   async filtrarEspecialistas() {
-  if (!this.filtroEspecialidad) {
-    this.error = 'Por favor, selecciona una especialidad.';
-    this.especialistas = [];
-    this.disponibilidad = [];
-    return;
-  }
-  this.error = '';
+    const { data, error } = await supabase
+      .from('usuarios')
+      .select('id, nombre, apellido, especialidad, imagenes')
+      .eq('tipo_usuario', 'especialista')
+      .not('especialidad', 'is', null);
 
-  // Traemos todos los especialistas que tengan especialidad no nula
-  const { data, error } = await supabase
-    .from('usuarios')
-    .select('id, nombre, apellido, especialidad')
-    .eq('tipo_usuario', 'especialista')
-    .not('especialidad', 'is', null);
-
-  if (error) {
-    this.error = 'Error al buscar especialistas: ' + error.message;
-    this.especialistas = [];
-    this.disponibilidad = [];
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    this.error = 'No se encontraron especialistas.';
-    this.especialistas = [];
-    this.disponibilidad = [];
-    return;
-  }
-
-  // Filtrar especialistas cuyo campo especialidad (JSON string) contenga la especialidad seleccionada
-  this.especialistas = data.filter((u: any) => {
-    if (!u.especialidad) return false;
-
-    let especArray: string[] = [];
-
-    try {
-      especArray = JSON.parse(u.especialidad);
-      if (!Array.isArray(especArray)) {
-        especArray = [u.especialidad];
-      }
-    } catch {
-      especArray = [u.especialidad];
-    }
-
-    return especArray.includes(this.filtroEspecialidad);
-  });
-
-  if (this.especialistas.length === 0) {
-    this.error = 'No se encontraron especialistas para la especialidad seleccionada.';
-    this.disponibilidad = [];
-  } else {
-    this.error = '';
-  }
-
-  this.especialistaSel = '';
-  this.disponibilidad = [];
-  this.disponibilidadSel = '';
-
-  // Limpiar selección de fecha
-  this.dia = '';
-  this.mes = '';
-  this.anio = '';
-}
-
-
-  async cargarDisponibilidad() {
-    if (!this.especialistaSel || !this.filtroEspecialidad || !this.dia || !this.mes || !this.anio) {
-      this.disponibilidad = [];
-      this.disponibilidadSel = '';
+    if (error) {
+      this.error = 'Error al buscar especialistas: ' + error.message;
       return;
     }
 
-    const fechaSeleccionada = `${this.anio}-${this.mes}-${this.dia}`;
+    this.especialistas = (data || []).filter((u: any) => {
+      try {
+        const especialidades = JSON.parse(u.especialidad);
+        return Array.isArray(especialidades) ? especialidades.includes(this.filtroEspecialidad) : false;
+      } catch {
+        return u.especialidad === this.filtroEspecialidad;
+      }
+    });
 
-    const { data, error } = await supabase
+    this.error = this.especialistas.length === 0 ? 'No se encontraron especialistas para la especialidad seleccionada.' : '';
+  }
+
+  async cargarDisponibilidad() {
+    const hoy = new Date().toISOString().split('T')[0];
+
+    // 1. Traemos todas las disponibilidades a futuro del especialista para esa especialidad
+    const { data: disponibilidadData, error: dispError } = await supabase
       .from('disponibilidad_especialista')
       .select('*')
       .eq('especialista_id', this.especialistaSel)
-      .eq('especialidad', this.filtroEspecialidad) // es string aquí, no array
-      .eq('fecha', fechaSeleccionada)
+      .eq('especialidad', this.filtroEspecialidad)
+      .gte('fecha', hoy)
+      .order('fecha', { ascending: true })
       .order('hora_inicio', { ascending: true });
 
-    if (error) {
-      this.error = 'Error al cargar disponibilidad: ' + error.message;
+    if (dispError) {
+      this.error = 'Error al cargar disponibilidad: ' + dispError.message;
       this.disponibilidad = [];
-      this.disponibilidadSel = '';
       return;
     }
 
-    if (!data || data.length === 0) {
-      this.error = 'No hay turnos disponibles para este especialista en la fecha seleccionada.';
+    const disponibilidades = disponibilidadData || [];
+    const disponibilidadIds = disponibilidades.map(d => d.id);
+
+    // 2. Traemos turnos pendientes o activos asociados a estas disponibilidades
+    const { data: turnosOcupados, error: turnosError } = await supabase
+      .from('turnos')
+      .select('fecha_hora, especialista_id, especialidad')
+      .eq('especialista_id', this.especialistaSel)
+      .eq('especialidad', this.filtroEspecialidad)
+      .in('estado', ['pendiente','aceptado']);
+
+    if (turnosError) {
+      this.error = 'Error al verificar turnos ocupados: ' + turnosError.message;
       this.disponibilidad = [];
-      this.disponibilidadSel = '';
       return;
     }
 
-    this.disponibilidad = data;
-    this.disponibilidadSel = '';
-    this.error = '';
+    const fechasOcupadas = new Set(
+      (turnosOcupados || []).map(t => t.fecha_hora)
+    );
+
+    // 3. Filtramos las disponibilidades que NO estén ocupadas
+    this.disponibilidad = disponibilidades.filter(d => {
+      const fechaHora = `${d.fecha}T${d.hora_inicio}`;
+      return !fechasOcupadas.has(fechaHora);
+    });
+
+    this.error = this.disponibilidad.length === 0 ? 'No hay turnos disponibles.' : '';
   }
 
   async solicitar() {
-  if (!this.disponibilidadSel) {
-    this.error = 'Por favor, selecciona un turno disponible.';
-    this.success = '';
-    return;
+    if (!this.disponibilidadSel) return;
+
+    const turno = this.disponibilidad.find(d => d.id === this.disponibilidadSel);
+    const fechaHoraTurno = `${turno.fecha}T${turno.hora_inicio}`;
+
+    const paciente_id = this.usuario.tipo_usuario === 'administrador'
+      ? this.pacienteSeleccionado
+      : this.usuario.id;
+
+    if (!paciente_id) {
+      this.error = 'Seleccioná un paciente para continuar.';
+      return;
+    }
+
+    const nuevoTurno = {
+      paciente_id,
+      especialista_id: turno.especialista_id,
+      especialidad: turno.especialidad,
+      fecha_hora: fechaHoraTurno,
+      estado: 'pendiente',
+      creado_en: new Date().toISOString()
+    };
+
+    const { error } = await supabase.from('turnos').insert([nuevoTurno]);
+
+    if (error) {
+      this.error = error.message;
+      this.success = '';
+    } else {
+      this.success = 'Turno solicitado con éxito.';
+      this.resetear();
+    }
   }
 
-  const turno = this.disponibilidad.find(d => d.id === this.disponibilidadSel);
-  if (!turno) {
-    this.error = 'Turno seleccionado inválido.';
-    this.success = '';
-    return;
+  seleccionarEspecialidad(esp: string) {
+    this.filtroEspecialidad = esp;
+    this.filtrarEspecialistas();
   }
 
-  // Armar fecha + hora correcto sin agregar :00 extra
-  const fechaHoraTurno = `${turno.fecha}T${turno.hora_inicio}`;
-
-  const nuevoTurno = {
-    paciente_id: this.usuario.id,
-    especialista_id: turno.especialista_id,
-    especialidad: turno.especialidad,
-    fecha_hora: fechaHoraTurno,
-    estado: 'pendiente',
-    creado_en: new Date().toISOString()
-  };
-
-  const { error } = await supabase.from('turnos').insert([nuevoTurno]);
-  if (error) {
-    this.error = error.message;
-    this.success = '';
-  } else {
-    this.success = 'Turno solicitado con éxito.';
-    this.error = '';
-
-    // Resetear todo para nuevo pedido
-    this.filtroEspecialidad = '';
-    this.especialistas = [];
-    this.especialistaSel = '';
-    this.disponibilidad = [];
-    this.disponibilidadSel = '';
-    this.dia = '';
-    this.mes = '';
-    this.anio = '';
+  seleccionarEspecialista(e: any) {
+    this.especialistaSel = e.id;
+    this.cargarDisponibilidad();
   }
-}
 
-
-  limpiarDisponibilidad() {
-    this.disponibilidad = [];
-    this.disponibilidadSel = '';
+  volverPaso() {
+    if (this.disponibilidadSel) {
+      this.disponibilidadSel = '';
+    } else if (this.especialistaSel) {
+      this.especialistaSel = '';
+      this.disponibilidad = [];
+    } else if (this.filtroEspecialidad) {
+      this.filtroEspecialidad = '';
+      this.especialistas = [];
+    }
   }
 
   volverAtras() {
     this.router.navigate(['/']);
   }
+
+  resetear() {
+    this.filtroEspecialidad = '';
+    this.especialistaSel = '';
+    this.disponibilidadSel = '';
+    this.disponibilidad = [];
+    this.especialistas = [];
+    this.pacienteSeleccionado = '';
+    this.error = '';
+  }
+
+  imagenesEspecialidades: { [key: string]: string } = {
+    'Cardiología': 'assets/especialidades/cardiologia.png',
+    'Dermatología': 'assets/especialidades/dermatologia.png',
+    'Ginecología': 'assets/especialidades/defecto.png',
+    'Pediatría': 'assets/especialidades/defecto.png',
+    'Neurología': 'assets/especialidades/neurologia.png',
+    'Traumatología': 'assets/especialidades/traumatologia.png',
+    'Otorrinolaringología': 'assets/especialidades/defecto.png',
+    'Oftalmología': 'assets/especialidades/defecto.png',
+    'Odontología': 'assets/especialidades/defecto.png'
+  };
 }
