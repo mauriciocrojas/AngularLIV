@@ -15,56 +15,36 @@
       </div>
       <div class="acciones">
         <!-- botones como antes -->
-        <button
-          *ngIf="isVisible(t, 'cancelar')"
-          type="button"
-          (click)="accion(t, 'cancelar')"
-        >
+        <button *ngIf="isVisible(t, 'cancelar')" type="button" (click)="accion(t, 'cancelar')">
           Cancelar
         </button>
-        <button
-          *ngIf="isVisible(t, 'aceptar')"
-          type="button"
-          (click)="accion(t, 'aceptar')"
-        >
+        <button *ngIf="isVisible(t, 'aceptar')" type="button" (click)="accion(t, 'aceptar')">
           Aceptar
         </button>
-        <button
-          *ngIf="isVisible(t, 'rechazar')"
-          type="button"
-          (click)="accion(t, 'rechazar')"
-        >
+        <button *ngIf="isVisible(t, 'rechazar')" type="button" (click)="accion(t, 'rechazar')">
           Rechazar
         </button>
-        <button
-          *ngIf="isVisible(t, 'finalizar')"
-          type="button"
-          (click)="accion(t, 'finalizar')"
-        >
+        <button *ngIf="isVisible(t, 'finalizar')" type="button" (click)="accion(t, 'finalizar')">
           Finalizar
         </button>
-        <button
-          *ngIf="isVisible(t, 'verResena')"
-          type="button"
-          (click)="accion(t, 'verResena')"
-        >
+        <button *ngIf="isVisible(t, 'verResena')" type="button" (click)="accion(t, 'verResena')">
           Ver reseña
         </button>
-        <button
-          *ngIf="isVisible(t, 'calificar')"
-          type="button"
-          (click)="accion(t, 'calificar')"
-        >
+        <button *ngIf="isVisible(t, 'calificar')" type="button" (click)="accion(t, 'calificar')">
           Calificar
         </button>
-        <button
-          *ngIf="isVisible(t, 'encuesta')"
-          type="button"
-          (click)="accion(t, 'encuesta')"
-        >
+        <button *ngIf="isVisible(t, 'encuesta')" type="button" (click)="accion(t, 'encuesta')">
           Completar encuesta
         </button>
       </div>
     </li>
   </ul>
+  <!-- MODAL DE RESEÑA -->
+  <div class="modal-overlay" *ngIf="turnoSeleccionado" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h4>📝 Reseña del Especialista</h4>
+      <p>{{ turnoSeleccionado.resena_especialista }}</p>
+      <button (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
 </div>

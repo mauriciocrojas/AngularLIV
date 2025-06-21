@@ -17,7 +17,7 @@ interface Turno {
   estado: string;
   comentario_cancelacion?: string;
   comentario_rechazo?: string;
-  reseña_especialista?: string;
+  resena_especialista?: string;
   calificacion_paciente?: number;
   comentario_paciente?: string;
 
@@ -41,6 +41,7 @@ export class TurnosComponent implements OnInit {
   filtroOtros = '';
   userId = '';
   rol: 'paciente' | 'especialista' | 'administrador' = 'paciente';
+  turnoSeleccionado: Turno | null = null;
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -55,65 +56,67 @@ export class TurnosComponent implements OnInit {
     await this.load();
   }
 
-  async load() {
-    let query = supabase.from('turnos').select('*').order('fecha_hora', { ascending: true });
+ async load() {
+  let query = supabase.from('turnos').select('*').order('fecha_hora', { ascending: true });
 
-    if (this.rol === 'paciente') {
-      query = query.eq('paciente_id', this.userId);
-    } else if (this.rol === 'especialista') {
-      query = query.eq('especialista_id', this.userId);
-    }
-
-    const { data, error } = await query;
-    if (error) {
-      this.turnos = [];
-      console.error(error);
-      return;
-    }
-    if (!data) {
-      this.turnos = [];
-      return;
-    }
-
-    // Traer todos los ids únicos de pacientes y especialistas para optimizar consultas
-    const pacienteIds = [...new Set(data.map(t => t.paciente_id))];
-    const especialistaIds = [...new Set(data.map(t => t.especialista_id))];
-
-    // Traer datos de pacientes
-    const { data: pacientes, error: errPac } = await supabase
-      .from('usuarios')
-      .select('id, nombre, apellido')
-      .in('id', pacienteIds);
-
-    if (errPac) {
-      console.error('Error cargando pacientes', errPac);
-      return;
-    }
-
-    // Traer datos de especialistas
-    const { data: especialistas, error: errEsp } = await supabase
-      .from('usuarios')
-      .select('id, nombre, apellido')
-      .in('id', especialistaIds);
-
-    if (errEsp) {
-      console.error('Error cargando especialistas', errEsp);
-      return;
-    }
-
-    // Mapear para acceso rápido
-    const mapPacientes = new Map(pacientes?.map(p => [p.id, p]));
-    const mapEspecialistas = new Map(especialistas?.map(e => [e.id, e]));
-
-    // Completar los turnos con nombres
-    this.turnos = data.map(t => ({
-      ...t,
-      paciente_nombre: mapPacientes.get(t.paciente_id)?.nombre ?? 'Desconocido',
-      paciente_apellido: mapPacientes.get(t.paciente_id)?.apellido ?? '',
-      especialista_nombre: mapEspecialistas.get(t.especialista_id)?.nombre ?? 'Desconocido',
-      especialista_apellido: mapEspecialistas.get(t.especialista_id)?.apellido ?? '',
-    }));
+  if (this.rol === 'paciente') {
+    query = query.eq('paciente_id', this.userId);
+  } else if (this.rol === 'especialista') {
+    query = query.eq('especialista_id', this.userId);
   }
+
+  const { data, error } = await query;
+  if (error) {
+    this.turnos = [];
+    console.error(error);
+    return;
+  }
+  if (!data) {
+    this.turnos = [];
+    return;
+  }
+
+  // Traer todos los ids únicos de pacientes y especialistas para optimizar consultas
+  const pacienteIds = [...new Set(data.map(t => t.paciente_id))];
+  const especialistaIds = [...new Set(data.map(t => t.especialista_id))];
+
+  // Traer datos de pacientes
+  const { data: pacientes, error: errPac } = await supabase
+    .from('usuarios')
+    .select('id, nombre, apellido')
+    .in('id', pacienteIds);
+
+  if (errPac) {
+    console.error('Error cargando pacientes', errPac);
+    return;
+  }
+
+  // Traer datos de especialistas
+  const { data: especialistas, error: errEsp } = await supabase
+    .from('usuarios')
+    .select('id, nombre, apellido')
+    .in('id', especialistaIds);
+
+  if (errEsp) {
+    console.error('Error cargando especialistas', errEsp);
+    return;
+  }
+
+  // Mapear para acceso rápido
+  const mapPacientes = new Map(pacientes?.map(p => [p.id, p]));
+  const mapEspecialistas = new Map(especialistas?.map(e => [e.id, e]));
+
+  // Completar los turnos con nombres y renombrar reseña_especialista (con Ñ) a resena_especialista
+  this.turnos = data.map(t => ({
+    ...t,
+    resena_especialista: t['reseña_especialista'], // 👈 renombramos manualmente
+    paciente_nombre: mapPacientes.get(t.paciente_id)?.nombre ?? 'Desconocido',
+    paciente_apellido: mapPacientes.get(t.paciente_id)?.apellido ?? '',
+    especialista_nombre: mapEspecialistas.get(t.especialista_id)?.nombre ?? 'Desconocido',
+    especialista_apellido: mapEspecialistas.get(t.especialista_id)?.apellido ?? '',
+  }));
+}
+
 
   get filtered() {
     return this.turnos.filter(t =>
@@ -141,11 +144,11 @@ export class TurnosComponent implements OnInit {
       case 'finalizar':
         return this.rol === 'especialista' && s === 'aceptado';
       case 'verResena':
-        return !!t.reseña_especialista || !!t.comentario_paciente;
+        return !!t.resena_especialista || !!t.comentario_paciente;
       case 'calificar':
         return this.rol === 'paciente' && s === 'realizado' && !t.comentario_paciente;
       case 'encuesta':
-        return this.rol === 'paciente' && s === 'realizado' && !!t.reseña_especialista && !t.comentario_paciente;
+        return this.rol === 'paciente' && s === 'realizado' && !!t.resena_especialista && !t.comentario_paciente;
       default:
         return false;
     }
@@ -153,6 +156,12 @@ export class TurnosComponent implements OnInit {
 
   async accion(t: Turno, tipo: string) {
     let upd: Partial<Turno> = {};
+
+    if (tipo === 'verResena') {
+      this.turnoSeleccionado = t;
+      return;
+    }
+
     if (tipo === 'cancelar') {
       const m = prompt('Motivo de cancelación:');
       if (!m) return;
@@ -170,7 +179,7 @@ export class TurnosComponent implements OnInit {
       const r = prompt('Reseña / diagnóstico:');
       if (!r) return;
       upd.estado = 'realizado';
-      upd.reseña_especialista = r;
+      upd.resena_especialista = r;
     }
     if (tipo === 'calificar' || tipo === 'encuesta') {
       const c = prompt(tipo === 'calificar' ? 'Comentario del paciente:' : 'Comentario adicional:');
@@ -196,4 +205,10 @@ export class TurnosComponent implements OnInit {
     // Adaptar según tu ruta o historial
     this.router.navigate(['/']); // O a donde quieras volver
   }
+
+
+  cerrarModal() {
+    this.turnoSeleccionado = null;
+  }
+
 }
