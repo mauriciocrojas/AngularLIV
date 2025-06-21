@@ -2,11 +2,13 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http'; // 👈 IMPORTANTE
+import { provideHttpClient } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations'; // ⬅️ agregado
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient() // 👈 NECESARIO para usar HttpClient en arquitectura standalone
+    provideHttpClient(),
+    provideAnimations() // ⬅️ habilita animaciones en Angular standalone
   ]
 };

@@ -4,6 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 
+import {
+  trigger,
+  transition,
+  style,
+  query,
+  animate,
+  group
+} from '@angular/animations';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -22,8 +31,38 @@ import { RecaptchaModule, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recap
     }
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+animations: [
+  trigger('routeAnimations', [
+    transition('* <=> *', [
+      style({ position: 'relative' }),
+      query(':enter, :leave', [
+        style({
+          position: 'absolute',
+          width: '100%',
+          top: 0,
+          left: 0,
+        }),
+      ], { optional: true }),
+      query(':enter', [
+        style({ opacity: 0 }),
+      ], { optional: true }),
+      group([
+        query(':leave', [
+          animate('600ms ease-out', style({ opacity: 0 })),
+        ], { optional: true }),
+        query(':enter', [
+          animate('600ms ease-out', style({ opacity: 1 })),
+        ], { optional: true }),
+      ]),
+    ]),
+  ]),
+]
 })
 export class AppComponent {
   title = 'Clinica Online';
+
+  prepareRoute(outlet: RouterOutlet) {
+    return outlet?.activatedRouteData?.['animation'] || '';
+  }
 }

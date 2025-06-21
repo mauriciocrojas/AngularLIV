@@ -13,6 +13,7 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent),
+    data: { animation: 'HomePage' }
   },
   {
     path: 'login',
@@ -33,9 +34,9 @@ export const routes: Routes = [
   {
     path: 'usuarios',
     loadComponent: () => import('./components/usuarios/usuarios.component').then(m => m.UsuariosComponent),
+    data: { animation: 'UsuariosPage' },
     canActivate: [AdminGuard]
-  }
-  ,
+  },
   {
     path: 'turnos',
     loadComponent: () => import('./components/turnos/turnos.component').then(m => m.TurnosComponent)
@@ -43,10 +44,6 @@ export const routes: Routes = [
   {
     path: 'encuesta',
     loadComponent: () => import('./components/encuesta/encuesta.component').then(m => m.EncuestaComponent)
-  },
-  {
-    path: 'games',  // Ruta base para los juegos
-    loadChildren: () => import('./games/games.module').then(m => m.GamesModule)  // Carga del módulo de juegos
   }
 ];
 

@@ -4,6 +4,8 @@ import { environment } from '../../../environments/environment';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
@@ -15,7 +17,7 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   imports: [CommonModule, RouterModule, FormsModule],
 })
 export class UsuariosComponent implements OnInit {
-    loading: boolean = false; 
+  loading: boolean = false;
 
   usuarios: any[] = [];
   nuevoUsuario: any = {
@@ -57,74 +59,74 @@ export class UsuariosComponent implements OnInit {
   }
 
   async crearUsuario() {
-  this.mensaje = '';
-  this.loading = true; // ⬅️ Mostrar spinner
+    this.mensaje = '';
+    this.loading = true; // ⬅️ Mostrar spinner
 
-  const { email, password, tipo_usuario } = this.nuevoUsuario;
-  if (!email || !password || !tipo_usuario) {
-    this.mensaje = 'Por favor, completá los campos obligatorios.';
-    this.loading = false; // ⬅️ Ocultar spinner si hay error
-    return;
-  }
-
-  const { data, error } = await supabase.auth.signUp({ email, password });
-
-  if (error) {
-    this.mensaje = 'Error al registrar el usuario.';
-    this.loading = false; // ⬅️ Ocultar spinner si hay error
-    return;
-  }
-
-  const urls = await this.uploadImages();
-  if (urls === null) {
-    this.mensaje = 'Error al subir las imágenes.';
-    this.loading = false; // ⬅️ Ocultar spinner si hay error
-    return;
-  }
-
-  let especialidadesFinal: string[] = [];
-
-  if (tipo_usuario === 'especialista') {
-    if (this.nuevoUsuario.especialidadSeleccionada) {
-      especialidadesFinal.push(this.nuevoUsuario.especialidadSeleccionada);
+    const { email, password, tipo_usuario } = this.nuevoUsuario;
+    if (!email || !password || !tipo_usuario) {
+      this.mensaje = 'Por favor, completá los campos obligatorios.';
+      this.loading = false; // ⬅️ Ocultar spinner si hay error
+      return;
     }
-    const nueva = this.nuevoUsuario.nuevaEspecialidad.trim();
-    if (nueva && !especialidadesFinal.includes(nueva)) {
-      especialidadesFinal.push(nueva);
+
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      this.mensaje = 'Error al registrar el usuario.';
+      this.loading = false; // ⬅️ Ocultar spinner si hay error
+      return;
     }
+
+    const urls = await this.uploadImages();
+    if (urls === null) {
+      this.mensaje = 'Error al subir las imágenes.';
+      this.loading = false; // ⬅️ Ocultar spinner si hay error
+      return;
+    }
+
+    let especialidadesFinal: string[] = [];
+
+    if (tipo_usuario === 'especialista') {
+      if (this.nuevoUsuario.especialidadSeleccionada) {
+        especialidadesFinal.push(this.nuevoUsuario.especialidadSeleccionada);
+      }
+      const nueva = this.nuevoUsuario.nuevaEspecialidad.trim();
+      if (nueva && !especialidadesFinal.includes(nueva)) {
+        especialidadesFinal.push(nueva);
+      }
+    }
+
+    const usuarioData: any = {
+      id: data.user?.id,
+      nombre: this.nuevoUsuario.nombre,
+      apellido: this.nuevoUsuario.apellido,
+      edad: this.nuevoUsuario.edad,
+      dni: this.nuevoUsuario.dni,
+      email: this.nuevoUsuario.email,
+      tipo_usuario: tipo_usuario,
+      imagenes: urls,
+      confirmado: tipo_usuario === 'especialista' ? false : true,
+      created_at: new Date().toISOString()
+    };
+
+    if (tipo_usuario === 'paciente') {
+      usuarioData.obra_social = this.nuevoUsuario.obra_social;
+    } else if (tipo_usuario === 'especialista') {
+      usuarioData.especialidad = especialidadesFinal;
+    }
+
+    const { error: insertError } = await supabase.from('usuarios').insert([usuarioData]);
+
+    if (insertError) {
+      this.mensaje = 'Error al guardar en base de datos.';
+    } else {
+      this.mensaje = 'Usuario creado exitosamente.';
+      await this.ngOnInit();
+      this.resetFormulario();
+    }
+
+    this.loading = false; // ⬅️ Ocultar spinner al finalizar
   }
-
-  const usuarioData: any = {
-    id: data.user?.id,
-    nombre: this.nuevoUsuario.nombre,
-    apellido: this.nuevoUsuario.apellido,
-    edad: this.nuevoUsuario.edad,
-    dni: this.nuevoUsuario.dni,
-    email: this.nuevoUsuario.email,
-    tipo_usuario: tipo_usuario,
-    imagenes: urls,
-    confirmado: tipo_usuario === 'especialista' ? false : true,
-    created_at: new Date().toISOString()
-  };
-
-  if (tipo_usuario === 'paciente') {
-    usuarioData.obra_social = this.nuevoUsuario.obra_social;
-  } else if (tipo_usuario === 'especialista') {
-    usuarioData.especialidad = especialidadesFinal;
-  }
-
-  const { error: insertError } = await supabase.from('usuarios').insert([usuarioData]);
-
-  if (insertError) {
-    this.mensaje = 'Error al guardar en base de datos.';
-  } else {
-    this.mensaje = 'Usuario creado exitosamente.';
-    await this.ngOnInit();
-    this.resetFormulario();
-  }
-
-  this.loading = false; // ⬅️ Ocultar spinner al finalizar
-}
 
   async uploadImages(): Promise<string[] | null> {
     const urls: string[] = [];
@@ -154,4 +156,34 @@ export class UsuariosComponent implements OnInit {
     };
     this.imagenes = [];
   }
+
+  exportarUsuariosExcel() {
+    // Seleccionar las propiedades clave
+    const exportData = this.usuarios.map(u => ({
+      Tipo: u.tipo_usuario,
+      Nombre: `${u.nombre} ${u.apellido}`,
+      Email: u.email,
+      Edad: u.edad,
+      DNI: u.dni,
+      Confirmado: u.confirmado ? 'Sí' : 'No'
+    }));
+
+    // Crear la hoja
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+
+    // Crear el libro de Excel
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'Usuarios': worksheet },
+      SheetNames: ['Usuarios']
+    };
+
+    // Generar buffer
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    // Guardar como archivo
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    FileSaver.saveAs(blob, 'usuarios-clinica.xlsx');
+  }
+
+
 }

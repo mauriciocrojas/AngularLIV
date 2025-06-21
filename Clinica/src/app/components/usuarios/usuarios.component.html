@@ -1,6 +1,7 @@
 <div class="usuarios-container">
   <h2>Gestión de Usuarios</h2>
-
+  <button (click)="exportarUsuariosExcel()">📥 Exportar a Excel</button>
+<br>
   <!-- Loading -->
   <div *ngIf="loading" class="loading-overlay">
     <div class="spinner"></div>
@@ -34,9 +35,11 @@
         </tbody>
       </table>
     </div>
+
     <div *ngIf="mensaje2" class="mensaje">{{ mensaje2 }}</div>
 
-    <br><br><h3>Crear Nuevo Usuario</h3>
+    <br><br>
+    <h3>Crear Nuevo Usuario</h3>
     <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
 
     <!-- Selección de tipo de usuario con imágenes -->
