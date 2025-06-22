@@ -3,8 +3,18 @@
 
   <h3>{{ rol === 'administrador' ? 'Turnos' : 'Mis Turnos' }}</h3>
 
+  <!-- Campo de filtro universal -->
+  <div class="filtros">
+    <input
+      type="text"
+      placeholder="Buscar en todos los turnos y historias clínicas..."
+      [(ngModel)]="filtroUniversal"
+      (input)="applyFilter()"
+    />
+  </div>
+
   <ul>
-    <li *ngFor="let t of filtered" class="turno-item">
+    <li *ngFor="let t of turnos" class="turno-item"> <!-- CAMBIO A 'turnos' -->
       <div>
         <strong>{{ t.especialidad }}</strong> — {{ t.fecha_hora | date: 'short' }}
         — <span class="estado">{{ t.estado }}</span>

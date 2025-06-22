@@ -42,8 +42,8 @@ export const routes: Routes = [
     loadComponent: () => import('./components/turnos/turnos.component').then(m => m.TurnosComponent)
   },
   {
-    path: 'encuesta',
-    loadComponent: () => import('./components/encuesta/encuesta.component').then(m => m.EncuestaComponent)
+    path: 'pacientes',
+    loadComponent: () => import('./components/pacientes/pacientes.component').then(m => m.PacientesComponent)
   }
 ];
 

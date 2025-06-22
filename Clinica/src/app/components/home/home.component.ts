@@ -18,10 +18,10 @@ export class HomeComponent implements OnInit {
   userEmail: string | null = null;
   isLoggedIn: boolean = false;
   esAdmin: boolean = false;
-  tipoUsuario: string | null = null; 
+  tipoUsuario: string | null = null;
   cargandoUsuarios: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   async ngOnInit() {
     await this.checkSession();
@@ -92,11 +92,14 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/turnos']);
   }
 
-    irASolicitarTurnos() {
+  irASolicitarTurnos() {
     this.router.navigate(['/solicitar-turno']);
   }
   irAMiPerfil() {
     this.router.navigate(['/mi-perfil']);
+  }
+  irAPacientes() {
+    this.router.navigate(['/pacientes']);
   }
 
 }

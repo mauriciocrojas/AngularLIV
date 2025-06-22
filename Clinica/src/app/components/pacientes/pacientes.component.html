@@ -1,0 +1,77 @@
+<div class="pacientes-container">
+  <h2>Mis Pacientes Atendidos</h2>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading">
+    <!-- Tabla de pacientes -->
+    <div class="tabla-scroll" *ngIf="pacientes.length > 0; else noPacientes">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>DNI</th>
+            <th>Obra Social</th>
+            <th>Historia Clínica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let paciente of pacientes">
+            <td>{{ paciente.nombre }} {{ paciente.apellido }}</td>
+            <td>{{ paciente.email }}</td>
+            <td>{{ paciente.dni }}</td>
+            <td>{{ paciente.obra_social || 'N/A' }}</td>
+            <td>
+              <button (click)="verHistoriaClinica(paciente.id, paciente.nombre + ' ' + paciente.apellido)">
+                Ver Historia
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noPacientes>
+      <p class="mensaje">No tienes pacientes registrados que hayas atendido.</p>
+    </ng-template>
+
+    <div class="btn-container">
+      <button routerLink="/home">Volver</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Historia Clínica -->
+<div *ngIf="showHistoriaClinicaModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Historia Clínica de {{ selectedPatientName }}</h3>
+    <button class="modal-close-button" (click)="closeHistoriaClinicaModal()">X</button>
+
+    <div *ngIf="selectedHistoriaClinica.length > 0; else noHistoria">
+      <div *ngFor="let historia of selectedHistoriaClinica" class="historia-item">
+        <h4>Historia - {{ historia.fecha_turno | date:'short' }}</h4>
+        <p><strong>Especialista:</strong> {{ historia.especialista_nombre || 'N/A' }}</p>
+        <p><strong>Especialidad:</strong> {{ historia.especialidad || 'N/A' }}</p>
+        <p><strong>Altura:</strong> {{ historia.altura || 'N/A' }}</p>
+        <p><strong>Peso:</strong> {{ historia.peso || 'N/A' }}</p>
+        <p><strong>Temperatura:</strong> {{ historia.temperatura || 'N/A' }}</p>
+        <p><strong>Presión:</strong> {{ historia.presion || 'N/A' }}</p>
+        <div *ngIf="historia.datos_dinamicos">
+          <h5>Datos Adicionales:</h5>
+          <ul>
+            <li *ngFor="let key of getObjectKeys(historia.datos_dinamicos)">
+              <strong>{{ key }}:</strong> {{ historia.datos_dinamicos[key] }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <ng-template #noHistoria>
+      <p>No se encontraron historias clínicas para este paciente que hayas atendido.</p>
+    </ng-template>
+  </div>
+</div>

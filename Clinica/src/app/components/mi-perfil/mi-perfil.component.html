@@ -75,6 +75,28 @@
     <br />
 
   </div>
-      <button class="volver-btn" (click)="volverHome()">← Volver al Home</button>
+  <div *ngIf="esPaciente && historiasClinicas.length > 0" class="disponibilidad-section">
+    <h3>Mis historias clínicas</h3>
+    <div class="disponibilidad-cards">
+      <div class="card-disponibilidad" *ngFor="let h of historiasClinicas">
+        <p class="fecha"><strong>Fecha del turno:</strong> {{ h.turnos?.fecha_hora | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Especialidad:</strong> {{ h.turnos?.especialidad || 'No disponible' }}</p>
+        <p><strong>Altura:</strong> {{ h.altura || '—' }}</p>
+        <p><strong>Peso:</strong> {{ h.peso || '—' }}</p>
+        <p><strong>Temperatura:</strong> {{ h.temperatura || '—' }}</p>
+        <p><strong>Presión:</strong> {{ h.presion || '—' }}</p>
+        <div *ngIf="h.datos_dinamicos">
+          <p><strong>Datos adicionales:</strong></p>
+          <ul>
+            <li *ngFor="let item of (h.datos_dinamicos | keyvalue)">
+              {{ item.key }}: {{ item.value }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="volver-btn" (click)="volverHome()">← Volver al Home</button>
 
 </div>

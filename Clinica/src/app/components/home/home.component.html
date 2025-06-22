@@ -29,6 +29,7 @@
 
       <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irATurnos()">Mis Turnos</button>
       <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irAMiPerfil()">Mi Perfil</button>
+      <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irAPacientes()">Pacientes</button>
 
       <button *ngIf="tipoUsuario === 'administrador'" class="nav-button" (click)="irATurnos()">Administrar
         Turnos</button>

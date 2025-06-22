@@ -26,58 +26,92 @@ export class MiPerfilComponent implements OnInit {
   esEspecialista = false;
   esPaciente = false;
   mostrarFormularioDisp = false;
+  historiasClinicas: any[] = [];
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
   async ngOnInit() {
-  try {
-    this.usuario = await this.authService.getUser();
-    this.esEspecialista = this.usuario?.tipo_usuario === 'especialista';
-    this.esPaciente = this.usuario?.tipo_usuario === 'paciente';
-
-    // Parsear especialidades
     try {
-      const parsed = JSON.parse(this.usuario.especialidad);
-      this.especialidadesDisponibles = Array.isArray(parsed) ? parsed : [parsed];
-    } catch {
-      this.especialidadesDisponibles = [this.usuario.especialidad];
-    }
-    this.nueva.especialidad = this.especialidadesDisponibles[0] || '';
+      this.usuario = await this.authService.getUser();
+      this.esEspecialista = this.usuario?.tipo_usuario === 'especialista';
+      this.esPaciente = this.usuario?.tipo_usuario === 'paciente';
 
-    // Levantar imágenes desde usuario.imagenes (text[] tipo JSON)
-    if (Array.isArray(this.usuario.imagenes) && this.usuario.imagenes.length > 0) {
-      this.imagenes = this.usuario.imagenes.map((ruta: string) =>
-        supabase.storage.from('images').getPublicUrl(ruta).data.publicUrl
-      );
-    } else if (typeof this.usuario.imagenes === 'string' && this.usuario.imagenes.trim() !== '') {
+      // Parsear especialidades
       try {
-        const rutas: string[] = JSON.parse(this.usuario.imagenes);
-        if (Array.isArray(rutas)) {
-          this.imagenes = rutas.map(ruta =>
-            supabase.storage.from('images').getPublicUrl(ruta).data.publicUrl
-          );
-        }
+        const parsed = JSON.parse(this.usuario.especialidad);
+        this.especialidadesDisponibles = Array.isArray(parsed) ? parsed : [parsed];
       } catch {
+        this.especialidadesDisponibles = [this.usuario.especialidad];
+      }
+      this.nueva.especialidad = this.especialidadesDisponibles[0] || '';
+
+      // Cargar imágenes
+      if (Array.isArray(this.usuario.imagenes) && this.usuario.imagenes.length > 0) {
+        this.imagenes = this.usuario.imagenes.map((ruta: string) =>
+          supabase.storage.from('images').getPublicUrl(ruta).data.publicUrl
+        );
+      } else if (typeof this.usuario.imagenes === 'string' && this.usuario.imagenes.trim() !== '') {
+        try {
+          const rutas: string[] = JSON.parse(this.usuario.imagenes);
+          if (Array.isArray(rutas)) {
+            this.imagenes = rutas.map(ruta =>
+              supabase.storage.from('images').getPublicUrl(ruta).data.publicUrl
+            );
+          }
+        } catch {
+          this.imagenes = [];
+        }
+      } else {
         this.imagenes = [];
       }
-    } else {
-      this.imagenes = [];
-    }
 
-    // Disponibilidad especialista
-    if (this.esEspecialista) {
-      const { data, error } = await supabase
-        .from('disponibilidad_especialista')
-        .select('*')
-        .eq('especialista_id', this.usuario.id);
-      if (!error && data) {
-        this.disponibilidad = data;
+      // Disponibilidad especialista
+      if (this.esEspecialista) {
+        const { data, error } = await supabase
+          .from('disponibilidad_especialista')
+          .select('*')
+          .eq('especialista_id', this.usuario.id);
+        if (!error && data) {
+          this.disponibilidad = data;
+        }
       }
+
+      // Historias clínicas (paciente)
+      if (this.esPaciente) {
+        const turnosPaciente = await supabase
+          .from('turnos')
+          .select('id')
+          .eq('paciente_id', this.usuario.id);
+
+        const turnoIds = turnosPaciente.data?.map(t => t.id) || [];
+
+        const { data, error } = await supabase
+          .from('historias_clinicas')
+          .select(`
+            id,
+            altura,
+            peso,
+            temperatura,
+            presion,
+            datos_dinamicos,
+            turno_id,
+            turnos (
+              fecha_hora,
+              especialidad,
+              especialista_id,
+              id
+            )
+          `)
+          .in('turno_id', turnoIds);
+
+        if (!error && data) {
+          this.historiasClinicas = data;
+        }
+      }
+    } catch (err) {
+      this.error = 'Error al cargar perfil.';
     }
-  } catch (err) {
-    this.error = 'Error al cargar perfil.';
   }
-}
 
   async agregarDisp() {
     this.error = '';
@@ -91,7 +125,7 @@ export class MiPerfilComponent implements OnInit {
     const nuevoRegistro = {
       especialista_id: this.usuario.id,
       especialidad: this.nueva.especialidad,
-      fecha: this.nueva.fecha, // YYYY-MM-DD
+      fecha: this.nueva.fecha,
       hora_inicio: this.nueva.hi,
       hora_fin: this.nueva.hf,
       creado_en: new Date().toISOString()

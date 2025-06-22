@@ -26,10 +26,13 @@ interface Turno {
   especialista_nombre?: string;
   especialista_apellido?: string;
 
-  historia_clinica?: any;
+  historia_clinica?: HistoriaClinica; // Agregamos la historia clínica directamente al turno
 }
 
 interface HistoriaClinica {
+  id?: number; // Puede tener ID si ya está guardada
+  fecha_creacion?: string;
+  turno_id?: string;
   altura: number | null;
   peso: number | null;
   temperatura: number | null;
@@ -48,8 +51,8 @@ export class TurnosComponent implements OnInit {
   @ViewChild('historiaForm') historiaForm!: NgForm;
 
   turnos: Turno[] = [];
-  filtroEsp = '';
-  filtroOtros = '';
+  allTurnos: Turno[] = []; // Para guardar todos los turnos sin filtrar
+  filtroUniversal: string = ''; // Nuevo campo de filtro universal
   userId = '';
   rol: 'paciente' | 'especialista' | 'administrador' = 'paciente';
   turnoSeleccionado: Turno | null = null;
@@ -72,6 +75,8 @@ export class TurnosComponent implements OnInit {
     const u = await this.authService.getUser();
     if (!u) {
       console.error('Usuario no autenticado');
+      // Redirigir al login si no hay usuario
+      this.router.navigate(['/login']);
       return;
     }
     this.userId = u.id;
@@ -90,17 +95,35 @@ export class TurnosComponent implements OnInit {
 
     const { data, error } = await query;
     if (error) {
+      this.allTurnos = [];
       this.turnos = [];
       console.error(error);
       return;
     }
     if (!data) {
+      this.allTurnos = [];
       this.turnos = [];
       return;
     }
 
+    const turnoIds = data.map(t => t.id);
     const pacienteIds = [...new Set(data.map((t) => t.paciente_id))];
     const especialistaIds = [...new Set(data.map((t) => t.especialista_id))];
+
+    // Cargar historias clínicas
+    let historiasClinicasMap = new Map<string, HistoriaClinica>();
+    if (turnoIds.length > 0) {
+      const { data: hcData, error: hcError } = await supabase
+        .from('historias_clinicas')
+        .select('*')
+        .in('turno_id', turnoIds);
+
+      if (hcError) {
+        console.error('Error cargando historias clínicas', hcError);
+      } else if (hcData) {
+        hcData.forEach(hc => historiasClinicasMap.set(hc.turno_id, hc));
+      }
+    }
 
     const { data: pacientes, error: errPac } = await supabase
       .from('usuarios')
@@ -125,27 +148,63 @@ export class TurnosComponent implements OnInit {
     const mapPacientes = new Map(pacientes?.map((p) => [p.id, p]));
     const mapEspecialistas = new Map(especialistas?.map((e) => [e.id, e]));
 
-    this.turnos = data.map((t) => ({
+    this.allTurnos = data.map((t) => ({
       ...t,
       resena_especialista: t['reseña_especialista'],
       paciente_nombre: mapPacientes.get(t.paciente_id)?.nombre ?? 'Desconocido',
       paciente_apellido: mapPacientes.get(t.paciente_id)?.apellido ?? '',
       especialista_nombre: mapEspecialistas.get(t.especialista_id)?.nombre ?? 'Desconocido',
       especialista_apellido: mapEspecialistas.get(t.especialista_id)?.apellido ?? '',
+      historia_clinica: historiasClinicasMap.get(t.id) // Asignar la historia clínica
     }));
+
+    this.applyFilter(); // Aplicar filtro inicial
   }
 
-  get filtered() {
-    return this.turnos.filter(
-      (t) =>
-        (t.especialidad ?? '').toLowerCase().includes(this.filtroEsp.toLowerCase()) &&
-        (this.rol === 'administrador'
-          ? ((t.especialista_nombre ?? '') + (t.especialista_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase())
-          : this.rol === 'paciente'
-          ? ((t.especialista_nombre ?? '') + (t.especialista_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase())
-          : ((t.paciente_nombre ?? '') + (t.paciente_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase()))
-    );
+  applyFilter() {
+    if (!this.filtroUniversal) {
+      this.turnos = [...this.allTurnos]; // Mostrar todos si no hay filtro
+      return;
+    }
+
+    const searchTerm = this.filtroUniversal.toLowerCase();
+
+    this.turnos = this.allTurnos.filter(t => {
+      // Campos del turno
+      if (t.especialidad?.toLowerCase().includes(searchTerm)) return true;
+      if (t.estado?.toLowerCase().includes(searchTerm)) return true;
+      if (t.paciente_nombre?.toLowerCase().includes(searchTerm)) return true;
+      if (t.paciente_apellido?.toLowerCase().includes(searchTerm)) return true;
+      if (t.especialista_nombre?.toLowerCase().includes(searchTerm)) return true;
+      if (t.especialista_apellido?.toLowerCase().includes(searchTerm)) return true;
+      if (t.comentario_cancelacion?.toLowerCase().includes(searchTerm)) return true;
+      if (t.comentario_rechazo?.toLowerCase().includes(searchTerm)) return true;
+      if (t.resena_especialista?.toLowerCase().includes(searchTerm)) return true;
+      if (t.comentario_paciente?.toLowerCase().includes(searchTerm)) return true;
+      if (t.calificacion_paciente?.toString().includes(searchTerm)) return true;
+      if (t.fecha_hora?.toLowerCase().includes(searchTerm)) return true; // Para búsqueda por fecha/hora
+
+      // Campos de la historia clínica (si existe)
+      if (t.historia_clinica) {
+        const hc = t.historia_clinica;
+        if (hc.altura?.toString().includes(searchTerm)) return true;
+        if (hc.peso?.toString().includes(searchTerm)) return true;
+        if (hc.temperatura?.toString().includes(searchTerm)) return true;
+        if (hc.presion?.toLowerCase().includes(searchTerm)) return true;
+
+        // Datos dinámicos
+        if (hc.datos_dinamicos) {
+          for (const key in hc.datos_dinamicos) {
+            if (key.toLowerCase().includes(searchTerm) || hc.datos_dinamicos[key].toLowerCase().includes(searchTerm)) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    });
   }
+
 
   isVisible(t: Turno, action: string): boolean {
     const s = t.estado;
@@ -158,6 +217,8 @@ export class TurnosComponent implements OnInit {
       case 'finalizar':
         return this.rol === 'especialista' && s === 'aceptado';
       case 'verResena':
+        // Mostrar si hay reseña del especialista O comentario del paciente
+        // Eliminada la condición 't.resena_especialista !== 'Historia clínica cargada.' para que el botón aparezca siempre que haya reseña.
         return !!t.resena_especialista || !!t.comentario_paciente;
       case 'calificar':
         return this.rol === 'paciente' && s === 'realizado' && !t.comentario_paciente;

@@ -1,4 +1,4 @@
-.usuarios-container {
+.pacientes-container {
   font-family: 'Roboto', sans-serif;
   background-color: hsl(52, 23%, 74%);
   background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 40 40 M 40 0 L 0 40' stroke='%23c5e1a5' stroke-width='0.5'/%3E%3C/svg%3E");
@@ -8,11 +8,11 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+  box-sizing: border-box; /* Ensures padding does not cause overflow */
 }
 
-.usuarios-container h2,
-.usuarios-container h3 {
+.pacientes-container h2,
+.pacientes-container h3 {
   color: #2d6a4f;
   margin-bottom: 1rem;
   text-align: center;
@@ -73,85 +73,11 @@ button:hover {
   background-color: #40916c;
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 800px;
-}
-
-fieldset {
-  border: 1px solid #74c69d;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  background-color: #f8fdf6;
-}
-
-legend {
-  padding: 0 0.5rem;
-  font-weight: bold;
-  color: #2d6a4f;
-  font-size: 1rem;
-}
-
-.form-group {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-input,
-select,
-label {
-  width: 100%;
-  font-size: 1rem;
-}
-
-input,
-select {
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 0.4rem;
-}
-
-input[type="file"] {
-  padding: 0.3rem;
-}
-
-.form button {
-  align-self: flex-end;
-  max-width: 200px;
-  margin-top: 1rem;
-  background-color: #2d6a4f;
-}
-
-.form button:hover {
-  background-color: #1b4332;
-}
-
 .btn-container {
   margin-top: 1.5rem;
 }
 
-.file-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.file-group input[type="file"] {
-  width: auto;
-}
-
-.file-label {
-  font-size: 1rem;
-  color: #2d6a4f;
-  white-space: nowrap;
-}
-
-/* Overlay de loading */
+/* Loading Overlay */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -165,7 +91,7 @@ input[type="file"] {
   z-index: 9999;
 }
 
-/* Spinner básico */
+/* Basic Spinner */
 .spinner {
   border: 6px solid #cfe3d8;
   border-top: 6px solid #2d6a4f;
@@ -182,54 +108,7 @@ input[type="file"] {
   100% { transform: rotate(360deg); }
 }
 
-.tipo-seleccion {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.tipo-opciones {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.opcion {
-  cursor: pointer;
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-
-.opcion:hover {
-  transform: scale(1.05);
-}
-
-.opcion img {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-  margin-bottom: 0.5rem;
-}
-
-.opcion span {
-  display: block;
-  font-weight: bold;
-  color: #2d6a4f;
-}
-
-.btn-volver {
-  background-color: #d00000;
-  color: white;
-  margin-bottom: 1rem;
-  max-width: 200px;
-}
-
-.btn-volver:hover {
-  background-color: #9d0208;
-}
-
-/* --- Estilos para el Modal de Historia Clínica --- */
+/* --- Styles for Clinical History Modal --- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -240,8 +119,8 @@ input[type="file"] {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000; /* Asegura que esté por encima de todo */
-  padding: 1rem; /* Padding para evitar que el contenido toque los bordes en pantallas pequeñas */
+  z-index: 10000; /* Ensures it's on top of everything */
+  padding: 1rem; /* Padding to prevent content touching edges on small screens */
   box-sizing: border-box;
 }
 
@@ -250,11 +129,11 @@ input[type="file"] {
   padding: 2rem;
   border-radius: 0.8rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  max-width: 90%; /* Ajuste para pantallas pequeñas */
+  max-width: 90%; /* Adjust for small screens */
   max-height: 90%;
-  overflow-y: auto; /* Para permitir scroll si el contenido es largo */
+  overflow-y: auto; /* Allows scrolling if content is long */
   position: relative;
-  width: 700px; /* Ancho deseado para desktop */
+  width: 700px; /* Desired width for desktop */
 }
 
 .modal-content h3 {
@@ -320,7 +199,7 @@ input[type="file"] {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .usuarios-container {
+  .pacientes-container {
     padding: 1rem;
   }
 
@@ -333,22 +212,9 @@ input[type="file"] {
     font-size: 0.8rem;
   }
 
-  .form-group {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-  }
-
-  .opcion img {
-    width: 80px;
-    height: 80px;
-  }
-
-  .tipo-opciones {
-    gap: 1rem;
-  }
-
   .modal-content {
     padding: 1.5rem;
-    max-width: 95%; /* Mayor ancho para móviles */
+    max-width: 95%; /* Wider for mobile */
   }
 
   .modal-content h3 {
