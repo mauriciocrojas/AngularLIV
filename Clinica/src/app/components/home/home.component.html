@@ -6,7 +6,7 @@
   </div>
 
   <hr class="divider">
-
+  <br>
   <h1 class="title">🏥 Clínica Online</h1>
 
   <hr class="divider">
@@ -18,20 +18,27 @@
   </div>
 
   <div *ngIf="isLoggedIn" class="user-info">
-    <p>Sesión iniciada como: <strong>{{ tipoUsuario || 'Usuario' }}</strong> — {{ userEmail }}</p>
+    <p class="inline-session">Sesión iniciada como: <strong>{{ tipoUsuario || 'Usuario' }}</strong> — {{ userEmail }}
+    </p>
 
-    <!-- Botones según tipo de usuario -->
-    <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irATurnos()">Mis Turnos</button>
-    <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irASolicitarTurnos()">Solicitar Turno</button>
-    <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irAMiPerfil()">Mi Perfil</button>
+    <div class="button-row">
+      <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irATurnos()">Mis Turnos</button>
+      <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irASolicitarTurnos()">Solicitar
+        Turno</button>
+      <button *ngIf="tipoUsuario === 'paciente'" class="nav-button" (click)="irAMiPerfil()">Mi Perfil</button>
 
-    <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irATurnos()">Mis Turnos</button>
-    <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irAMiPerfil()">Mi Perfil</button>
+      <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irATurnos()">Mis Turnos</button>
+      <button *ngIf="tipoUsuario === 'especialista'" class="nav-button" (click)="irAMiPerfil()">Mi Perfil</button>
 
-    <button *ngIf="tipoUsuario === 'administrador'" class="nav-button" (click)="irATurnos()">Administrar Turnos</button>
-    <button *ngIf="tipoUsuario === 'administrador'" class="nav-button" (click)="irASolicitarTurnos()">Solicitar Turno</button>
-    <br><br>
-    <button (click)="logout()" class="logout-button"><strong>Cerrar sesión</strong></button>
-  </div>
+      <button *ngIf="tipoUsuario === 'administrador'" class="nav-button" (click)="irATurnos()">Administrar
+        Turnos</button>
+      <button *ngIf="tipoUsuario === 'administrador'" class="nav-button" (click)="irASolicitarTurnos()">Solicitar
+        Turno</button>
+    </div>
+
+  </div><br>
+  <button (click)="logout()" class="logout-button"><strong>Cerrar sesión</strong></button>
 
 </div>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">

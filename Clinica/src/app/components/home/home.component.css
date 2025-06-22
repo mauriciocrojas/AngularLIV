@@ -1,93 +1,138 @@
-/* Fuente general */
 .home-container {
-  font-family: 'Roboto', sans-serif;
-  background-color: hsl(52, 23%, 74%); /* Verde claro menos brillante */
-  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 40 40 M 40 0 L 0 40' stroke='%23c5e1a5' stroke-width='0.5'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 40px 40px;
-  padding: 30px;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  padding: 60px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  background-color: hsl(52, 23%, 74%);
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 40 40 M 40 0 L 0 40' stroke='%23c5e1a5' stroke-width='0.5'/%3E%3C/svg%3E");
 }
 
-/* Navegación */
+/* Título */
+.title {
+  font-size: 3rem;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Divisor fino y elegante */
+.divider {
+  height: 1px;
+  width: 80%;
+  background-color: #9bffb6;
+  border: none;
+
+}
+
+/* Contenedor de botones superiores */
 .top-buttons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
   justify-content: center;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
-.nav-button {
-  background-color: #a5d6a7;
-  border: 1px solid #2e7d32;
-  color: #2e7d32;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.nav-button:hover {
-  background-color: #81c784;
-  color: #fff;
-}
-
-/* Divisor */
-.divider {
-  border: 1px solid #c8e6c9;
-  width: 60%;
-  margin: 20px 0;
-}
-
-/* Título principal */
-.title {
-  font-size: 2.5rem;
-  color: #2e7d32;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Sección login / sesión */
-.login-section,
-.user-info {
-  text-align: center;
-  color: #1b5e20;
-  margin-top: 20px;
-}
-
+/* Botones generales */
+.nav-button,
 .login-button,
 .logout-button {
-  background-color: #4caf50;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  background-color: #e9f5ea;
+  color: #2e7d32;
+  border: 1px solid transparent;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
+.nav-button:hover,
 .login-button:hover,
 .logout-button:hover {
-  background-color: #2e7d32;
+  background-color: #c8e6c9;
+  color: #1b5e20;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
+/* Contenedores de sesión */
+.login-section,
+.user-info {
+  background-color: #fff4f44c;
+  border-radius: 16px;
+  padding: 30px 24px;
+  margin-top: 32px;
+  width: 100%;
+  max-width: 900px; /* más ancho para evitar cortes */
+  text-align: center;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.05);
+  color: #1b5e20;
+}
+
+/* Línea de sesión en una sola línea */
+.inline-session {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 24px;
+  font-size: 1.05rem;
+}
+
+/* Fila horizontal de botones */
+.button-row {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+/* Spinner centrado */
 .spinner {
-  border: 6px solid #cfe3d8;
-  border-top: 6px solid #2d6a4f;
+  border: 5px solid #e0f2e9;
+  border-top: 5px solid #81c784;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-  margin: auto;
-  margin-top: 20%;
+  width: 48px;
+  height: 48px;
+  animation: spin 0.8s linear infinite;
+  margin-top: 40px;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-info {
+    max-width: 100%;
+    padding: 24px 16px;
+  }
+
+  .inline-session {
+    white-space: normal;
+  }
+
+  .button-row {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .nav-button,
+  .login-button,
+  .logout-button {
+    width: 100%;
+    margin: 8px 0;
+  }
 }
