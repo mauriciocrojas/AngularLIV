@@ -1,27 +1,69 @@
-# EjemploSupabase
+# Clínica Online - Funcionalidades por Rol
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.3.
+Este sistema permite gestionar turnos, usuarios e historias clínicas diferenciando las funcionalidades según el tipo de usuario: **Paciente**, **Especialista** o **Administrador**.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🧑‍⚕️ Pacientes
 
-## Code scaffolding
+### 🗓️ Mis Turnos
+- Ver todos sus turnos, sin importar el estado.
+- Cancelar turnos que aún no fueron aceptados.
+- Ver la reseña del turno.
+- Calificar la atención recibida.
+- Completar una encuesta con comentarios.
+- Buscar mediante un filtro por palabras clave, sobre turnos e historias clínicas
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### ➕ Solicitar Turno
+- Solicitar turnos seleccionando:
+  - Especialidad
+  - Profesional
+  - Horario disponible
 
-## Build
+### 👤 Mi Perfil
+- Visualizar sus datos personales.
+- Consultar todas sus historias clínicas.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+---
 
-## Running unit tests
+## 🩺 Especialistas
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### 🗓️ Mis Turnos
+- Ver turnos asignados.
+- Aceptar o finalizar turnos.
+- Cargar una historia clínica al finalizar un turno.
+- Buscar mediante un filtro por palabras clave, sobre turnos e historias clínicas
 
-## Running end-to-end tests
+### 👤 Mi Perfil
+- Ver datos personales.
+- Agregar nuevas disponibilidades horarias.
+- Consultar disponibilidades ya cargadas.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### 🧑‍🤝‍🧑 Pacientes
+- Ver los pacientes que han sido atendidos.
+- Acceder a las historias clínicas de esos pacientes.
 
-## Further help
+---
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## 👨‍💼 Administradores
+
+### 👥 Usuarios
+- Ver todos los usuarios registrados.
+- Habilitar o inhabilitar especialistas.
+- Ver historias clínicas de los pacientes.
+- Exportar el listado de usuarios a Excel.
+- Crear nuevos usuarios: paciente, especialista o administrador.
+
+### 🗓️ Administrar Turnos
+- Ver todos los turnos, sea cual sea su estado.
+- Cancelar turnos.
+- Ver reseñas asociadas.
+- Buscar mediante un filtro por palabras clave, sobre turnos e historias clínicas
+
+### ➕ Solicitar Turno
+- Solicitar turnos en nombre de un paciente.
+
+---
+
+> Proyecto desarrollado con Angular y Supabase.  
+> Estilo visual: clínico.
