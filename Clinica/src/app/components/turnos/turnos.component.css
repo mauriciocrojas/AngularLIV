@@ -166,3 +166,72 @@ ul {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* estilos ya existentes */
+
+.campo-dinamico {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.campo-dinamico input {
+  padding: 6px 8px;
+  border: 1px solid #a5d6a7;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex: 1;
+}
+
+.campo-dinamico button {
+  background-color: #e57373;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.campo-dinamico button:hover {
+  background-color: #ef5350;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #1b5e20;
+}
+
+label input {
+  width: 100%;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+/* Botones modal historia clínica */
+.botones-modal {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.botones-modal button {
+  background-color: #a5d6a7;
+  border: 1px solid #2e7d32;
+  color: #2e7d32;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botones-modal button:hover {
+  background-color: #81c784;
+  color: #fff;
+}

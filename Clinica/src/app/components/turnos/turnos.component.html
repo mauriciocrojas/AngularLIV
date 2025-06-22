@@ -14,37 +14,131 @@
         <small>Especialista: {{ t.especialista_nombre }} {{ t.especialista_apellido }}</small>
       </div>
       <div class="acciones">
-        <!-- botones como antes -->
-        <button *ngIf="isVisible(t, 'cancelar')" type="button" (click)="accion(t, 'cancelar')">
-          Cancelar
-        </button>
-        <button *ngIf="isVisible(t, 'aceptar')" type="button" (click)="accion(t, 'aceptar')">
-          Aceptar
-        </button>
-        <button *ngIf="isVisible(t, 'rechazar')" type="button" (click)="accion(t, 'rechazar')">
-          Rechazar
-        </button>
-        <button *ngIf="isVisible(t, 'finalizar')" type="button" (click)="accion(t, 'finalizar')">
-          Finalizar
-        </button>
-        <button *ngIf="isVisible(t, 'verResena')" type="button" (click)="accion(t, 'verResena')">
-          Ver reseña
-        </button>
-        <button *ngIf="isVisible(t, 'calificar')" type="button" (click)="accion(t, 'calificar')">
-          Calificar
-        </button>
-        <button *ngIf="isVisible(t, 'encuesta')" type="button" (click)="accion(t, 'encuesta')">
-          Completar encuesta
-        </button>
+        <button *ngIf="isVisible(t, 'cancelar')" type="button" (click)="accion(t, 'cancelar')">Cancelar</button>
+        <button *ngIf="isVisible(t, 'aceptar')" type="button" (click)="accion(t, 'aceptar')">Aceptar</button>
+        <button *ngIf="isVisible(t, 'rechazar')" type="button" (click)="accion(t, 'rechazar')">Rechazar</button>
+        <button *ngIf="isVisible(t, 'finalizar')" type="button" (click)="accion(t, 'finalizar')">Finalizar</button>
+        <button *ngIf="isVisible(t, 'verResena')" type="button" (click)="accion(t, 'verResena')">Ver reseña</button>
+        <button *ngIf="isVisible(t, 'calificar')" type="button" (click)="accion(t, 'calificar')">Calificar</button>
+        <button *ngIf="isVisible(t, 'encuesta')" type="button" (click)="accion(t, 'encuesta')">Completar encuesta</button>
       </div>
     </li>
   </ul>
-  <!-- MODAL DE RESEÑA -->
+
   <div class="modal-overlay" *ngIf="turnoSeleccionado" (click)="cerrarModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <h4>📝 Reseña del Especialista</h4>
       <p>{{ turnoSeleccionado.resena_especialista }}</p>
       <button (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="modalHistoriaClinicaVisible" (click)="cerrarModalHistoria()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h4>🩺 Historia Clínica</h4>
+      <form (ngSubmit)="guardarHistoriaClinica()" #historiaForm="ngForm" novalidate>
+        <label>
+          Altura (cm):
+          <input
+            type="number"
+            [(ngModel)]="historiaClinica.altura"
+            name="altura"
+            required
+            min="30"
+            max="300"
+            #altura="ngModel"
+          />
+          <div class="error" *ngIf="altura.invalid && (altura.touched || historiaForm.submitted)">Altura inválida</div>
+        </label>
+
+        <label>
+          Peso (kg):
+          <input
+            type="number"
+            [(ngModel)]="historiaClinica.peso"
+            name="peso"
+            required
+            min="1"
+            max="500"
+            #peso="ngModel"
+          />
+          <div class="error" *ngIf="peso.invalid && (peso.touched || historiaForm.submitted)">Peso inválido</div>
+        </label>
+
+        <label>
+          Temperatura (°C):
+          <input
+            type="number"
+            [(ngModel)]="historiaClinica.temperatura"
+            name="temperatura"
+            required
+            step="0.1"
+            min="30"
+            max="45"
+            #temperatura="ngModel"
+          />
+          <div class="error" *ngIf="temperatura.invalid && (temperatura.touched || historiaForm.submitted)">Temperatura inválida</div>
+        </label>
+
+        <label>
+          Presión (ej: 120/80):
+          <input
+            type="text"
+            [(ngModel)]="historiaClinica.presion"
+            name="presion"
+            required
+            pattern="^\d{2,3}/\d{2,3}$"
+            #presion="ngModel"
+          />
+          <div class="error" *ngIf="presion.invalid && (presion.touched || historiaForm.submitted)">Formato presión inválido (ej: 120/80)</div>
+        </label>
+
+        <hr />
+
+        <div
+          *ngFor="let campo of camposDinamicos; let i = index"
+          class="campo-dinamico"
+        >
+          <input
+            type="text"
+            placeholder="Clave"
+            [(ngModel)]="campo.clave"
+            name="clave{{ i }}"
+            maxlength="30"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Valor"
+            [(ngModel)]="campo.valor"
+            name="valor{{ i }}"
+            maxlength="100"
+            required
+          />
+          <button
+            type="button"
+            (click)="eliminarCampoDinamico(i)"
+            title="Eliminar campo"
+          >
+            ×
+          </button>
+        </div>
+
+        <button
+          type="button"
+          (click)="agregarCampoDinamico()"
+          [disabled]="camposDinamicos.length >= 3"
+        >
+          + Agregar campo adicional
+        </button>
+
+        <div class="botones-modal" style="margin-top:1em;">
+          <button type="submit" [disabled]="historiaForm.invalid">
+            Guardar Historia Clínica
+          </button>
+          <button type="button" (click)="cerrarModalHistoria()">Cancelar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

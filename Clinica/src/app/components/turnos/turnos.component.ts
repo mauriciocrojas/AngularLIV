@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
@@ -21,11 +21,20 @@ interface Turno {
   calificacion_paciente?: number;
   comentario_paciente?: string;
 
-  // Nuevos campos para mostrar nombres completos:
   paciente_nombre?: string;
   paciente_apellido?: string;
   especialista_nombre?: string;
   especialista_apellido?: string;
+
+  historia_clinica?: any;
+}
+
+interface HistoriaClinica {
+  altura: number | null;
+  peso: number | null;
+  temperatura: number | null;
+  presion: string;
+  datos_dinamicos?: { [clave: string]: string };
 }
 
 @Component({
@@ -33,9 +42,11 @@ interface Turno {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './turnos.component.html',
-  styleUrls: ['./turnos.component.css']
+  styleUrls: ['./turnos.component.css'],
 })
 export class TurnosComponent implements OnInit {
+  @ViewChild('historiaForm') historiaForm!: NgForm;
+
   turnos: Turno[] = [];
   filtroEsp = '';
   filtroOtros = '';
@@ -43,7 +54,19 @@ export class TurnosComponent implements OnInit {
   rol: 'paciente' | 'especialista' | 'administrador' = 'paciente';
   turnoSeleccionado: Turno | null = null;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  // Modal historia clínica
+  modalHistoriaClinicaVisible = false;
+  historiaClinica: HistoriaClinica = {
+    altura: null,
+    peso: null,
+    temperatura: null,
+    presion: '',
+    datos_dinamicos: {},
+  };
+  camposDinamicos: { clave: string; valor: string }[] = [];
+  turnoParaHistoria: Turno | null = null;
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   async ngOnInit() {
     const u = await this.authService.getUser();
@@ -56,88 +79,79 @@ export class TurnosComponent implements OnInit {
     await this.load();
   }
 
- async load() {
-  let query = supabase.from('turnos').select('*').order('fecha_hora', { ascending: true });
+  async load() {
+    let query = supabase.from('turnos').select('*').order('fecha_hora', { ascending: true });
 
-  if (this.rol === 'paciente') {
-    query = query.eq('paciente_id', this.userId);
-  } else if (this.rol === 'especialista') {
-    query = query.eq('especialista_id', this.userId);
+    if (this.rol === 'paciente') {
+      query = query.eq('paciente_id', this.userId);
+    } else if (this.rol === 'especialista') {
+      query = query.eq('especialista_id', this.userId);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      this.turnos = [];
+      console.error(error);
+      return;
+    }
+    if (!data) {
+      this.turnos = [];
+      return;
+    }
+
+    const pacienteIds = [...new Set(data.map((t) => t.paciente_id))];
+    const especialistaIds = [...new Set(data.map((t) => t.especialista_id))];
+
+    const { data: pacientes, error: errPac } = await supabase
+      .from('usuarios')
+      .select('id, nombre, apellido')
+      .in('id', pacienteIds);
+
+    if (errPac) {
+      console.error('Error cargando pacientes', errPac);
+      return;
+    }
+
+    const { data: especialistas, error: errEsp } = await supabase
+      .from('usuarios')
+      .select('id, nombre, apellido')
+      .in('id', especialistaIds);
+
+    if (errEsp) {
+      console.error('Error cargando especialistas', errEsp);
+      return;
+    }
+
+    const mapPacientes = new Map(pacientes?.map((p) => [p.id, p]));
+    const mapEspecialistas = new Map(especialistas?.map((e) => [e.id, e]));
+
+    this.turnos = data.map((t) => ({
+      ...t,
+      resena_especialista: t['reseña_especialista'],
+      paciente_nombre: mapPacientes.get(t.paciente_id)?.nombre ?? 'Desconocido',
+      paciente_apellido: mapPacientes.get(t.paciente_id)?.apellido ?? '',
+      especialista_nombre: mapEspecialistas.get(t.especialista_id)?.nombre ?? 'Desconocido',
+      especialista_apellido: mapEspecialistas.get(t.especialista_id)?.apellido ?? '',
+    }));
   }
-
-  const { data, error } = await query;
-  if (error) {
-    this.turnos = [];
-    console.error(error);
-    return;
-  }
-  if (!data) {
-    this.turnos = [];
-    return;
-  }
-
-  // Traer todos los ids únicos de pacientes y especialistas para optimizar consultas
-  const pacienteIds = [...new Set(data.map(t => t.paciente_id))];
-  const especialistaIds = [...new Set(data.map(t => t.especialista_id))];
-
-  // Traer datos de pacientes
-  const { data: pacientes, error: errPac } = await supabase
-    .from('usuarios')
-    .select('id, nombre, apellido')
-    .in('id', pacienteIds);
-
-  if (errPac) {
-    console.error('Error cargando pacientes', errPac);
-    return;
-  }
-
-  // Traer datos de especialistas
-  const { data: especialistas, error: errEsp } = await supabase
-    .from('usuarios')
-    .select('id, nombre, apellido')
-    .in('id', especialistaIds);
-
-  if (errEsp) {
-    console.error('Error cargando especialistas', errEsp);
-    return;
-  }
-
-  // Mapear para acceso rápido
-  const mapPacientes = new Map(pacientes?.map(p => [p.id, p]));
-  const mapEspecialistas = new Map(especialistas?.map(e => [e.id, e]));
-
-  // Completar los turnos con nombres y renombrar reseña_especialista (con Ñ) a resena_especialista
-  this.turnos = data.map(t => ({
-    ...t,
-    resena_especialista: t['reseña_especialista'], // 👈 renombramos manualmente
-    paciente_nombre: mapPacientes.get(t.paciente_id)?.nombre ?? 'Desconocido',
-    paciente_apellido: mapPacientes.get(t.paciente_id)?.apellido ?? '',
-    especialista_nombre: mapEspecialistas.get(t.especialista_id)?.nombre ?? 'Desconocido',
-    especialista_apellido: mapEspecialistas.get(t.especialista_id)?.apellido ?? '',
-  }));
-}
-
 
   get filtered() {
-    return this.turnos.filter(t =>
-      (t.especialidad ?? '').toLowerCase().includes(this.filtroEsp.toLowerCase()) &&
-      (this.rol === 'administrador'
-        ? ((t.especialista_nombre ?? '') + (t.especialista_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase())
-        : (this.rol === 'paciente'
+    return this.turnos.filter(
+      (t) =>
+        (t.especialidad ?? '').toLowerCase().includes(this.filtroEsp.toLowerCase()) &&
+        (this.rol === 'administrador'
           ? ((t.especialista_nombre ?? '') + (t.especialista_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase())
-          : ((t.paciente_nombre ?? '') + (t.paciente_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase())
-        )
-      )
+          : this.rol === 'paciente'
+          ? ((t.especialista_nombre ?? '') + (t.especialista_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase())
+          : ((t.paciente_nombre ?? '') + (t.paciente_apellido ?? '')).toLowerCase().includes(this.filtroOtros.toLowerCase()))
     );
   }
-
 
   isVisible(t: Turno, action: string): boolean {
     const s = t.estado;
     switch (action) {
       case 'cancelar':
-        return (['pendiente', 'aceptado'].includes(s) && this.rol !== 'administrador') ||
-          (this.rol === 'administrador' && ['pendiente', 'aceptado'].includes(s));
+        return (['pendiente', 'aceptado'].includes(s) && this.rol !== 'administrador') || (this.rol === 'administrador' && ['pendiente', 'aceptado'].includes(s));
       case 'aceptar':
       case 'rechazar':
         return this.rol === 'especialista' && s === 'pendiente';
@@ -176,10 +190,24 @@ export class TurnosComponent implements OnInit {
       upd.comentario_rechazo = m;
     }
     if (tipo === 'finalizar') {
-      const r = prompt('Reseña / diagnóstico:');
-      if (!r) return;
-      upd.estado = 'realizado';
-      upd.resena_especialista = r;
+      this.turnoParaHistoria = t;
+      this.modalHistoriaClinicaVisible = true;
+
+      // Resetear la historia clínica y los campos dinámicos cada vez que se abre el modal
+      this.historiaClinica = {
+        altura: null,
+        peso: null,
+        temperatura: null,
+        presion: '',
+        datos_dinamicos: {},
+      };
+      this.camposDinamicos = [];
+      
+      // Asegurarse de resetear el estado de validación del formulario
+      if (this.historiaForm) {
+        this.historiaForm.resetForm();
+      }
+      return;
     }
     if (tipo === 'calificar' || tipo === 'encuesta') {
       const c = prompt(tipo === 'calificar' ? 'Comentario del paciente:' : 'Comentario adicional:');
@@ -201,14 +229,92 @@ export class TurnosComponent implements OnInit {
     await this.load();
   }
 
-  volver() {
-    // Adaptar según tu ruta o historial
-    this.router.navigate(['/']); // O a donde quieras volver
+  async guardarHistoriaClinica() {
+    console.log('guardarHistoriaClinica llamada');
+    console.log('Estado del formulario:', this.historiaForm.valid);
+    console.log('Valores del formulario:', this.historiaClinica);
+    console.log('Campos dinámicos:', this.camposDinamicos);
+
+    if (!this.turnoParaHistoria) {
+      console.warn('No hay turno seleccionado para guardar historia clínica.');
+      return;
+    }
+
+    if (this.historiaForm.invalid) {
+      alert('Por favor, completa todos los campos obligatorios y corrige los errores de formato.');
+      this.historiaForm.form.markAllAsTouched();
+      return;
+    }
+
+    const datosDinamicosObj: { [clave: string]: string } = {};
+    this.camposDinamicos.forEach(({ clave, valor }) => {
+      if (clave.trim() && valor.trim()) {
+        datosDinamicosObj[clave.trim()] = valor.trim();
+      }
+    });
+
+    try {
+      const { error: errInsert } = await supabase.from('historias_clinicas').insert({
+        turno_id: this.turnoParaHistoria.id,
+        altura: this.historiaClinica.altura,
+        peso: this.historiaClinica.peso,
+        temperatura: this.historiaClinica.temperatura,
+        presion: this.historiaClinica.presion,
+        datos_dinamicos: datosDinamicosObj,
+        fecha_creacion: new Date().toISOString(),
+      });
+
+      if (errInsert) {
+        alert('Error guardando historia clínica.');
+        console.error(errInsert);
+        return;
+      }
+
+      const { error: errUpd } = await supabase
+        .from('turnos')
+        .update({ estado: 'realizado', reseña_especialista: 'Historia clínica cargada.' })
+        .eq('id', this.turnoParaHistoria.id);
+
+      if (errUpd) {
+        alert('Error actualizando el estado del turno.');
+        console.error(errUpd);
+        return;
+      }
+
+      alert('Historia clínica guardada correctamente.');
+
+      this.modalHistoriaClinicaVisible = false;
+      this.turnoParaHistoria = null;
+      await this.load();
+    } catch (error) {
+      alert('Error inesperado al guardar historia clínica.');
+      console.error(error);
+    }
   }
 
+  agregarCampoDinamico() {
+    if (this.camposDinamicos.length < 3) {
+      this.camposDinamicos.push({ clave: '', valor: '' });
+    }
+  }
+
+  eliminarCampoDinamico(i: number) {
+    this.camposDinamicos.splice(i, 1);
+  }
+
+  volver() {
+    this.router.navigate(['/']);
+  }
 
   cerrarModal() {
     this.turnoSeleccionado = null;
   }
 
+  cerrarModalHistoria() {
+    this.modalHistoriaClinicaVisible = false;
+    this.turnoParaHistoria = null;
+    if (this.historiaForm) {
+      this.historiaForm.resetForm();
+    }
+  }
 }
