@@ -16,7 +16,7 @@
   <ul>
     <li *ngFor="let t of turnos" class="turno-item"> <!-- CAMBIO A 'turnos' -->
       <div>
-        <strong>{{ t.especialidad }}</strong> — {{ t.fecha_hora | date: 'short' }}
+        <strong>{{ t.especialidad }}</strong> — {{ t.fecha_hora | date: 'dd/MM/yyyy HH:mm' }}
         — <span class="estado">{{ t.estado }}</span>
       </div>
       <div>
