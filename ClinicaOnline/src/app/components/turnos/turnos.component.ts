@@ -17,7 +17,7 @@ interface Turno {
   estado: string;
   comentario_cancelacion?: string;
   comentario_rechazo?: string;
-  resena_especialista?: string;
+  resena_especialista?: string; // Corregido a 'resena_especialista'
   calificacion_paciente?: number;
   comentario_paciente?: string;
 
@@ -56,6 +56,7 @@ export class TurnosComponent implements OnInit {
   userId = '';
   rol: 'paciente' | 'especialista' | 'administrador' = 'paciente';
   turnoSeleccionado: Turno | null = null;
+  modalComentarioTipo: string = ''; // Nuevo: Para saber qué tipo de comentario se está mostrando
 
   // Modal historia clínica
   modalHistoriaClinicaVisible = false;
@@ -150,7 +151,8 @@ export class TurnosComponent implements OnInit {
 
     this.allTurnos = data.map((t) => ({
       ...t,
-      resena_especialista: t['reseña_especialista'],
+      // Asegurarse de que el nombre del campo coincida con la DB: 'resena_especialista'
+      resena_especialista: t['resena_especialista'],
       paciente_nombre: mapPacientes.get(t.paciente_id)?.nombre ?? 'Desconocido',
       paciente_apellido: mapPacientes.get(t.paciente_id)?.apellido ?? '',
       especialista_nombre: mapEspecialistas.get(t.especialista_id)?.nombre ?? 'Desconocido',
@@ -216,13 +218,17 @@ export class TurnosComponent implements OnInit {
         return this.rol === 'especialista' && s === 'pendiente';
       case 'finalizar':
         return this.rol === 'especialista' && s === 'aceptado';
-      case 'verResena':
-        // Mostrar si hay reseña del especialista O comentario del paciente
-        // Eliminada la condición 't.resena_especialista !== 'Historia clínica cargada.' para que el botón aparezca siempre que haya reseña.
-        return !!t.resena_especialista || !!t.comentario_paciente;
+      case 'verResenaEspecialista': // Nuevo tipo de acción
+        return !!t.resena_especialista && t.resena_especialista.trim() !== ''; // Mostrar si hay reseña del especialista
+      case 'verComentarioPaciente': // Nuevo tipo de acción
+        return !!t.comentario_paciente && t.comentario_paciente.trim() !== ''; // Mostrar si hay comentario del paciente
+      case 'verComentarioCancelacion': // Nuevo tipo de acción
+        return !!t.comentario_cancelacion && t.comentario_cancelacion.trim() !== ''; // Mostrar si hay comentario de cancelación
+      case 'verComentarioRechazo': // Nuevo tipo de acción
+        return !!t.comentario_rechazo && t.comentario_rechazo.trim() !== ''; // Mostrar si hay comentario de rechazo
       case 'calificar':
         return this.rol === 'paciente' && s === 'realizado' && !t.comentario_paciente;
-      case 'encuesta':
+      case 'encuesta': // Este botón ahora solo si hay reseña y no hay comentario de paciente
         return this.rol === 'paciente' && s === 'realizado' && !!t.resena_especialista && !t.comentario_paciente;
       default:
         return false;
@@ -232,8 +238,10 @@ export class TurnosComponent implements OnInit {
   async accion(t: Turno, tipo: string) {
     let upd: Partial<Turno> = {};
 
-    if (tipo === 'verResena') {
+    // Manejo de los nuevos tipos de "ver comentario"
+    if (['verResenaEspecialista', 'verComentarioPaciente', 'verComentarioCancelacion', 'verComentarioRechazo'].includes(tipo)) {
       this.turnoSeleccionado = t;
+      this.modalComentarioTipo = tipo; // Guardar el tipo de comentario a mostrar
       return;
     }
 
@@ -331,9 +339,10 @@ export class TurnosComponent implements OnInit {
         return;
       }
 
+      // **IMPORTANTE:** Aquí también corregido 'reseña_especialista' a 'resena_especialista'
       const { error: errUpd } = await supabase
         .from('turnos')
-        .update({ estado: 'realizado', reseña_especialista: 'Historia clínica cargada.' })
+        .update({ estado: 'realizado', resena_especialista: 'Historia clínica cargada.' })
         .eq('id', this.turnoParaHistoria.id);
 
       if (errUpd) {
@@ -369,6 +378,7 @@ export class TurnosComponent implements OnInit {
 
   cerrarModal() {
     this.turnoSeleccionado = null;
+    this.modalComentarioTipo = ''; // Resetear el tipo de comentario al cerrar
   }
 
   cerrarModalHistoria() {
@@ -376,6 +386,39 @@ export class TurnosComponent implements OnInit {
     this.turnoParaHistoria = null;
     if (this.historiaForm) {
       this.historiaForm.resetForm();
+    }
+  }
+
+  getModalTitle(): string {
+    switch (this.modalComentarioTipo) {
+      case 'verResenaEspecialista':
+        return '📝 Reseña del Especialista';
+      case 'verComentarioPaciente':
+        return '💬 Comentario del Paciente';
+      case 'verComentarioCancelacion':
+        return '🚫 Motivo de Cancelación';
+      case 'verComentarioRechazo':
+        return '❌ Motivo de Rechazo';
+      default:
+        return 'Detalles del Comentario';
+    }
+  }
+
+  getModalContent(): string {
+    if (!this.turnoSeleccionado) {
+      return 'No hay contenido disponible.';
+    }
+    switch (this.modalComentarioTipo) {
+      case 'verResenaEspecialista':
+        return this.turnoSeleccionado.resena_especialista || 'No hay reseña del especialista.';
+      case 'verComentarioPaciente':
+        return this.turnoSeleccionado.comentario_paciente || 'No hay comentario del paciente.';
+      case 'verComentarioCancelacion':
+        return this.turnoSeleccionado.comentario_cancelacion || 'No se especificó un motivo de cancelación.';
+      case 'verComentarioRechazo':
+        return this.turnoSeleccionado.comentario_rechazo || 'No se especificó un motivo de rechazo.';
+      default:
+        return 'Contenido no disponible.';
     }
   }
 }

@@ -1,3 +1,4 @@
+/* Estilos generales del contenedor, ya existen */
 .pacientes-container {
   font-family: 'Roboto', sans-serif;
   background-color: hsl(52, 23%, 74%);
@@ -8,13 +9,12 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  box-sizing: border-box; /* Ensures padding does not cause overflow */
+  box-sizing: border-box;
 }
 
-.pacientes-container h2,
-.pacientes-container h3 {
+.pacientes-container h2 {
   color: #2d6a4f;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   text-align: center;
 }
 
@@ -29,86 +29,217 @@
   text-align: center;
 }
 
-.tabla-scroll {
-  overflow-x: auto;
+/* --- Nuevos estilos para la grilla de tarjetas de pacientes --- */
+.patient-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin-bottom: 2rem;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+.patient-card {
   background-color: hsl(44, 100%, 97%);
-  border-radius: 0.5rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-th,
-td {
-  border: 1px solid #ccc;
-  padding: 0.75rem;
   text-align: center;
-  font-size: 0.95rem;
+  padding-bottom: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
-th {
-  background-color: #74c69d;
-  color: white;
+.patient-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background-color: #52b788;
-  border: none;
-  color: white;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
+.patient-image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-button:hover {
-  background-color: #40916c;
-}
-
-.btn-container {
-  margin-top: 1.5rem;
-}
-
-/* Loading Overlay */
-.loading-overlay {
-  position: fixed;
+.patient-image {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255,255,255,0.7);
+  object-fit: cover;
+  border-radius: 0.8rem 0.8rem 0 0;
+}
+
+/* Fav button (Ahora botón de "Ver Turnos") */
+.fav-button {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background-color: #52b788;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  z-index: 1;
 }
 
-/* Basic Spinner */
-.spinner {
-  border: 6px solid #cfe3d8;
-  border-top: 6px solid #2d6a4f;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 1s linear infinite;
-  margin: auto;
-  margin-top: 20%;
+.fav-button:hover {
+  background-color: #40916c;
+  transform: scale(1.05);
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.patient-info {
+  padding: 1rem;
+  width: 100%;
 }
 
-/* --- Styles for Clinical History Modal --- */
+.patient-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2d6a4f;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-info p {
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Sección de Detalles de Turnos del Paciente Seleccionado --- */
+.selected-patient-details {
+  background-color: hsl(44, 100%, 97%);
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.selected-patient-details h3 {
+  color: #2d6a4f;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+.turnos-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.turno-item {
+  background-color: #e6f1ec;
+  border: 1px solid #74c69d;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.turno-item h4 {
+  color: #1b4332;
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid #a8dadc;
+  padding-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.turno-item p {
+  margin-bottom: 0.4rem;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.turno-item p strong {
+  color: #2d6a4f;
+}
+
+/* Estilos para el estado del turno */
+.status-pendiente { color: #f0ad4e; font-weight: bold; }
+.status-aceptado { color: #28a745; font-weight: bold; }
+.status-rechazado { color: #dc3545; font-weight: bold; }
+.status-cancelado { color: #6c757d; font-weight: bold; }
+.status-realizado { color: #17a2b8; font-weight: bold; }
+
+.review-button {
+  background-color: #74c69d;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  float: right;
+  margin-top: 0.5rem;
+  border: none; /* Asegurar que no tenga bordes por defecto */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.review-button:hover {
+  background-color: #52b788;
+  transform: translateY(-2px);
+}
+
+.no-review-message {
+  font-style: italic;
+  color: #888;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* --- Estilo para botones principales (Volver a Pacientes, Volver al Inicio) --- */
+.btn-container {
+  display: flex;
+  justify-content: center; /* Centra el botón */
+  width: 100%; /* Asegura que el contenedor ocupe el ancho completo */
+  margin-top: 2rem;
+}
+
+.primary-button {
+  background-color: #2d6a4f; /* Color primario verde oscuro */
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sutil sombra */
+  text-decoration: none; /* Por si es un link */
+  display: inline-block; /* Para que padding y margin funcionen bien */
+}
+
+.primary-button:hover {
+  background-color: #1b4332; /* Tono más oscuro al pasar el ratón */
+  transform: translateY(-2px); /* Pequeño efecto de levantamiento */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+}
+
+/* --- Modales (similar a la historia clínica anterior) --- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -119,8 +250,8 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000; /* Ensures it's on top of everything */
-  padding: 1rem; /* Padding to prevent content touching edges on small screens */
+  z-index: 10000;
+  padding: 1rem;
   box-sizing: border-box;
 }
 
@@ -129,11 +260,11 @@ button:hover {
   padding: 2rem;
   border-radius: 0.8rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  max-width: 90%; /* Adjust for small screens */
+  max-width: 90%;
   max-height: 90%;
-  overflow-y: auto; /* Allows scrolling if content is long */
+  overflow-y: auto;
   position: relative;
-  width: 700px; /* Desired width for desktop */
+  width: 700px;
 }
 
 .modal-content h3 {
@@ -162,62 +293,164 @@ button:hover {
   transform: scale(1.1);
 }
 
-.historia-item {
-  background-color: #e6f1ec;
-  border: 1px solid #74c69d;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
+.review-details {
+  padding-top: 1rem;
 }
 
-.historia-item h4 {
-  color: #1b4332;
-  margin-top: 0;
-  margin-bottom: 0.8rem;
-  border-bottom: 1px solid #a8dadc;
-  padding-bottom: 0.5rem;
-}
-
-.historia-item p {
-  margin-bottom: 0.5rem;
+.review-details p {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
   color: #333;
 }
 
-.historia-item p strong {
+.review-details p strong {
   color: #2d6a4f;
 }
 
-.historia-item ul {
-  list-style-type: none;
-  padding-left: 0;
+.review-text {
+  background-color: #f0f8f4;
+  border-left: 4px solid #74c69d;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  color: #444;
+}
+
+.historia-item-review {
+  background-color: #f7fcf9;
+  border: 1px dashed #a8dadc;
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+.historia-item-review h5 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #1b4332;
+}
+
+.historia-item-review ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
   margin-top: 0.5rem;
 }
-
-.historia-item ul li {
-  margin-bottom: 0.3rem;
+.historia-item-review ul li {
+  margin-bottom: 0.2rem;
+  color: #555;
 }
 
-/* Responsive adjustments */
+/* Loading Overlay (existente) */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,255,255,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 6px solid #cfe3d8;
+  border-top: 6px solid #2d6a4f;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+  margin-top: 20%;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+/* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
   .pacientes-container {
     padding: 1rem;
   }
 
-  .tabla-scroll {
-    max-width: 100%;
+  .patient-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
   }
 
-  th, td {
-    padding: 0.5rem;
+  .patient-card {
+    padding-bottom: 0.5rem;
+  }
+
+  .fav-button {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    bottom: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .patient-info h3 {
+    font-size: 1rem;
+  }
+
+  .patient-info p {
     font-size: 0.8rem;
+  }
+
+  .selected-patient-details {
+    padding: 1.5rem;
+  }
+
+  .selected-patient-details h3 {
+    font-size: 1.5rem;
+  }
+
+  .turno-item h4 {
+    font-size: 1rem;
+  }
+
+  .turno-item p {
+    font-size: 0.9rem;
+  }
+
+  .review-button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
   }
 
   .modal-content {
     padding: 1.5rem;
-    max-width: 95%; /* Wider for mobile */
+    max-width: 95%;
   }
 
   .modal-content h3 {
     font-size: 1.5rem;
+  }
+
+  .modal-close-button {
+    font-size: 1.2rem;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .review-details p,
+  .review-text {
+    font-size: 0.9rem;
+  }
+  .historia-item-review {
+    padding: 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .primary-button {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
   }
 }

@@ -1,3 +1,8 @@
+/* Puedes mantener la mayoría de tus estilos CSS actuales,
+   solo asegúrate de que los estilos para los nuevos botones
+   y el modal unificado se vean bien.
+   El siguiente CSS es el que ya proporcionaste, solo para referencia. */
+
 .register-container {
   background-color: hsl(52, 23%, 74%);
   background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 40 40 M 40 0 L 0 40' stroke='%23c5e1a5' stroke-width='0.5'/%3E%3C/svg%3E");
@@ -73,6 +78,9 @@ ul {
 
 .acciones {
   margin-top: 10px;
+  display: flex; /* Permite que los botones se coloquen en línea */
+  flex-wrap: wrap; /* Permite que los botones salten de línea si no hay espacio */
+  gap: 5px; /* Espacio entre los botones */
 }
 
 .acciones button {
@@ -85,8 +93,8 @@ ul {
   text-transform: uppercase;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-right: 5px;
-  margin-top: 5px;
+  /* margin-right: 5px; remueve esto ya que usamos gap */
+  /* margin-top: 5px; remueve esto ya que usamos gap */
 }
 
 .acciones button:hover {
@@ -143,7 +151,7 @@ ul {
 
 .modal-content p {
   margin-bottom: 20px;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* Mantiene saltos de línea en el texto */
 }
 
 .modal-content button {
@@ -167,7 +175,7 @@ ul {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* estilos ya existentes */
+/* estilos ya existentes (Historia Clínica) */
 
 .campo-dinamico {
   display: flex;

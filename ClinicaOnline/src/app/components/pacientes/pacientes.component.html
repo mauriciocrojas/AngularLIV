@@ -1,77 +1,96 @@
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <div class="pacientes-container">
   <h2>Mis Pacientes Atendidos</h2>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading-overlay">
     <div class="spinner"></div>
   </div>
 
   <div *ngIf="!loading">
-    <!-- Tabla de pacientes -->
-    <div class="tabla-scroll" *ngIf="pacientes.length > 0; else noPacientes">
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>DNI</th>
-            <th>Obra Social</th>
-            <th>Historia Clínica</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let paciente of pacientes">
-            <td>{{ paciente.nombre }} {{ paciente.apellido }}</td>
-            <td>{{ paciente.email }}</td>
-            <td>{{ paciente.dni }}</td>
-            <td>{{ paciente.obra_social || 'N/A' }}</td>
-            <td>
-              <button (click)="verHistoriaClinica(paciente.id, paciente.nombre + ' ' + paciente.apellido)">
-                Ver Historia
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="patient-cards-grid" *ngIf="pacientes.length > 0; else noPacientes">
+      <div class="patient-card" *ngFor="let paciente of pacientes">
+        <div class="patient-image-container">
+          <img [src]="getPatientImageUrl(paciente)"
+               alt="Foto de {{ paciente.nombre }}" class="patient-image">
+          <button class="fav-button" (click)="selectPatient(paciente)">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="patient-info">
+          <h3>{{ paciente.nombre }} {{ paciente.apellido }}</h3>
+          <p>{{ paciente.email }}</p>
+        </div>
+      </div>
     </div>
 
     <ng-template #noPacientes>
       <p class="mensaje">No tienes pacientes registrados que hayas atendido.</p>
     </ng-template>
 
-    <div class="btn-container">
-      <button routerLink="/home">Volver</button>
+    <div *ngIf="selectedPatient" class="selected-patient-details">
+      <h3>Turnos de {{ selectedPatient.nombre }} {{ selectedPatient.apellido }}</h3>
+
+      <div class="turnos-list" *ngIf="selectedPatientTurns.length > 0; else noTurns">
+        <div class="turno-item" *ngFor="let turno of selectedPatientTurns">
+          <h4>{{ turno.fecha_hora | date:'dd/MM/yyyy HH:mm' }}</h4>
+          <p><strong>Especialidad:</strong> {{ turno.especialidad }}</p>
+          <p><strong>Estado:</strong> <span [ngClass]="'status-' + turno.estado">{{ turno.estado | titlecase }}</span></p>
+          <div *ngIf="turno.estado === 'realizado' && turno.calificacion_paciente">
+            <p><strong>Calificación del paciente:</strong> {{ turno.calificacion_paciente }} estrellas</p>
+          </div>
+          <div *ngIf="turno.comentario_paciente">
+            <p><strong>Comentario del paciente:</strong> {{ turno.comentario_paciente }}</p>
+          </div>
+          <div *ngIf="turno.resena_especialista && turno.resena_especialista.trim() !== ''">
+            <button class="review-button" (click)="viewReview(turno)">Ver Mi Reseña</button>
+          </div>
+          <div *ngIf="!(turno.resena_especialista && turno.resena_especialista.trim() !== '') && turno.estado === 'realizado'">
+            <p class="no-review-message">Aún no has cargado la reseña de este turno.</p>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noTurns>
+        <p class="mensaje">No se encontraron turnos con este paciente para tu especialidad.</p>
+      </ng-template>
+      <div class="btn-container">
+        <button class="primary-button" (click)="clearSelectedPatient()">Volver a Pacientes</button>
+      </div>
+    </div>
+
+    <div class="btn-container" *ngIf="!selectedPatient">
+      <button class="primary-button" routerLink="/home">Volver al Inicio</button>
     </div>
   </div>
 </div>
 
-<!-- Modal para Historia Clínica -->
-<div *ngIf="showHistoriaClinicaModal" class="modal-overlay">
+<div *ngIf="showReviewModal" class="modal-overlay">
   <div class="modal-content">
-    <h3>Historia Clínica de {{ selectedPatientName }}</h3>
-    <button class="modal-close-button" (click)="closeHistoriaClinicaModal()">X</button>
+    <h3>Reseña del Turno del {{ selectedTurnoForReview?.fecha_hora | date:'dd/MM/yyyy HH:mm' }}</h3>
+    <button class="modal-close-button" (click)="closeReviewModal()">X</button>
 
-    <div *ngIf="selectedHistoriaClinica.length > 0; else noHistoria">
-      <div *ngFor="let historia of selectedHistoriaClinica" class="historia-item">
-        <h4>Historia - {{ historia.fecha_turno | date:'short' }}</h4>
-        <p><strong>Especialista:</strong> {{ historia.especialista_nombre || 'N/A' }}</p>
-        <p><strong>Especialidad:</strong> {{ historia.especialidad || 'N/A' }}</p>
-        <p><strong>Altura:</strong> {{ historia.altura || 'N/A' }}</p>
-        <p><strong>Peso:</strong> {{ historia.peso || 'N/A' }}</p>
-        <p><strong>Temperatura:</strong> {{ historia.temperatura || 'N/A' }}</p>
-        <p><strong>Presión:</strong> {{ historia.presion || 'N/A' }}</p>
-        <div *ngIf="historia.datos_dinamicos">
-          <h5>Datos Adicionales:</h5>
-          <ul>
-            <li *ngFor="let key of getObjectKeys(historia.datos_dinamicos)">
-              <strong>{{ key }}:</strong> {{ historia.datos_dinamicos[key] }}
-            </li>
-          </ul>
+    <div class="review-details">
+      <p><strong>Paciente:</strong> {{ selectedPatientName }}</p>
+      <p><strong>Especialidad:</strong> {{ selectedTurnoForReview?.especialidad }}</p>
+      <p><strong>Reseña:</strong></p>
+      <p class="review-text">{{ selectedTurnoForReview?.resena_especialista || 'No hay reseña disponible.' }}</p>
+      <div *ngIf="selectedHistoriaClinica.length > 0">
+        <h4>Historia Clínica Asociada:</h4>
+        <div *ngFor="let historia of selectedHistoriaClinica" class="historia-item-review">
+          <p><strong>Altura:</strong> {{ historia.altura || 'N/A' }}</p>
+          <p><strong>Peso:</strong> {{ historia.peso || 'N/A' }}</p>
+          <p><strong>Temperatura:</strong> {{ historia.temperatura || 'N/A' }}</p>
+          <p><strong>Presión:</strong> {{ historia.presion || 'N/A' }}</p>
+          <div *ngIf="historia.datos_dinamicos">
+            <h5>Datos Adicionales:</h5>
+            <ul>
+              <li *ngFor="let key of getObjectKeys(historia.datos_dinamicos)">
+                <strong>{{ key }}:</strong> {{ historia.datos_dinamicos[key] }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-    <ng-template #noHistoria>
-      <p>No se encontraron historias clínicas para este paciente que hayas atendido.</p>
-    </ng-template>
   </div>
 </div>

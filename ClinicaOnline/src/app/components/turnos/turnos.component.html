@@ -3,7 +3,6 @@
 
   <h3>{{ rol === 'administrador' ? 'Turnos' : 'Mis Turnos' }}</h3>
 
-  <!-- Campo de filtro universal -->
   <div class="filtros">
     <input
       type="text"
@@ -14,7 +13,7 @@
   </div>
 
   <ul>
-    <li *ngFor="let t of turnos" class="turno-item"> <!-- CAMBIO A 'turnos' -->
+    <li *ngFor="let t of turnos" class="turno-item">
       <div>
         <strong>{{ t.especialidad }}</strong> — {{ t.fecha_hora | date: 'dd/MM/yyyy HH:mm' }}
         — <span class="estado">{{ t.estado }}</span>
@@ -28,17 +27,22 @@
         <button *ngIf="isVisible(t, 'aceptar')" type="button" (click)="accion(t, 'aceptar')">Aceptar</button>
         <button *ngIf="isVisible(t, 'rechazar')" type="button" (click)="accion(t, 'rechazar')">Rechazar</button>
         <button *ngIf="isVisible(t, 'finalizar')" type="button" (click)="accion(t, 'finalizar')">Finalizar</button>
-        <button *ngIf="isVisible(t, 'verResena')" type="button" (click)="accion(t, 'verResena')">Ver reseña</button>
+
+        <button *ngIf="isVisible(t, 'verResenaEspecialista')" type="button" (click)="accion(t, 'verResenaEspecialista')">Ver Reseña</button>
+        <button *ngIf="isVisible(t, 'verComentarioPaciente')" type="button" (click)="accion(t, 'verComentarioPaciente')">Ver Comentario Paciente</button>
+        <button *ngIf="isVisible(t, 'verComentarioCancelacion')" type="button" (click)="accion(t, 'verComentarioCancelacion')">Ver Motivo Cancelación</button>
+        <button *ngIf="isVisible(t, 'verComentarioRechazo')" type="button" (click)="accion(t, 'verComentarioRechazo')">Ver Motivo Rechazo</button>
+        
         <button *ngIf="isVisible(t, 'calificar')" type="button" (click)="accion(t, 'calificar')">Calificar</button>
         <button *ngIf="isVisible(t, 'encuesta')" type="button" (click)="accion(t, 'encuesta')">Completar encuesta</button>
       </div>
     </li>
   </ul>
 
-  <div class="modal-overlay" *ngIf="turnoSeleccionado" (click)="cerrarModal()">
+  <div class="modal-overlay" *ngIf="turnoSeleccionado && modalComentarioTipo" (click)="cerrarModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
-      <h4>📝 Reseña del Especialista</h4>
-      <p>{{ turnoSeleccionado.resena_especialista }}</p>
+      <h4>{{ getModalTitle() }}</h4>
+      <p>{{ getModalContent() }}</p>
       <button (click)="cerrarModal()">Cerrar</button>
     </div>
   </div>
