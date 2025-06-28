@@ -9,8 +9,9 @@
 
     <h2>Solicitar Turno</h2>
 
-    <button class="btn-volver" *ngIf="filtroEspecialidad || especialistaSel" (click)="volverPaso()">← Volver paso</button>
+    <button class="btn-volver" *ngIf="filtroEspecialidad || especialistaSeleccionado" (click)="volverPaso()">← Volver paso</button>
 
+    <!-- ADMIN: Selección de paciente -->
     <div class="campo" *ngIf="usuario?.tipo_usuario === 'administrador'">
       <label for="paciente">Seleccionar paciente:</label>
       <select id="paciente" [(ngModel)]="pacienteSeleccionado">
@@ -19,13 +20,15 @@
       </select>
     </div>
 
+    <!-- Selección de especialidad -->
     <div class="seleccion-grid" *ngIf="!filtroEspecialidad">
       <button *ngFor="let esp of especialidades" (click)="seleccionarEspecialidad(esp)" class="boton-img">
         <img [src]="imagenesEspecialidades[esp] || 'assets/default-especialidad.png'" alt="Especialidad" />
       </button>
     </div>
 
-    <div class="seleccion-grid" *ngIf="filtroEspecialidad && !especialistaSel">
+    <!-- Selección de especialista -->
+    <div class="seleccion-grid" *ngIf="filtroEspecialidad && !especialistaSeleccionado">
       <div *ngFor="let e of especialistas" class="boton-profesional" (click)="seleccionarEspecialista(e)">
         <span>{{ e.nombre }} {{ e.apellido }}</span>
         <ng-container *ngIf="e.imagenes?.length > 0; else defaultImg">
@@ -37,19 +40,22 @@
       </div>
     </div>
 
-    <div class="seleccion-grid" *ngIf="especialistaSel && disponibilidad.length > 0">
+    <!-- Turnos disponibles -->
+    <div class="seleccion-grid" *ngIf="especialistaSeleccionado && disponibilidad.length > 0">
       <button *ngFor="let turno of disponibilidad" class="boton-turno"
-        [class.seleccionado]="turno.id === disponibilidadSel"
-        (click)="disponibilidadSel = turno.id">
+        [class.seleccionado]="turno.id === disponibilidadSeleccionada"
+        (click)="disponibilidadSeleccionada = turno.id">
         {{ turno.fecha?.split('-').reverse().join('/') }} 
         {{ turno.hora_inicio?.slice(0,5) }} - {{ turno.hora_fin?.slice(0,5) }}
       </button>
     </div>
 
-    <div class="campo" *ngIf="disponibilidadSel">
+    <!-- Botón de solicitar turno -->
+    <div class="campo" *ngIf="disponibilidadSeleccionada">
       <button class="btn" (click)="solicitar()">Solicitar Turno</button>
     </div>
 
+    <!-- Mensajes -->
     <div class="success" *ngIf="success">{{ success }}</div>
     <div class="error" *ngIf="error">{{ error }}</div>
   </div>
