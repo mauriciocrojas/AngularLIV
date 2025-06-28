@@ -1,55 +1,79 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <div class="usuarios-container">
   <h2>Gestión de Usuarios</h2>
-  <button (click)="exportarUsuariosExcel()">📥 Exportar a Excel</button>
+  <button (click)="exportarUsuariosExcel()">📥 Exportar a Excel (Todos los Usuarios)</button>
   <br>
-  <!-- Loading -->
+
   <div *ngIf="loading" class="loading-overlay">
     <div class="spinner"></div>
   </div>
 
   <div *ngIf="!loading">
-    <!-- Tabla de usuarios -->
-    <div class="tabla-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Confirmación</th>
-            <th>Habilitación</th>
-            <th>Historia Clínica</th> <!-- Nueva columna -->
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of usuarios">
-            <td>{{ user.tipo_usuario }}</td>
-            <td>{{ user.nombre }} {{ user.apellido }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.confirmado ? 'Sí' : 'No' }}</td>
-            <td>
-              <button *ngIf="user.tipo_usuario === 'especialista'" (click)="cambiarEstado(user)">
-                {{ user.confirmado ? 'Inhabilitar' : 'Habilitar' }}
+    <h3>Usuarios Registrados</h3>
+
+    <div class="users-sections-container">
+      <ng-container *ngIf="groupedUsers['especialista'] && groupedUsers['especialista'].length > 0">
+        <div class="user-section">
+          <h4>Especialistas</h4>
+          <div class="users-grid">
+            <div *ngFor="let user of groupedUsers['especialista']" class="user-card">
+              <button class="fav-button" (click)="descargarTurnosUsuario(user)">
+                <img [src]="user.imagenes && user.imagenes.length > 0 ? getImageUrl(user.imagenes[0]) : 'assets/default-user.png'" alt="User Image" class="user-image">
+                <span class="user-name">{{ user.nombre }} {{ user.apellido }}</span>
+                <i class="fas fa-download download-icon"></i>
               </button>
-            </td>
-            <td>
-              <!-- Nuevo botón para ver historia clínica -->
-              <button *ngIf="user.tipo_usuario === 'paciente'" (click)="verHistoriaClinica(user.id, user.nombre + ' ' + user.apellido)">
-                Ver Historia
+              <div class="user-actions">
+                <button *ngIf="user.tipo_usuario === 'especialista'" (click)="cambiarEstado(user)" class="action-button">
+                  {{ user.confirmado ? 'Inhabilitar' : 'Habilitar' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="groupedUsers['paciente'] && groupedUsers['paciente'].length > 0">
+        <div class="user-section">
+          <h4>Pacientes</h4>
+          <div class="users-grid">
+            <div *ngFor="let user of groupedUsers['paciente']" class="user-card">
+              <button class="fav-button" (click)="descargarTurnosUsuario(user)">
+                <img [src]="user.imagenes && user.imagenes.length > 0 ? getImageUrl(user.imagenes[0]) : 'assets/default-user.png'" alt="User Image" class="user-image">
+                <span class="user-name">{{ user.nombre }} {{ user.apellido }}</span>
+                <i class="fas fa-download download-icon"></i>
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <div class="user-actions">
+                <button *ngIf="user.tipo_usuario === 'paciente'" (click)="verHistoriaClinica(user.id, user.nombre + ' ' + user.apellido)" class="action-button">
+                  Ver Historia Clinica
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="groupedUsers['administrador'] && groupedUsers['administrador'].length > 0">
+        <div class="user-section">
+          <h4>Administradores</h4>
+          <div class="users-grid">
+            <div *ngFor="let user of groupedUsers['administrador']" class="user-card">
+              <button class="fav-button" (click)="descargarTurnosUsuario(user)">
+                <img [src]="user.imagenes && user.imagenes.length > 0 ? getImageUrl(user.imagenes[0]) : 'assets/default-user.png'" alt="User Image" class="user-image">
+                <span class="user-name">{{ user.nombre }} {{ user.apellido }}</span>
+                <i class="fas fa-download download-icon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
     </div>
 
     <div *ngIf="mensaje2" class="mensaje">{{ mensaje2 }}</div>
 
-    <br><br>
     <h3>Crear Nuevo Usuario</h3>
     <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
 
-    <!-- Selección de tipo de usuario con imágenes -->
     <div *ngIf="!nuevoUsuario.tipo_usuario" class="tipo-seleccion">
       <strong>Seleccioná el tipo de usuario:</strong>
       <div class="tipo-opciones">
@@ -99,8 +123,7 @@
             <option value="" disabled selected>Seleccionar especialidad</option>
             <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
           </select>
-          <input name="nuevaEspecialidad" type="text" placeholder="Especialidad adicional"
-            [(ngModel)]="nuevoUsuario.nuevaEspecialidad" />
+          <input name="nuevaEspecialidad" type="text" placeholder="Especialidad adicional" [(ngModel)]="nuevoUsuario.nuevaEspecialidad" />
         </div>
       </fieldset>
 
@@ -126,7 +149,6 @@
   </div>
 </div>
 
-<!-- Modal para Historia Clínica -->
 <div *ngIf="showHistoriaClinicaModal" class="modal-overlay">
   <div class="modal-content">
     <h3>Historia Clínica de {{ selectedPatientName }}</h3>

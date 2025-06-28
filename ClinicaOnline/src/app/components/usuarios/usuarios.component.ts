@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import * as XLSX from 'xlsx';
@@ -14,11 +14,17 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, TitleCasePipe],
 })
 export class UsuariosComponent implements OnInit {
   loading: boolean = false;
   usuarios: any[] = [];
+  // Nueva propiedad para usuarios agrupados por tipo
+  groupedUsers: { [key: string]: any[] } = {
+    especialista: [],
+    paciente: [],
+    administrador: []
+  };
   nuevoUsuario: any = {
     tipo_usuario: '',
     nombre: '',
@@ -49,8 +55,24 @@ export class UsuariosComponent implements OnInit {
       this.mensaje2 = 'Error al cargar los usuarios.';
     } else if (data) {
       this.usuarios = data;
+      this.groupUsersByType(); // Llama a la nueva función para agrupar usuarios
     }
     this.loading = false;
+  }
+
+  // Nueva función para agrupar usuarios por tipo
+  groupUsersByType() {
+    this.groupedUsers = {
+      especialista: [],
+      paciente: [],
+      administrador: []
+    };
+    this.usuarios.forEach(user => {
+      // Acceder a las propiedades de groupedUsers con notación de corchetes
+      if (this.groupedUsers[user.tipo_usuario]) {
+        this.groupedUsers[user.tipo_usuario].push(user);
+      }
+    });
   }
 
   async cambiarEstado(usuario: any) {
@@ -137,7 +159,7 @@ export class UsuariosComponent implements OnInit {
       this.mensaje = 'Error al guardar en base de datos: ' + insertError.message;
     } else {
       this.mensaje = 'Usuario creado exitosamente.';
-      await this.ngOnInit(); // Refresh user list
+      await this.ngOnInit(); // Refresh user list and re-group
       this.resetFormulario();
     }
 
@@ -146,17 +168,29 @@ export class UsuariosComponent implements OnInit {
 
   async uploadImages(): Promise<string[] | null> {
     const urls: string[] = [];
+    const storageBucket = supabase.storage.from('images');
 
     for (const img of this.imagenes) {
       const filePath = `users/${Date.now()}-${img.name}`;
-      const { data, error } = await supabase.storage.from('images').upload(filePath, img);
+      const { data, error } = await storageBucket.upload(filePath, img);
       if (error) {
         console.error('Error uploading image:', error);
         return null;
       }
-      urls.push(data.path);
+      const { data: publicUrlData } = storageBucket.getPublicUrl(filePath);
+      if (publicUrlData) {
+        urls.push(publicUrlData.publicUrl);
+      } else {
+        console.error('No public URL found for uploaded image:', filePath);
+        return null;
+      }
     }
     return urls;
+  }
+
+  getImageUrl(path: string): string {
+    const { data } = supabase.storage.from('images').getPublicUrl(path);
+    return data.publicUrl;
   }
 
   resetFormulario() {
@@ -196,7 +230,93 @@ export class UsuariosComponent implements OnInit {
     FileSaver.saveAs(blob, 'usuarios-clinica.xlsx');
   }
 
-  // --- Funciones para Historia Clínica ---
+  async descargarTurnosUsuario(usuario: any) {
+    this.loading = true;
+    this.mensaje2 = '';
+    try {
+      let turnosData: any[] = [];
+      let especialistaMap = new Map<string, string>();
+      let pacienteMap = new Map<string, string>();
+
+      if (usuario.tipo_usuario === 'paciente') {
+        const { data, error } = await supabase
+          .from('turnos')
+          .select('*, especialista_id, paciente_id, fecha_hora, especialidad, estado')
+          .eq('paciente_id', usuario.id);
+        if (error) throw error;
+        turnosData = data || [];
+
+        const especialistaIds = [...new Set(turnosData.map(t => t.especialista_id).filter(Boolean))];
+        if (especialistaIds.length > 0) {
+          const { data: espData, error: espError } = await supabase
+            .from('usuarios')
+            .select('id, nombre, apellido')
+            .in('id', especialistaIds);
+          if (espError) throw espError;
+          espData.forEach(esp => especialistaMap.set(esp.id, `${esp.nombre} ${esp.apellido}`));
+        }
+
+      } else if (usuario.tipo_usuario === 'especialista') {
+        const { data, error } = await supabase
+          .from('turnos')
+          .select('*, especialista_id, paciente_id, fecha_hora, especialidad, estado')
+          .eq('especialista_id', usuario.id);
+        if (error) throw error;
+        turnosData = data || [];
+
+        const pacienteIds = [...new Set(turnosData.map(t => t.paciente_id).filter(Boolean))];
+        if (pacienteIds.length > 0) {
+          const { data: pacData, error: pacError } = await supabase
+            .from('usuarios')
+            .select('id, nombre, apellido')
+            .in('id', pacienteIds);
+          if (pacError) throw pacError;
+          pacData.forEach(pac => pacienteMap.set(pac.id, `${pac.nombre} ${pac.apellido}`));
+        }
+
+      } else {
+        this.mensaje2 = 'No se pueden exportar turnos para este tipo de usuario.';
+        this.loading = false;
+        return;
+      }
+
+      if (turnosData.length === 0) {
+        this.mensaje2 = `No se encontraron turnos para ${usuario.nombre} ${usuario.apellido}.`;
+        this.loading = false;
+        return;
+      }
+
+      const exportTurnos = turnosData.map(turno => {
+        const especialistaNombre = turno.especialista_id ? especialistaMap.get(turno.especialista_id) || 'N/A' : 'N/A';
+        const pacienteNombre = turno.paciente_id ? pacienteMap.get(turno.paciente_id) || 'N/A' : 'N/A';
+
+        return {
+          'Fecha y Hora': new Date(turno.fecha_hora).toLocaleString('es-AR'),
+          'Especialidad': turno.especialidad || 'N/A',
+          'Estado del Turno': turno.estado || 'N/A',
+          'Especialista': especialistaNombre,
+          'Paciente': pacienteNombre
+        };
+      });
+
+      const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportTurnos);
+      const workbook: XLSX.WorkBook = {
+        Sheets: { 'Turnos': worksheet },
+        SheetNames: ['Turnos']
+      };
+
+      const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      FileSaver.saveAs(blob, `turnos-${usuario.nombre}-${usuario.apellido}.xlsx`);
+      this.mensaje2 = `Turnos de ${usuario.nombre} ${usuario.apellido} exportados correctamente.`;
+
+    } catch (error: any) {
+      console.error('Error al descargar turnos:', error);
+      this.mensaje2 = `Error al descargar los turnos: ${error.message || 'Error desconocido'}.`;
+    } finally {
+      this.loading = false;
+    }
+  }
 
   async verHistoriaClinica(patientId: string, patientName: string) {
     this.loading = true;
@@ -204,10 +324,9 @@ export class UsuariosComponent implements OnInit {
     this.selectedPatientName = patientName;
 
     try {
-      // 1. Obtener los turnos del paciente, incluyendo especialista_id, especialidad y fecha_hora
       const { data: turnosData, error: turnosError } = await supabase
         .from('turnos')
-        .select('id, especialista_id, especialidad, fecha_hora') // Incluido fecha_hora
+        .select('id, especialista_id, especialidad, fecha_hora')
         .eq('paciente_id', patientId);
 
       if (turnosError) {
@@ -221,7 +340,6 @@ export class UsuariosComponent implements OnInit {
         const turnoIds = turnosData.map(turno => turno.id);
         const especialistaIds = [...new Set(turnosData.map(turno => turno.especialista_id))];
 
-        // 2. Obtener las historias clínicas asociadas a esos turnos
         const { data: historiasData, error: historiasError } = await supabase
           .from('historias_clinicas')
           .select('*')
@@ -234,7 +352,6 @@ export class UsuariosComponent implements OnInit {
           return;
         }
 
-        // 3. Obtener los nombres de los especialistas
         let especialistasMap = new Map<string, string>();
         if (especialistaIds.length > 0) {
           const { data: especialistasData, error: especialistasError } = await supabase
@@ -254,18 +371,17 @@ export class UsuariosComponent implements OnInit {
           });
         }
 
-        // 4. Combinar historias, turnos y nombres de especialistas
         const combinedHistorias = historiasData.map(historia => {
           const turnoCorrespondiente = turnosData.find(turno => turno.id === historia.turno_id);
           const especialistaNombre = turnoCorrespondiente?.especialista_id ? especialistasMap.get(turnoCorrespondiente.especialista_id) : 'N/A';
           const especialidad = turnoCorrespondiente?.especialidad || 'N/A';
-          const fechaTurno = turnoCorrespondiente?.fecha_hora || historia.fecha_creacion; // Usar fecha_hora del turno, sino fecha_creacion de la historia
+          const fechaTurno = turnoCorrespondiente?.fecha_hora || historia.fecha_creacion;
 
           return {
             ...historia,
             especialista_nombre: especialistaNombre,
             especialidad: especialidad,
-            fecha_turno: fechaTurno // Añadir la fecha del turno
+            fecha_turno: fechaTurno
           };
         });
 
@@ -286,7 +402,6 @@ export class UsuariosComponent implements OnInit {
     this.selectedPatientName = '';
   }
 
-  // Helper para obtener las keys de un objeto (para datos dinámicos)
   getObjectKeys(obj: object): string[] {
     return Object.keys(obj);
   }
