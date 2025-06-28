@@ -17,7 +17,7 @@ interface Turno {
   estado: string;
   comentario_cancelacion?: string;
   comentario_rechazo?: string;
-  resena_especialista?: string; // Corregido a 'resena_especialista'
+  resena_especialista?: string;
   calificacion_paciente?: number;
   comentario_paciente?: string;
 
@@ -26,11 +26,11 @@ interface Turno {
   especialista_nombre?: string;
   especialista_apellido?: string;
 
-  historia_clinica?: HistoriaClinica; // Agregamos la historia clínica directamente al turno
+  historia_clinica?: HistoriaClinica;
 }
 
 interface HistoriaClinica {
-  id?: number; // Puede tener ID si ya está guardada
+  id?: number;
   fecha_creacion?: string;
   turno_id?: string;
   altura: number | null;
@@ -51,14 +51,13 @@ export class TurnosComponent implements OnInit {
   @ViewChild('historiaForm') historiaForm!: NgForm;
 
   turnos: Turno[] = [];
-  allTurnos: Turno[] = []; // Para guardar todos los turnos sin filtrar
-  filtroUniversal: string = ''; // Nuevo campo de filtro universal
+  allTurnos: Turno[] = [];
+  filtroUniversal: string = '';
   userId = '';
   rol: 'paciente' | 'especialista' | 'administrador' = 'paciente';
   turnoSeleccionado: Turno | null = null;
-  modalComentarioTipo: string = ''; // Nuevo: Para saber qué tipo de comentario se está mostrando
+  modalComentarioTipo: string = '';
 
-  // Modal historia clínica
   modalHistoriaClinicaVisible = false;
   historiaClinica: HistoriaClinica = {
     altura: null,
@@ -76,7 +75,6 @@ export class TurnosComponent implements OnInit {
     const u = await this.authService.getUser();
     if (!u) {
       console.error('Usuario no autenticado');
-      // Redirigir al login si no hay usuario
       this.router.navigate(['/login']);
       return;
     }
@@ -111,7 +109,6 @@ export class TurnosComponent implements OnInit {
     const pacienteIds = [...new Set(data.map((t) => t.paciente_id))];
     const especialistaIds = [...new Set(data.map((t) => t.especialista_id))];
 
-    // Cargar historias clínicas
     let historiasClinicasMap = new Map<string, HistoriaClinica>();
     if (turnoIds.length > 0) {
       const { data: hcData, error: hcError } = await supabase
@@ -151,28 +148,26 @@ export class TurnosComponent implements OnInit {
 
     this.allTurnos = data.map((t) => ({
       ...t,
-      // Asegurarse de que el nombre del campo coincida con la DB: 'resena_especialista'
       resena_especialista: t['resena_especialista'],
       paciente_nombre: mapPacientes.get(t.paciente_id)?.nombre ?? 'Desconocido',
       paciente_apellido: mapPacientes.get(t.paciente_id)?.apellido ?? '',
       especialista_nombre: mapEspecialistas.get(t.especialista_id)?.nombre ?? 'Desconocido',
       especialista_apellido: mapEspecialistas.get(t.especialista_id)?.apellido ?? '',
-      historia_clinica: historiasClinicasMap.get(t.id) // Asignar la historia clínica
+      historia_clinica: historiasClinicasMap.get(t.id)
     }));
 
-    this.applyFilter(); // Aplicar filtro inicial
+    this.applyFilter();
   }
 
   applyFilter() {
     if (!this.filtroUniversal) {
-      this.turnos = [...this.allTurnos]; // Mostrar todos si no hay filtro
+      this.turnos = [...this.allTurnos];
       return;
     }
 
     const searchTerm = this.filtroUniversal.toLowerCase();
 
     this.turnos = this.allTurnos.filter(t => {
-      // Campos del turno
       if (t.especialidad?.toLowerCase().includes(searchTerm)) return true;
       if (t.estado?.toLowerCase().includes(searchTerm)) return true;
       if (t.paciente_nombre?.toLowerCase().includes(searchTerm)) return true;
@@ -184,9 +179,8 @@ export class TurnosComponent implements OnInit {
       if (t.resena_especialista?.toLowerCase().includes(searchTerm)) return true;
       if (t.comentario_paciente?.toLowerCase().includes(searchTerm)) return true;
       if (t.calificacion_paciente?.toString().includes(searchTerm)) return true;
-      if (t.fecha_hora?.toLowerCase().includes(searchTerm)) return true; // Para búsqueda por fecha/hora
+      if (t.fecha_hora?.toLowerCase().includes(searchTerm)) return true;
 
-      // Campos de la historia clínica (si existe)
       if (t.historia_clinica) {
         const hc = t.historia_clinica;
         if (hc.altura?.toString().includes(searchTerm)) return true;
@@ -194,7 +188,6 @@ export class TurnosComponent implements OnInit {
         if (hc.temperatura?.toString().includes(searchTerm)) return true;
         if (hc.presion?.toLowerCase().includes(searchTerm)) return true;
 
-        // Datos dinámicos
         if (hc.datos_dinamicos) {
           for (const key in hc.datos_dinamicos) {
             if (key.toLowerCase().includes(searchTerm) || hc.datos_dinamicos[key].toLowerCase().includes(searchTerm)) {
@@ -207,7 +200,6 @@ export class TurnosComponent implements OnInit {
     });
   }
 
-
   isVisible(t: Turno, action: string): boolean {
     const s = t.estado;
     switch (action) {
@@ -217,19 +209,25 @@ export class TurnosComponent implements OnInit {
       case 'rechazar':
         return this.rol === 'especialista' && s === 'pendiente';
       case 'finalizar':
-        return this.rol === 'especialista' && s === 'aceptado';
-      case 'verResenaEspecialista': // Nuevo tipo de acción
-        return !!t.resena_especialista && t.resena_especialista.trim() !== ''; // Mostrar si hay reseña del especialista
-      case 'verComentarioPaciente': // Nuevo tipo de acción
-        return !!t.comentario_paciente && t.comentario_paciente.trim() !== ''; // Mostrar si hay comentario del paciente
-      case 'verComentarioCancelacion': // Nuevo tipo de acción
-        return !!t.comentario_cancelacion && t.comentario_cancelacion.trim() !== ''; // Mostrar si hay comentario de cancelación
-      case 'verComentarioRechazo': // Nuevo tipo de acción
-        return !!t.comentario_rechazo && t.comentario_rechazo.trim() !== ''; // Mostrar si hay comentario de rechazo
+        // El especialista puede finalizar si está aceptado y no tiene historia clínica aún
+        return this.rol === 'especialista' && s === 'aceptado' && !t.historia_clinica?.id;
+      case 'cargarResenaEspecialista': // Nuevo caso para cargar reseña
+        // Solo especialista, turno realizado, y sin reseña previa
+        return this.rol === 'especialista' && s === 'realizado' && !t.resena_especialista;
+      case 'verResenaEspecialista':
+        return !!t.resena_especialista && t.resena_especialista.trim() !== '';
+      case 'verComentarioPaciente':
+        return !!t.comentario_paciente && t.comentario_paciente.trim() !== '';
+      case 'verComentarioCancelacion':
+        return !!t.comentario_cancelacion && t.comentario_cancelacion.trim() !== '';
+      case 'verComentarioRechazo':
+        return !!t.comentario_rechazo && t.comentario_rechazo.trim() !== '';
       case 'calificar':
         return this.rol === 'paciente' && s === 'realizado' && !t.comentario_paciente;
-      case 'encuesta': // Este botón ahora solo si hay reseña y no hay comentario de paciente
+      case 'encuesta':
         return this.rol === 'paciente' && s === 'realizado' && !!t.resena_especialista && !t.comentario_paciente;
+      case 'verHistoriaClinica': // Opcional: Para ver historia clínica
+        return this.rol === 'especialista' && s === 'realizado' && !!t.historia_clinica?.id;
       default:
         return false;
     }
@@ -238,10 +236,9 @@ export class TurnosComponent implements OnInit {
   async accion(t: Turno, tipo: string) {
     let upd: Partial<Turno> = {};
 
-    // Manejo de los nuevos tipos de "ver comentario"
     if (['verResenaEspecialista', 'verComentarioPaciente', 'verComentarioCancelacion', 'verComentarioRechazo'].includes(tipo)) {
       this.turnoSeleccionado = t;
-      this.modalComentarioTipo = tipo; // Guardar el tipo de comentario a mostrar
+      this.modalComentarioTipo = tipo;
       return;
     }
 
@@ -262,7 +259,6 @@ export class TurnosComponent implements OnInit {
       this.turnoParaHistoria = t;
       this.modalHistoriaClinicaVisible = true;
 
-      // Resetear la historia clínica y los campos dinámicos cada vez que se abre el modal
       this.historiaClinica = {
         altura: null,
         peso: null,
@@ -271,12 +267,17 @@ export class TurnosComponent implements OnInit {
         datos_dinamicos: {},
       };
       this.camposDinamicos = [];
-      
-      // Asegurarse de resetear el estado de validación del formulario
+
       if (this.historiaForm) {
         this.historiaForm.resetForm();
       }
       return;
+    }
+    if (tipo === 'cargarResenaEspecialista') { // Nuevo tipo de acción
+      const resena = prompt('Ingrese su reseña para este turno:');
+      if (!resena) return;
+      upd.resena_especialista = resena;
+      // No cambiamos el estado del turno aquí, ya está 'realizado'
     }
     if (tipo === 'calificar' || tipo === 'encuesta') {
       const c = prompt(tipo === 'calificar' ? 'Comentario del paciente:' : 'Comentario adicional:');
@@ -293,8 +294,12 @@ export class TurnosComponent implements OnInit {
       }
     }
 
-    const { error } = await supabase.from('turnos').update(upd).eq('id', t.id);
-    if (error) console.error(error);
+    // Si la acción es 'finalizar', el `update` se hace dentro de `guardarHistoriaClinica`.
+    // Para el resto de las acciones, actualizamos el turno aquí.
+    if (tipo !== 'finalizar') {
+      const { error } = await supabase.from('turnos').update(upd).eq('id', t.id);
+      if (error) console.error(error);
+    }
     await this.load();
   }
 
@@ -339,10 +344,10 @@ export class TurnosComponent implements OnInit {
         return;
       }
 
-      // **IMPORTANTE:** Aquí también corregido 'reseña_especialista' a 'resena_especialista'
+      // Solo actualizamos el estado del turno a 'realizado'
       const { error: errUpd } = await supabase
         .from('turnos')
-        .update({ estado: 'realizado', resena_especialista: 'Historia clínica cargada.' })
+        .update({ estado: 'realizado' }) // Eliminamos 'resena_especialista: 'Historia clínica cargada.''
         .eq('id', this.turnoParaHistoria.id);
 
       if (errUpd) {
@@ -378,7 +383,7 @@ export class TurnosComponent implements OnInit {
 
   cerrarModal() {
     this.turnoSeleccionado = null;
-    this.modalComentarioTipo = ''; // Resetear el tipo de comentario al cerrar
+    this.modalComentarioTipo = '';
   }
 
   cerrarModalHistoria() {

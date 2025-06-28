@@ -19,27 +19,71 @@
         — <span class="estado">{{ t.estado }}</span>
       </div>
       <div>
-        <small>Paciente: {{ t.paciente_nombre }} {{ t.paciente_apellido }}</small><br />
+        <small>Paciente: {{ t.paciente_nombre }} {{ t.paciente_apellido }}</small
+        ><br />
         <small>Especialista: {{ t.especialista_nombre }} {{ t.especialista_apellido }}</small>
       </div>
       <div class="acciones">
-        <button *ngIf="isVisible(t, 'cancelar')" type="button" (click)="accion(t, 'cancelar')">Cancelar</button>
-        <button *ngIf="isVisible(t, 'aceptar')" type="button" (click)="accion(t, 'aceptar')">Aceptar</button>
-        <button *ngIf="isVisible(t, 'rechazar')" type="button" (click)="accion(t, 'rechazar')">Rechazar</button>
-        <button *ngIf="isVisible(t, 'finalizar')" type="button" (click)="accion(t, 'finalizar')">Finalizar</button>
+        <button *ngIf="isVisible(t, 'cancelar')" type="button" (click)="accion(t, 'cancelar')">
+          Cancelar
+        </button>
+        <button *ngIf="isVisible(t, 'aceptar')" type="button" (click)="accion(t, 'aceptar')">
+          Aceptar
+        </button>
+        <button *ngIf="isVisible(t, 'rechazar')" type="button" (click)="accion(t, 'rechazar')">
+          Rechazar
+        </button>
+        <button *ngIf="isVisible(t, 'finalizar')" type="button" (click)="accion(t, 'finalizar')">
+          Finalizar y Cargar Historia Clinica
+        </button>
+        <button *ngIf="isVisible(t, 'cargarResenaEspecialista')" type="button" (click)="accion(t, 'cargarResenaEspecialista')">
+          Cargar Reseña
+        </button>
 
-        <button *ngIf="isVisible(t, 'verResenaEspecialista')" type="button" (click)="accion(t, 'verResenaEspecialista')">Ver Reseña</button>
-        <button *ngIf="isVisible(t, 'verComentarioPaciente')" type="button" (click)="accion(t, 'verComentarioPaciente')">Ver Comentario Paciente</button>
-        <button *ngIf="isVisible(t, 'verComentarioCancelacion')" type="button" (click)="accion(t, 'verComentarioCancelacion')">Ver Motivo Cancelación</button>
-        <button *ngIf="isVisible(t, 'verComentarioRechazo')" type="button" (click)="accion(t, 'verComentarioRechazo')">Ver Motivo Rechazo</button>
-        
-        <button *ngIf="isVisible(t, 'calificar')" type="button" (click)="accion(t, 'calificar')">Calificar</button>
-        <button *ngIf="isVisible(t, 'encuesta')" type="button" (click)="accion(t, 'encuesta')">Completar encuesta</button>
-      </div>
+        <button
+          *ngIf="isVisible(t, 'verResenaEspecialista')"
+          type="button"
+          (click)="accion(t, 'verResenaEspecialista')"
+        >
+          Ver Reseña
+        </button>
+        <button
+          *ngIf="isVisible(t, 'verComentarioPaciente')"
+          type="button"
+          (click)="accion(t, 'verComentarioPaciente')"
+        >
+          Ver Comentario Paciente
+        </button>
+        <button
+          *ngIf="isVisible(t, 'verComentarioCancelacion')"
+          type="button"
+          (click)="accion(t, 'verComentarioCancelacion')"
+        >
+          Ver Motivo Cancelación
+        </button>
+        <button
+          *ngIf="isVisible(t, 'verComentarioRechazo')"
+          type="button"
+          (click)="accion(t, 'verComentarioRechazo')"
+        >
+          Ver Motivo Rechazo
+        </button>
+
+        <button *ngIf="isVisible(t, 'calificar')" type="button" (click)="accion(t, 'calificar')">
+          Calificar
+        </button>
+        <button *ngIf="isVisible(t, 'encuesta')" type="button" (click)="accion(t, 'encuesta')">
+          Completar encuesta
+        </button>
+        </div>
     </li>
   </ul>
 
-  <div class="modal-overlay" *ngIf="turnoSeleccionado && modalComentarioTipo" (click)="cerrarModal()">
+  <div
+    class="modal-overlay"
+    *ngIf="turnoSeleccionado && modalComentarioTipo"
+    (click)="cerrarModal()"
+  >
     <div class="modal-content" (click)="$event.stopPropagation()">
       <h4>{{ getModalTitle() }}</h4>
       <p>{{ getModalContent() }}</p>
@@ -47,7 +91,11 @@
     </div>
   </div>
 
-  <div class="modal-overlay" *ngIf="modalHistoriaClinicaVisible" (click)="cerrarModalHistoria()">
+  <div
+    class="modal-overlay"
+    *ngIf="modalHistoriaClinicaVisible"
+    (click)="cerrarModalHistoria()"
+  >
     <div class="modal-content" (click)="$event.stopPropagation()">
       <h4>🩺 Historia Clínica</h4>
       <form (ngSubmit)="guardarHistoriaClinica()" #historiaForm="ngForm" novalidate>
@@ -62,7 +110,9 @@
             max="300"
             #altura="ngModel"
           />
-          <div class="error" *ngIf="altura.invalid && (altura.touched || historiaForm.submitted)">Altura inválida</div>
+          <div class="error" *ngIf="altura.invalid && (altura.touched || historiaForm.submitted)">
+            Altura inválida
+          </div>
         </label>
 
         <label>
@@ -76,7 +126,9 @@
             max="500"
             #peso="ngModel"
           />
-          <div class="error" *ngIf="peso.invalid && (peso.touched || historiaForm.submitted)">Peso inválido</div>
+          <div class="error" *ngIf="peso.invalid && (peso.touched || historiaForm.submitted)">
+            Peso inválido
+          </div>
         </label>
 
         <label>
@@ -91,7 +143,12 @@
             max="45"
             #temperatura="ngModel"
           />
-          <div class="error" *ngIf="temperatura.invalid && (temperatura.touched || historiaForm.submitted)">Temperatura inválida</div>
+          <div
+            class="error"
+            *ngIf="temperatura.invalid && (temperatura.touched || historiaForm.submitted)"
+          >
+            Temperatura inválida
+          </div>
         </label>
 
         <label>
@@ -104,7 +161,12 @@
             pattern="^\d{2,3}/\d{2,3}$"
             #presion="ngModel"
           />
-          <div class="error" *ngIf="presion.invalid && (presion.touched || historiaForm.submitted)">Formato presión inválido (ej: 120/80)</div>
+          <div
+            class="error"
+            *ngIf="presion.invalid && (presion.touched || historiaForm.submitted)"
+          >
+            Formato presión inválido (ej: 120/80)
+          </div>
         </label>
 
         <hr />
@@ -146,7 +208,7 @@
           + Agregar campo adicional
         </button>
 
-        <div class="botones-modal" style="margin-top:1em;">
+        <div class="botones-modal" style="margin-top: 1em;">
           <button type="submit" [disabled]="historiaForm.invalid">
             Guardar Historia Clínica
           </button>
