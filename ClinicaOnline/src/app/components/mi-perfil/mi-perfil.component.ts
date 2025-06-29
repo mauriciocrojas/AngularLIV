@@ -6,6 +6,9 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 
+// *** Importación de html2pdf.js ***
+import html2pdf from 'html2pdf.js';
+
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
 @Component({
@@ -27,6 +30,12 @@ export class MiPerfilComponent implements OnInit {
   esPaciente = false;
   mostrarFormularioDisp = false;
   historiasClinicas: any[] = [];
+  historiasClinicasFiltradas: any[] = [];
+  especialistasAtendidos: { id: string; nombre: string; apellido: string }[] = [];
+  selectedEspecialistaId: string = '';
+
+  // Variable para controlar la visibilidad del contenido a imprimir
+  mostrarContenidoPdf = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -36,7 +45,6 @@ export class MiPerfilComponent implements OnInit {
       this.esEspecialista = this.usuario?.tipo_usuario === 'especialista';
       this.esPaciente = this.usuario?.tipo_usuario === 'paciente';
 
-      // Parsear especialidades
       try {
         const parsed = JSON.parse(this.usuario.especialidad);
         this.especialidadesDisponibles = Array.isArray(parsed) ? parsed : [parsed];
@@ -45,7 +53,6 @@ export class MiPerfilComponent implements OnInit {
       }
       this.nueva.especialidad = this.especialidadesDisponibles[0] || '';
 
-      // Cargar imágenes
       if (Array.isArray(this.usuario.imagenes) && this.usuario.imagenes.length > 0) {
         this.imagenes = this.usuario.imagenes.map((ruta: string) =>
           supabase.storage.from('images').getPublicUrl(ruta).data.publicUrl
@@ -65,7 +72,6 @@ export class MiPerfilComponent implements OnInit {
         this.imagenes = [];
       }
 
-      // Disponibilidad especialista
       if (this.esEspecialista) {
         const { data, error } = await supabase
           .from('disponibilidad_especialista')
@@ -76,40 +82,99 @@ export class MiPerfilComponent implements OnInit {
         }
       }
 
-      // Historias clínicas (paciente)
       if (this.esPaciente) {
-        const turnosPaciente = await supabase
-          .from('turnos')
-          .select('id')
-          .eq('paciente_id', this.usuario.id);
-
-        const turnoIds = turnosPaciente.data?.map(t => t.id) || [];
-
-        const { data, error } = await supabase
-          .from('historias_clinicas')
-          .select(`
-            id,
-            altura,
-            peso,
-            temperatura,
-            presion,
-            datos_dinamicos,
-            turno_id,
-            turnos (
-              fecha_hora,
-              especialidad,
-              especialista_id,
-              id
-            )
-          `)
-          .in('turno_id', turnoIds);
-
-        if (!error && data) {
-          this.historiasClinicas = data;
-        }
+        await this.cargarHistoriasClinicas();
       }
     } catch (err) {
+      console.error('Error al cargar perfil:', err);
       this.error = 'Error al cargar perfil.';
+    }
+  }
+
+  async cargarHistoriasClinicas() {
+    const { data: turnosPacienteData, error: turnosError } = await supabase
+      .from('turnos')
+      .select('id, especialista_id, fecha_hora, especialidad')
+      .eq('paciente_id', this.usuario.id);
+
+    if (turnosError) {
+      console.error('Error al obtener turnos del paciente:', turnosError);
+      this.error = 'Error al cargar turnos.';
+      return;
+    }
+
+    const turnoIds = turnosPacienteData?.map(t => t.id) || [];
+    const especialistaIdsUnicos = [...new Set(turnosPacienteData?.map(t => t.especialista_id))];
+
+    if (especialistaIdsUnicos.length > 0) {
+      const { data: especialistasData, error: especialistasError } = await supabase
+        .from('usuarios')
+        .select('id, nombre, apellido')
+        .in('id', especialistaIdsUnicos)
+        .eq('tipo_usuario', 'especialista');
+
+      if (especialistasError) {
+        console.error('Error al obtener especialistas:', especialistasError);
+        this.error = 'Error al cargar especialistas.';
+        return;
+      }
+      this.especialistasAtendidos = especialistasData || [];
+    } else {
+      this.especialistasAtendidos = [];
+    }
+
+    const { data: historiasData, error: historiasError } = await supabase
+      .from('historias_clinicas')
+      .select(`
+        id,
+        altura,
+        peso,
+        temperatura,
+        presion,
+        datos_dinamicos,
+        turno_id,
+        turnos (
+          fecha_hora,
+          especialidad,
+          especialista_id,
+          id
+        )
+      `)
+      .in('turno_id', turnoIds);
+
+    if (historiasError) {
+      console.error('Error al obtener historias clínicas:', historiasError);
+      this.error = 'Error al cargar historias clínicas.';
+      return;
+    }
+
+    this.historiasClinicas = (historiasData || []).map((historia: any) => {
+      const turnoAsociado = turnosPacienteData?.find(t => t.id === historia.turno_id);
+      const especialistaAsociado = this.especialistasAtendidos.find(
+        (e: any) => e.id === turnoAsociado?.especialista_id
+      );
+
+      return {
+        ...historia,
+        turnos: {
+          ...historia.turnos,
+          especialista_nombre: especialistaAsociado ? `${especialistaAsociado.nombre} ${especialistaAsociado.apellido}` : 'Desconocido',
+          fecha_hora: turnoAsociado?.fecha_hora,
+          especialidad: turnoAsociado?.especialidad
+        }
+      };
+    });
+
+    this.filtrarHistoriasClinicas();
+  }
+
+  filtrarHistoriasClinicas() {
+    if (this.selectedEspecialistaId) {
+      this.historiasClinicasFiltradas = this.historiasClinicas.filter(historia =>
+        historia.turnos?.especialista_id === this.selectedEspecialistaId
+      );
+    } else {
+      this.historiasClinicasFiltradas = [...this.historiasClinicas];
     }
   }
 
@@ -144,6 +209,49 @@ export class MiPerfilComponent implements OnInit {
         hf: ''
       };
       this.mostrarFormularioDisp = false;
+    }
+  }
+
+  async descargarHistoriaClinicaPDF() {
+    if (this.historiasClinicasFiltradas.length === 0) {
+      alert('No hay historias clínicas para descargar con el filtro actual.');
+      return;
+    }
+
+    // Paso 1: Mostrar el contenido oculto que se va a convertir
+    this.mostrarContenidoPdf = true;
+
+    // Asegúrate de que Angular haya tenido tiempo de renderizar el contenido.
+    // Aumentamos el tiempo de espera a 500ms.
+    await new Promise(resolve => setTimeout(resolve, 500)); 
+
+    const nombrePaciente = `${this.usuario.nombre} ${this.usuario.apellido}`;
+    const filename = `Historia_Clinica_${nombrePaciente}_${this.selectedEspecialistaId ? this.especialistasAtendidos.find(e => e.id === this.selectedEspecialistaId)?.nombre + '_' + this.especialistasAtendidos.find(e => e.id === this.selectedEspecialistaId)?.apellido : 'Todos'}.pdf`;
+
+    const element = document.getElementById('contenido-pdf-generar');
+
+    if (element) {
+      const opt = {
+        margin:       0.5, // Márgenes en pulgadas
+        filename:     filename,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, logging: true, dpi: 192, letterRendering: true },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      try {
+        await html2pdf().from(element).set(opt).save();
+        console.log('PDF generado con éxito');
+      } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        alert('Hubo un error al generar el PDF. Consulta la consola para más detalles.');
+      } finally {
+        // Paso 3: Ocultar el contenido de nuevo después de la generación
+        this.mostrarContenidoPdf = false;
+      }
+    } else {
+      alert('Error: No se encontró el elemento HTML para generar el PDF.');
+      this.mostrarContenidoPdf = false;
     }
   }
 

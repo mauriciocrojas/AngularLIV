@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <div class="register-container">
   <div class="card-perfil">
     <h2>¡Hola, {{usuario.nombre}}!</h2>
@@ -75,12 +77,27 @@
     <br />
 
   </div>
+
   <div *ngIf="esPaciente && historiasClinicas.length > 0" class="disponibilidad-section">
     <h3>Mis historias clínicas</h3>
+
+    <div class="history-controls">
+      <div class="form-group">
+        <label for="filtroEspecialista">Filtrar por Especialista:</label>
+        <select id="filtroEspecialista" [(ngModel)]="selectedEspecialistaId" (change)="filtrarHistoriasClinicas()">
+          <option value="">Todos los especialistas</option>
+          <option *ngFor="let esp of especialistasAtendidos" [value]="esp.id">
+            {{ esp.nombre }} {{ esp.apellido }}
+          </option>
+        </select>
+      </div>
+      <button (click)="descargarHistoriaClinicaPDF()">Descargar PDF</button>
+    </div>
+
     <div class="disponibilidad-cards">
-      <div class="card-disponibilidad" *ngFor="let h of historiasClinicas">
+      <div class="card-disponibilidad" *ngFor="let h of historiasClinicasFiltradas">
         <p class="fecha"><strong>Fecha del turno:</strong> {{ h.turnos?.fecha_hora | date: 'dd/MM/yyyy HH:mm' }}</p>
-        <p><strong>Especialidad:</strong> {{ h.turnos?.especialidad || 'No disponible' }}</p>
+        <p><strong>Especialista:</strong> {{ h.turnos?.especialista_nombre || 'No disponible' }}</p> <p><strong>Especialidad:</strong> {{ h.turnos?.especialidad || 'No disponible' }}</p>
         <p><strong>Altura:</strong> {{ h.altura || '—' }}</p>
         <p><strong>Peso:</strong> {{ h.peso || '—' }}</p>
         <p><strong>Temperatura:</strong> {{ h.temperatura || '—' }}</p>
@@ -94,9 +111,90 @@
           </ul>
         </div>
       </div>
+      <p *ngIf="historiasClinicasFiltradas.length === 0" class="no-histories-message">
+        No hay historias clínicas para el filtro seleccionado.
+      </p>
     </div>
   </div>
+  <div *ngIf="esPaciente && historiasClinicas.length === 0" class="disponibilidad-section">
+    <p class="no-histories-message">No tienes historias clínicas registradas aún.</p>
+  </div>
+
 
   <button class="volver-btn" (click)="volverHome()">← Volver al Home</button>
+</div>
 
+<div id="contenido-pdf-generar" *ngIf="mostrarContenidoPdf">
+  <style>
+    /* Estilos básicos para el PDF. Puedes añadir más CSS aquí. */
+    /* Estos estilos se aplicarán al contenido dentro de #contenido-pdf-generar */
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    h1, h2, h3, h4 { color: #333; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #2e7d32; /* Tu verde oscuro */
+      color: white;
+    }
+    .historia-card-pdf {
+      border: 1px solid #eee;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      page-break-inside: avoid; /* Intenta evitar que una historia se corte a mitad de página */
+    }
+    .historia-card-pdf p {
+      margin-bottom: 5px;
+    }
+    .historia-card-pdf ul {
+      padding-left: 20px;
+      margin-top: 5px;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+
+  <h1>Historias Clínicas de {{usuario.nombre}} {{usuario.apellido}}</h1>
+
+  <ng-container *ngFor="let historia of historiasClinicasFiltradas; let i = index">
+    <div *ngIf="i > 0" class="page-break"></div>
+
+    <div class="historia-card-pdf">
+      <h3>Historia Clínica (Turno: {{ historia.turnos?.fecha_hora | date: 'dd/MM/yyyy HH:mm' }})</h3>
+      <p><strong>Especialista:</strong> {{ historia.turnos?.especialista_nombre || 'No disponible' }}</p>
+      <p><strong>Especialidad:</strong> {{ historia.turnos?.especialidad || 'No disponible' }}</p>
+      <p><strong>Altura:</strong> {{ historia.altura || '—' }}</p>
+      <p><strong>Peso:</strong> {{ historia.peso || '—' }}</p>
+      <p><strong>Temperatura:</strong> {{ historia.temperatura || '—' }}</p>
+      <p><strong>Presión:</strong> {{ historia.presion || '—' }}</p>
+
+      <div *ngIf="historia.datos_dinamicos && (historia.datos_dinamicos | keyvalue).length > 0">
+        <h4>Datos adicionales:</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Campo</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of (historia.datos_dinamicos | keyvalue)">
+              <td>{{ item.key }}</td>
+              <td>{{ item.value }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
 </div>

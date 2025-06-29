@@ -279,3 +279,55 @@ ul {
   font-style: italic;
   color: #777;
 }
+
+/* Nuevos estilos para la sección de historias clínicas del paciente */
+.history-controls {
+  display: flex;
+  flex-direction: column; /* Apilados por defecto */
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.history-controls .form-group {
+  margin-bottom: 0; /* Eliminar margen extra */
+}
+
+.history-controls button {
+  background-color: #2e7d32; /* Verde más oscuro para el botón de descarga */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-start; /* Alinea el botón a la izquierda */
+  margin-top: 0; /* Eliminar margen superior adicional */
+}
+
+.history-controls button:hover {
+  background-color: #1b5e20;
+}
+
+.no-histories-message {
+  font-style: italic;
+  color: #777;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Media query para alinear en fila en pantallas más grandes */
+@media (min-width: 768px) {
+  .history-controls {
+    flex-direction: row; /* En fila en pantallas grandes */
+    justify-content: space-between; /* Espacio entre los elementos */
+    align-items: flex-end; /* Alinea al final para que el botón esté a la altura del select */
+  }
+
+  .history-controls .form-group {
+    flex-grow: 1; /* Permite que el select ocupe el espacio */
+    margin-right: 20px; /* Espacio entre el select y el botón */
+  }
+}
