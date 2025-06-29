@@ -26,6 +26,7 @@ export const routes: Routes = [
   {
     path: 'mi-perfil',
     loadComponent: () => import('./components/mi-perfil/mi-perfil.component').then(m => m.MiPerfilComponent),
+    data: { animation: 'MiPerfilPage' } // *** AÑADIDO: Propiedad data para la animación ***
   },
   {
     path: 'solicitar-turno',
