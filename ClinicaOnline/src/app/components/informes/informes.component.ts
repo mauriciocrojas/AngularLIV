@@ -7,6 +7,7 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Chart from 'chart.js/auto';
+import html2pdf from 'html2pdf.js';
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
@@ -74,7 +75,9 @@ export class InformesComponent implements OnInit, AfterViewInit {
   async cargarTurnosPorEspecialidad() {
     const { data, error } = await supabase
       .from('turnos')
-      .select('especialidad');
+      .select('especialidad, estado')
+      .not('estado', 'in', '("rechazado","cancelado")');
+
     if (!error && data) {
       const counts: any = {};
       data.forEach(t => {
@@ -88,10 +91,13 @@ export class InformesComponent implements OnInit, AfterViewInit {
     }
   }
 
+
   async cargarTurnosPorDia() {
     const { data, error } = await supabase
       .from('turnos')
-      .select('fecha_hora');
+      .select('fecha_hora, estado')
+      .not('estado', 'in', '("rechazado","cancelado")');
+
     if (!error && data) {
       const counts: any = {};
       data.forEach(t => {
@@ -100,12 +106,15 @@ export class InformesComponent implements OnInit, AfterViewInit {
           counts[fecha] = (counts[fecha] || 0) + 1;
         }
       });
-      this.turnosPorDia = Object.entries(counts).map(([fecha, cantidad]) => ({ fecha, cantidad })).sort((a, b) => a.fecha.localeCompare(b.fecha));
+      this.turnosPorDia = Object.entries(counts)
+        .map(([fecha, cantidad]) => ({ fecha, cantidad }))
+        .sort((a, b) => a.fecha.localeCompare(b.fecha));
       this.dibujarChartDia();
     } else {
       this.turnosPorDia = [];
     }
   }
+
 
   async cargarTurnosPorMedico() {
     if (!this.fechaInicio || !this.fechaFin) return;
@@ -278,6 +287,29 @@ export class InformesComponent implements OnInit, AfterViewInit {
     const partes = fechaISO.split('-');
     if (partes.length !== 3) return fechaISO;
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
+
+  generarPDF() {
+    const elemento = document.getElementById('contenedor-reportes');
+    if (!elemento) {
+      alert('No se encontró el contenedor para exportar.');
+      return;
+    }
+
+    const opciones = {
+      margin: 0.5,
+      filename: 'reporte_turnos.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 }, // Alta resolución
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] } // 🔥 Esto divide en varias páginas si es largo
+    };
+
+    html2pdf().from(elemento).set(opciones).save();
+  }
+
+  volver() {
+    window.history.back();
   }
 
 }
