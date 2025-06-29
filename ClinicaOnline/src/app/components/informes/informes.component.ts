@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 import * as XLSX from 'xlsx';
@@ -6,6 +6,7 @@ import * as FileSaver from 'file-saver';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import Chart from 'chart.js/auto';
 
 const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
 
@@ -16,7 +17,7 @@ const supabase = createClient(environment.apiUrl, environment.publicAnonKey);
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, TitleCasePipe],
 })
-export class InformesComponent implements OnInit {
+export class InformesComponent implements OnInit, AfterViewInit {
 
   logsIngresos: any[] = [];
   turnosEspecialidad: any[] = [];
@@ -28,6 +29,11 @@ export class InformesComponent implements OnInit {
   fechaInicio: string = '';
   fechaFin: string = '';
 
+  // Charts
+  chartEspecialidad: any;
+  chartDia: any;
+  chartMedico: any;
+
   constructor() { }
 
   async ngOnInit() {
@@ -35,6 +41,12 @@ export class InformesComponent implements OnInit {
     await this.cargarLogs();
     await this.cargarTurnosPorEspecialidad();
     await this.cargarTurnosPorDia();
+    this.dibujarChartEspecialidad();
+    this.dibujarChartDia();
+  }
+
+  ngAfterViewInit() {
+    // Inicializa gráficos vacíos si hace falta
   }
 
   async cargarUsuarios() {
@@ -70,6 +82,7 @@ export class InformesComponent implements OnInit {
         counts[esp] = (counts[esp] || 0) + 1;
       });
       this.turnosEspecialidad = Object.entries(counts).map(([especialidad, cantidad]) => ({ especialidad, cantidad }));
+      this.dibujarChartEspecialidad();
     } else {
       this.turnosEspecialidad = [];
     }
@@ -87,7 +100,8 @@ export class InformesComponent implements OnInit {
           counts[fecha] = (counts[fecha] || 0) + 1;
         }
       });
-      this.turnosPorDia = Object.entries(counts).map(([fecha, cantidad]) => ({ fecha, cantidad }));
+      this.turnosPorDia = Object.entries(counts).map(([fecha, cantidad]) => ({ fecha, cantidad })).sort((a, b) => a.fecha.localeCompare(b.fecha));
+      this.dibujarChartDia();
     } else {
       this.turnosPorDia = [];
     }
@@ -127,18 +141,105 @@ export class InformesComponent implements OnInit {
         const nombreCompleto = usuario ? `${usuario.nombre} ${usuario.apellido}` : id;
         return { especialista: nombreCompleto, cantidad };
       });
+
     } else {
       this.turnosPorMedico = [];
       this.turnosFinalizadosPorMedico = [];
     }
   }
+
+  // ========== Gráficos ==========
+  dibujarChartEspecialidad() {
+    if (this.chartEspecialidad) this.chartEspecialidad.destroy();
+    const labels = this.turnosEspecialidad.map(t => t.especialidad);
+    const data = this.turnosEspecialidad.map(t => t.cantidad);
+
+    const ctx = document.getElementById('chartEspecialidad') as HTMLCanvasElement;
+    if (!ctx) return;
+
+    this.chartEspecialidad = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Turnos',
+          data,
+          backgroundColor: '#52b788'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  dibujarChartDia() {
+    if (this.chartDia) this.chartDia.destroy();
+    const labels = this.turnosPorDia.map(t => this.formatFecha(t.fecha));
+    const data = this.turnosPorDia.map(t => t.cantidad);
+
+    const ctx = document.getElementById('chartDia') as HTMLCanvasElement;
+    if (!ctx) return;
+
+    this.chartDia = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Turnos por día',
+          data,
+          backgroundColor: '#40916c',
+          borderColor: '#40916c',
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        }
+      }
+    });
+  }
+
+  dibujarChartMedico() {
+    if (this.chartMedico) this.chartMedico.destroy();
+    const labels = this.turnosPorMedico.map(t => t.especialista);
+    const data = this.turnosPorMedico.map(t => t.cantidad);
+
+    const ctx = document.getElementById('chartMedico') as HTMLCanvasElement;
+    if (!ctx) return;
+
+    this.chartMedico = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Solicitados',
+          data,
+          backgroundColor: '#2d6a4f'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  }
+
+  // ========== Exportación ==========
   exportarExcel(data: any[], nombreArchivo: string) {
     if (!data || data.length === 0) {
       alert('No hay datos para exportar.');
       return;
     }
 
-    // Clonamos el arreglo para no modificar el original
     const dataFormateada = data.map(item => {
       const nuevoItem: any = {};
       for (const key in item) {
@@ -161,24 +262,20 @@ export class InformesComponent implements OnInit {
     FileSaver.saveAs(blob, `${nombreArchivo}.xlsx`);
   }
 
-  // Verifica si un string tiene formato ISO de fecha o datetime
   esFechaISO(valor: string): boolean {
-    // Regex para yyyy-mm-dd o yyyy-mm-ddTHH:mm:ss
     return /^\d{4}-\d{2}-\d{2}(T.*)?$/.test(valor);
   }
 
-  // Convierte "yyyy-mm-dd" o "yyyy-mm-ddTHH:mm:ss" a "dd/mm/yyyy"
   formatFechaISO(fechaISO: string): string {
-    const fecha = fechaISO.split('T')[0]; // Solo la parte de fecha
+    const fecha = fechaISO.split('T')[0];
     const partes = fecha.split('-');
     if (partes.length !== 3) return fechaISO;
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
   }
 
-  // Método para convertir fecha "yyyy-mm-dd" a "dd/mm/yyyy"
   formatFecha(fechaISO: string | undefined): string {
     if (!fechaISO) return '';
-    const partes = fechaISO.split('-'); // ['yyyy', 'mm', 'dd']
+    const partes = fechaISO.split('-');
     if (partes.length !== 3) return fechaISO;
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
   }
