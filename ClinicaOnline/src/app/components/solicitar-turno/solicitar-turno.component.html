@@ -23,7 +23,7 @@
     <!-- Selección de especialidad -->
     <div class="seleccion-grid" *ngIf="!filtroEspecialidad">
       <button *ngFor="let esp of especialidades" (click)="seleccionarEspecialidad(esp)" class="boton-img">
-        <img [src]="imagenesEspecialidades[esp] || 'assets/default-especialidad.png'" alt="Especialidad" />
+        <img [src]="imagenesEspecialidades[esp] || 'assets/especialidades/defecto.png'" alt="Especialidad" />
       </button>
     </div>
 
