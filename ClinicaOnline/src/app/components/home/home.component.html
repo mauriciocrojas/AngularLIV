@@ -2,6 +2,7 @@
 
   <div class="top-buttons">
     <button *ngIf="esAdmin && !cargandoUsuarios" class="nav-button" (click)="irAUsuarios()">Usuarios</button>
+    <button *ngIf="esAdmin && !cargandoUsuarios" class="nav-button" (click)="irAInformes()">Informes</button>
     <div *ngIf="cargandoUsuarios" class="spinner"></div>
   </div>
 

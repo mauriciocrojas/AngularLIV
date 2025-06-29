@@ -88,6 +88,14 @@ export class HomeComponent implements OnInit {
     }, 700);
   }
 
+   irAInformes() {
+    this.cargandoUsuarios = true;
+    setTimeout(() => {
+      this.router.navigate(['/informes']);
+    }, 700);
+  }
+
+
   irATurnos() {
     this.router.navigate(['/turnos']);
   }

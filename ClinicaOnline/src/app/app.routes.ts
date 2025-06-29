@@ -39,6 +39,12 @@ export const routes: Routes = [
     canActivate: [AdminGuard]
   },
   {
+    path: 'informes',
+    loadComponent: () => import('./components/informes/informes.component').then(m => m.InformesComponent),
+    data: { animation: 'UsuariosPage' },
+    canActivate: [AdminGuard]
+  },
+  {
     path: 'turnos',
     loadComponent: () => import('./components/turnos/turnos.component').then(m => m.TurnosComponent)
   },
