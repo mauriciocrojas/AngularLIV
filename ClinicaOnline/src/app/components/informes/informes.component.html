@@ -3,152 +3,31 @@
 <div class="informes-container">
   <h2>Informes y Estadísticas</h2>
 
-  <div class="filters-section">
-    <h3>Filtros Generales</h3>
-    <div class="form-group">
-      <div class="campo">
-        <label for="fechaDesde">Fecha Desde:</label>
-        <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde" (change)="cargarTodosLosInformes()">
-      </div>
-      <div class="campo">
-        <label for="fechaHasta">Fecha Hasta:</label>
-        <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta" (change)="cargarTodosLosInformes()">
-      </div>
-    </div>
-  </div>
-  <hr class="section-divider">
-
-  <div class="report-section" #logIngresosSection>
+  <section>
     <h3>Log de Ingresos</h3>
-    <div class="report-actions">
-      <button (click)="downloadLogIngresos('excel')">
-        <i class="fas fa-file-excel"></i> Descargar Excel
-      </button>
-      <button (click)="downloadLogIngresos('pdf')">
-        <i class="fas fa-file-pdf"></i> Descargar PDF
-      </button>
-    </div>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Tipo de Usuario</th>
-            <th>Email</th>
-            <th>Día</th>
-            <th>Hora</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let log of logIngresos">
-            <td>{{ log.nombre_usuario | titlecase }} {{ log.apellido_usuario | titlecase }}</td>
-            <td><span [appTipoUsuarioHighlight]="log.tipo_usuario">{{ log.tipo_usuario | titlecase }}</span></td>
-            <td>{{ log.email_usuario }}</td>
-            <td>{{ log.fecha_ingreso | date:'dd/MM/yyyy' }}</td>
-            <td>{{ log.fecha_ingreso | date:'HH:mm' }}</td>
-          </tr>
-          <tr *ngIf="logIngresos.length === 0">
-            <td colspan="5">No hay registros de ingresos para el período seleccionado.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <hr class="section-divider">
+    <button (click)="exportarExcel(logsIngresos, 'log_ingresos')">Descargar Excel</button>
+  </section>
 
-  <div class="report-section" #turnosEspecialidadSection>
-    <h3>Cantidad de Turnos por Especialidad</h3>
-    <div class="chart-container">
-      <canvas baseChart
-              [data]="turnosPorEspecialidadData"
-              [labels]="turnosPorEspecialidadLabels"
-              [type]="'pie'"
-              [options]="chartOptions">
-      </canvas>
-    </div>
-    <div class="report-actions">
-      <button (click)="downloadChart('turnosEspecialidadSection', 'turnos-por-especialidad', 'pie')">
-        <i class="fas fa-file-pdf"></i> Descargar Gráfico (PDF)
-      </button>
-      <button (click)="exportTurnosPorEspecialidadToExcel()">
-        <i class="fas fa-file-excel"></i> Descargar Datos (Excel)
-      </button>
-    </div>
-  </div>
-  <hr class="section-divider">
+  <section>
+    <h3>Turnos por Especialidad</h3>
+    <button (click)="exportarExcel(turnosEspecialidad, 'turnos_especialidad')">Descargar Excel</button>
+  </section>
 
-  <div class="report-section" #turnosPorDiaSection>
-    <h3>Cantidad de Turnos por Día</h3>
-    <div class="chart-container">
-      <canvas baseChart
-              [data]="turnosPorDiaData"
-              [labels]="turnosPorDiaLabels"
-              [type]="'bar'"
-              [options]="chartOptions">
-      </canvas>
-    </div>
-    <div class="report-actions">
-      <button (click)="downloadChart('turnosPorDiaSection', 'turnos-por-dia', 'bar')">
-        <i class="fas fa-file-pdf"></i> Descargar Gráfico (PDF)
-      </button>
-      <button (click)="exportTurnosPorDiaToExcel()">
-        <i class="fas fa-file-excel"></i> Descargar Datos (Excel)
-      </button>
-    </div>
-  </div>
-  <hr class="section-divider">
+  <section>
+    <h3>Turnos por Día</h3>
+    <button (click)="exportarExcel(turnosPorDia, 'turnos_dia')">Descargar Excel</button>
+  </section>
 
-  <div class="report-section">
-    <h3>Informes por Médico</h3>
+  <section>
+    <h3>Turnos por Médico</h3>
     <div class="form-group">
-      <div class="campo">
-        <label for="medicoSeleccionado">Seleccionar Médico:</label>
-        <select id="medicoSeleccionado" [(ngModel)]="medicoSeleccionado" (change)="cargarInformesMedico()">
-          <option value="">-- Seleccione un Médico --</option>
-          <option *ngFor="let medico of medicos" [value]="medico.id">{{ medico.nombre | titlecase }} {{ medico.apellido | titlecase }}</option>
-        </select>
-      </div>
+      <label for="fechaInicio">Fecha Inicio:</label>
+      <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio">
+      <label for="fechaFin">Fecha Fin:</label>
+      <input type="date" id="fechaFin" [(ngModel)]="fechaFin">
+      <button (click)="cargarTurnosPorMedico()">Filtrar</button>
     </div>
-
-    <div *ngIf="medicoSeleccionado" class="sub-report-section" #turnosSolicitadosMedicoSection>
-      <h4>Turnos Solicitados por Médico: {{ selectedMedicoName | titlecase }}</h4>
-      <div class="chart-container">
-        <canvas baseChart
-                [data]="turnosSolicitadosMedicoData"
-                [labels]="turnosSolicitadosMedicoLabels"
-                [type]="'doughnut'"
-                [options]="chartOptions">
-        </canvas>
-      </div>
-      <div class="report-actions">
-        <button (click)="downloadChart('turnosSolicitadosMedicoSection', 'turnos-solicitados-medico', 'doughnut')">
-          <i class="fas fa-file-pdf"></i> Descargar Gráfico (PDF)
-        </button>
-        <button (click)="exportTurnosSolicitadosMedicoToExcel()">
-          <i class="fas fa-file-excel"></i> Descargar Datos (Excel)
-        </button>
-      </div>
-    </div>
-    <hr class="section-divider" *ngIf="medicoSeleccionado">
-
-    <div *ngIf="medicoSeleccionado" class="sub-report-section" #turnosFinalizadosMedicoSection>
-      <h4>Turnos Finalizados por Médico: {{ selectedMedicoName | titlecase }}</h4>
-      <div class="chart-container">
-        <canvas baseChart
-                [data]="turnosFinalizadosMedicoData"
-                [labels]="turnosFinalizadosMedicoLabels"
-                [type]="'bar'"
-                [options]="chartOptions">
-        </canvas>
-      </div>
-      <div class="report-actions">
-        <button (click)="downloadChart('turnosFinalizadosMedicoSection', 'turnos-finalizados-medico', 'bar')">
-          <i class="fas fa-file-pdf"></i> Descargar Gráfico (PDF)
-        </button>
-        <button (click)="exportTurnosFinalizadosMedicoToExcel()">
-          <i class="fas fa-file-excel"></i> Descargar Datos (Excel)
-        </button>
-      </div>
-    </div>
-  </div>
+    <button (click)="exportarExcel(turnosPorMedico, 'turnos_solicitados_medico')">Descargar Solicitados</button>
+    <button (click)="exportarExcel(turnosFinalizadosPorMedico, 'turnos_finalizados_medico')">Descargar Finalizados</button>
+  </section>
 </div>

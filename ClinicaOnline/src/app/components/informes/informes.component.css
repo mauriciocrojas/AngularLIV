@@ -36,8 +36,8 @@
 
 .informes-container h4 {
   color: #4CAF50;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-top: 0; /* Eliminar margen superior ya que lo manejará el user-section */
+  margin-bottom: 1.5rem; /* Aumentar espacio debajo del título de grupo */
   text-align: center;
   width: 100%;
   font-size: 1.4rem;
@@ -60,24 +60,24 @@
 /* --- NUEVAS CLASES PARA LAS HILERAS (COLUMNAS) --- */
 .users-sections-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
+  flex-wrap: wrap; /* Permite que las columnas se envuelvan en pantallas pequeñas */
+  justify-content: center; /* Centra las columnas horizontalmente */
+  gap: 2rem; /* Espacio entre las columnas */
   width: 100%;
-  max-width: 1200px;
-  margin-bottom: 2rem;
+  max-width: 1200px; /* Asegura que no se estiren demasiado */
+  margin-bottom: 2rem; /* Espacio debajo de todo el contenedor de secciones */
 }
 
 .user-section {
-  flex: 1;
-  min-width: 250px;
-  background-color: hsl(44, 100%, 97%);
+  flex: 1; /* Permite que cada sección crezca y ocupe espacio */
+  min-width: 250px; /* Ancho mínimo para cada columna */
+  background-color: hsl(44, 100%, 97%); /* Fondo suave para cada sección de usuario */
   padding: 1.5rem;
   border-radius: 0.8rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra para resaltar las secciones */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Centra el contenido dentro de cada sección */
 }
 
 /* --- FIN NUEVAS CLASES --- */
@@ -85,12 +85,12 @@
 /* Estilos para la cuadrícula de informes dentro de cada sección */
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Ajustado para que las tarjetas sean un poco más pequeñas dentro de las columnas */
+  gap: 1rem; /* Espacio ligeramente reducido dentro de la cuadrícula */
   width: 100%;
   justify-content: center;
   place-items: center;
-  margin-bottom: 0;
+  margin-bottom: 0; /* Eliminar margen inferior aquí, lo controla el user-section */
 }
 
 .user-card {
@@ -98,25 +98,25 @@
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-  background-color: hsl(44, 100%, 97%);
+  background-color: hsl(44, 100%, 97%); /* Mismo color que el fondo de la sección para un efecto de "flotación" */
   border-radius: 0.8rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
-  max-width: 160px;
+  max-width: 160px; /* Limita el ancho de la tarjeta */
   justify-content: space-between;
   min-height: 200px;
 }
 
 .user-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra al pasar el mouse */
 }
 
 .fav-button {
-  width: 100px;
-  height: 100px;
+  width: 100px; /* Ancho del "botón" contenedor de la imagen */
+  height: 100px; /* Alto del "botón" contenedor de la imagen */
   border-radius: 0.5rem;
   background-color: #74c69d;
   display: flex;
@@ -487,129 +487,66 @@ input[type="file"] {
   margin-bottom: 0.3rem;
 }
 
-/* --- NUEVOS ESTILOS PARA INFORMES --- */
-.filters-section,
-.report-section,
-.sub-report-section {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  max-width: 900px;
-  margin-bottom: 2rem; /* Espacio entre secciones */
-  box-sizing: border-box;
-}
-
-.report-section h3,
-.sub-report-section h4 {
-  margin-top: 0;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 1.5rem;
-}
-
-.chart-container {
-  position: relative;
-  height: 400px; /* Altura fija para los gráficos */
-  width: 100%;
-  margin-bottom: 1.5rem;
-}
-
-.report-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.report-actions button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0.7rem 1.2rem;
-  font-size: 1rem;
-  background-color: #2d6a4f;
-  color: white;
-  border-radius: 8px;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 0; /* Override default button margin */
-}
-
-.report-actions button:hover {
-  background-color: #1b4332;
-  transform: translateY(-2px);
-}
-
-.report-actions button i {
-  font-size: 1.1rem;
-}
-
-.table-container {
-  overflow-x: auto; /* Permite scroll horizontal en tablas grandes */
-  margin-bottom: 1.5rem;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  font-size: 0.95rem;
-}
-
-table th, table td {
-  border: 1px solid #ddd;
-  padding: 10px 15px;
-  text-align: left;
-}
-
-table th {
-  background-color: #e8f5e9;
-  font-weight: 600;
-  color: #2d6a4f;
-}
-
-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-table tbody tr:hover {
-  background-color: #f0f8f0;
-}
-
-.section-divider {
-  border: 0;
-  height: 1px;
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(45, 106, 79, 0.75), rgba(0, 0, 0, 0));
-  margin: 3rem 0;
-  width: 80%; /* Más corto para un efecto visual */
-}
-
-/* Estilos para el campo de selección de médico */
-.filters-section .form-group,
-.report-section .form-group {
-    display: flex;
-    flex-wrap: wrap;
+/* Media Queries para responsividad */
+@media (max-width: 1024px) { /* Ajuste para pantallas medianas, tabletas */
+  .users-sections-container {
+    flex-direction: column; /* Apila las secciones en columnas en pantallas medianas */
     gap: 1.5rem;
-    justify-content: center;
+  }
+
+  .user-section {
+    width: 100%; /* Las secciones ocupan todo el ancho */
+    max-width: 500px; /* Limita el ancho para que no se estiren demasiado */
+  }
+
+  .users-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Las tarjetas vuelven a ser más grandes */
+  }
 }
 
-.filters-section .campo,
-.report-section .campo {
-    flex: 1;
-    min-width: 250px; /* Asegura que no se hagan demasiado pequeños */
-    margin-bottom: 0; /* Reset margin from general .campo */
+@media (max-width: 768px) {
+  .informes-container {
+    padding: 1rem;
+  }
+
+  .users-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .fav-button {
+    width: 100px;
+    height: 100px;
+  }
+
+  .user-name {
+    font-size: 0.8em;
+  }
+
+  .form-group {
+    grid-template-columns: 1fr;
+  }
+
+  .opcion img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .tipo-opciones {
+    gap: 1rem;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+
+  .modal-content h3 {
+    font-size: 1.5rem;
+  }
 }
 
-/* Estilos para la directiva TipoUsuarioHighlight */
-[appTipoUsuarioHighlight] {
-  padding: 4px 8px;
-  border-radius: 5px;
-  font-weight: 500;
-  display: inline-block;
-  min-width: 80px; /* Asegura un ancho mínimo para el badge */
+section {
+  margin-bottom: 2rem;
   text-align: center;
 }
