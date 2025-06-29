@@ -6,28 +6,58 @@
   <section>
     <h3>Log de Ingresos</h3>
     <button (click)="exportarExcel(logsIngresos, 'log_ingresos')">Descargar Excel</button>
+    <ul>
+      <li *ngFor="let log of logsIngresos">
+        {{ log.email }} - {{ formatFecha(log.fecha) }} {{ log.hora }}
+      </li>
+    </ul>
   </section>
 
   <section>
     <h3>Turnos por Especialidad</h3>
     <button (click)="exportarExcel(turnosEspecialidad, 'turnos_especialidad')">Descargar Excel</button>
+    <ul>
+      <li *ngFor="let t of turnosEspecialidad">
+        {{ t.especialidad }}: {{ t.cantidad }}
+      </li>
+    </ul>
   </section>
 
   <section>
     <h3>Turnos por Día</h3>
     <button (click)="exportarExcel(turnosPorDia, 'turnos_dia')">Descargar Excel</button>
+    <ul>
+      <li *ngFor="let t of turnosPorDia">
+        {{ formatFecha(t.fecha) }}: {{ t.cantidad }}
+      </li>
+    </ul>
   </section>
 
   <section>
     <h3>Turnos por Médico</h3>
     <div class="form-group">
       <label for="fechaInicio">Fecha Inicio:</label>
-      <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio">
+      <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio" />
       <label for="fechaFin">Fecha Fin:</label>
-      <input type="date" id="fechaFin" [(ngModel)]="fechaFin">
+      <input type="date" id="fechaFin" [(ngModel)]="fechaFin" />
       <button (click)="cargarTurnosPorMedico()">Filtrar</button>
     </div>
+
     <button (click)="exportarExcel(turnosPorMedico, 'turnos_solicitados_medico')">Descargar Solicitados</button>
     <button (click)="exportarExcel(turnosFinalizadosPorMedico, 'turnos_finalizados_medico')">Descargar Finalizados</button>
+
+    <h4>Solicitados</h4>
+    <ul class="turnos-list">
+      <li *ngFor="let t of turnosPorMedico">
+        {{ t.especialista }}: {{ t.cantidad }}
+      </li>
+    </ul><br>
+
+    <h4>Finalizados</h4>
+    <ul class="turnos-list">
+      <li *ngFor="let t of turnosFinalizadosPorMedico">
+        {{ t.especialista }}: {{ t.cantidad }}
+      </li>
+    </ul>
   </section>
 </div>

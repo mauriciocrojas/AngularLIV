@@ -36,25 +36,13 @@
 
 .informes-container h4 {
   color: #4CAF50;
-  margin-top: 0; /* Eliminar margen superior ya que lo manejará el user-section */
-  margin-bottom: 1.5rem; /* Aumentar espacio debajo del título de grupo */
+  margin-top: 0;
+  margin-bottom: 1.5rem;
   text-align: center;
   width: 100%;
   font-size: 1.4rem;
   font-weight: 400;
   opacity: 0.8;
-}
-
-.mensaje {
-  margin: 1.5rem 0;
-  color: #0a3622;
-  background: #d1e7dd;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  width: 100%;
-  max-width: 800px;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 /* --- NUEVAS CLASES PARA LAS HILERAS (COLUMNAS) --- */
@@ -80,17 +68,15 @@
   align-items: center; /* Centra el contenido dentro de cada sección */
 }
 
-/* --- FIN NUEVAS CLASES --- */
-
 /* Estilos para la cuadrícula de informes dentro de cada sección */
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Ajustado para que las tarjetas sean un poco más pequeñas dentro de las columnas */
-  gap: 1rem; /* Espacio ligeramente reducido dentro de la cuadrícula */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
   width: 100%;
   justify-content: center;
   place-items: center;
-  margin-bottom: 0; /* Eliminar margen inferior aquí, lo controla el user-section */
+  margin-bottom: 0; /* Controlado por user-section */
 }
 
 .user-card {
@@ -98,25 +84,25 @@
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-  background-color: hsl(44, 100%, 97%); /* Mismo color que el fondo de la sección para un efecto de "flotación" */
+  background-color: hsl(44, 100%, 97%);
   border-radius: 0.8rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
-  max-width: 160px; /* Limita el ancho de la tarjeta */
+  max-width: 160px;
   justify-content: space-between;
   min-height: 200px;
 }
 
 .user-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra al pasar el mouse */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .fav-button {
-  width: 100px; /* Ancho del "botón" contenedor de la imagen */
-  height: 100px; /* Alto del "botón" contenedor de la imagen */
+  width: 100px;
+  height: 100px;
   border-radius: 0.5rem;
   background-color: #74c69d;
   display: flex;
@@ -228,6 +214,8 @@ button {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
   margin-top: 0.5rem;
+  align-self: center;
+  min-width: 180px;
 }
 
 button:hover {
@@ -487,20 +475,83 @@ input[type="file"] {
   margin-bottom: 0.3rem;
 }
 
-/* Media Queries para responsividad */
-@media (max-width: 1024px) { /* Ajuste para pantallas medianas, tabletas */
+/* --- NUEVO: Estilos para cada sección de informe en recuadro --- */
+section {
+  background: white;
+  border-radius: 0.8rem;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 1.5rem 2rem;
+  max-width: 800px;
+  width: 100%;
+  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Lista con scroll si es muy larga */
+section ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+  max-height: 250px;
+  overflow-y: auto;
+  width: 100%;
+  border: 1px solid #c5e1a5;
+  border-radius: 0.5rem;
+  background: #f8fcf5;
+  box-shadow: inset 0 0 5px #c5e1a5;
+}
+
+/* Ítems de la lista */
+section ul li {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #d1e7dd;
+  color: #0a3622;
+  font-size: 1rem;
+}
+
+section ul li:last-child {
+  border-bottom: none;
+}
+
+/* Inputs de fecha alineados en fila */
+.form-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2d6a4f;
+}
+
+.form-group input[type="date"] {
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.3rem;
+  border: 1px solid #ccc;
+  min-width: 150px;
+  font-size: 1rem;
+}
+
+/* Responsivo */
+@media (max-width: 1024px) {
   .users-sections-container {
-    flex-direction: column; /* Apila las secciones en columnas en pantallas medianas */
+    flex-direction: column;
     gap: 1.5rem;
   }
 
   .user-section {
-    width: 100%; /* Las secciones ocupan todo el ancho */
-    max-width: 500px; /* Limita el ancho para que no se estiren demasiado */
+    width: 100%;
+    max-width: 500px;
   }
 
   .users-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Las tarjetas vuelven a ser más grandes */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 }
 
@@ -524,7 +575,17 @@ input[type="file"] {
   }
 
   .form-group {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .form-group input[type="date"] {
+    width: 100%;
+    min-width: unset;
+  }
+
+  button {
+    width: 100%;
+    min-width: unset;
   }
 
   .opcion img {
@@ -544,9 +605,13 @@ input[type="file"] {
   .modal-content h3 {
     font-size: 1.5rem;
   }
-}
 
-section {
-  margin-bottom: 2rem;
-  text-align: center;
+  section {
+    padding: 1rem 1.2rem;
+    max-width: 100%;
+  }
+
+  section ul {
+    max-height: 180px;
+  }
 }
