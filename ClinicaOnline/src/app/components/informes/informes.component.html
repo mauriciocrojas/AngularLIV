@@ -8,9 +8,19 @@
 
     <section>
       <h3>Log de Ingresos</h3>
+      <p *ngIf="logsIngresos.length === 0">No hay ingresos registrados.</p>
+      <!-- Directiva estructural *ngIf agregada -->
+      <!-- Muestra el <p> solo si logsIngresos.length === 0, es decir, si la lista está vacía.
+      Si no se cumple, no renderiza el elemento en el DOM. -->
+
       <ul>
         <li *ngFor="let log of logsIngresos">
-          {{ log.email }} - {{ formatFecha(log.fecha) }} {{ log.hora }}
+          <!-- Directiva estructural *ngFor -->
+          <!-- Recorre el array logsIngresos y genera un <li> por cada elemento.
+          La variable log representa cada objeto actual en el bucle. -->
+
+          {{ log.email | lowercase }} - <!-- Pipe 1: lowercase --> 
+          {{ log.fecha | date: 'dd/MM/yyyy' }} {{ log.hora }} <!-- Pipe 2: date -->
         </li>
       </ul>
     </section>
@@ -30,7 +40,7 @@
       <canvas id="chartDia"></canvas>
       <ul>
         <li *ngFor="let t of turnosPorDia">
-          {{ formatFecha(t.fecha) }}: {{ t.cantidad }}
+          {{ t.fecha | date: 'dd/MM/yyyy' }}: {{ t.cantidad }}
         </li>
       </ul>
     </section>
@@ -40,6 +50,11 @@
       <div class="form-group">
         <label for="fechaInicio">Fecha Inicio:</label>
         <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio" />
+        <!-- Directiva [(ngModel)] -->
+        <!-- Vincula el valor del <input> con la propiedad fechaInicio del componente. -->
+
+
+
         <label for="fechaFin">Fecha Fin:</label>
         <input type="date" id="fechaFin" [(ngModel)]="fechaFin" />
         <button (click)="cargarTurnosPorMedico()">Filtrar</button>
@@ -48,7 +63,10 @@
       <h4>Solicitados</h4>
       <ul class="turnos-list">
         <li *ngFor="let t of turnosPorMedico">
-          {{ t.especialista }}: {{ t.cantidad }}
+          {{ t | json }} 
+          <!-- Pipe 3: json -->
+          <!-- Lo uso para mostrar en pantalla todo el objeto t tal cual llega, sin tener que 
+          poner {{ t.especialista }}, {{ t.cantidad }} uno por uno. -->
         </li>
       </ul><br>
 
